@@ -1,0 +1,216 @@
+# Core Ontology Schema v0.1
+# Generated: 2026-03-28
+# Source: D2 — KB Engine API Schema Analysis + 4-Expert Debate
+
+schema_version: "0.1"
+generated_date: "2026-03-28"
+
+# ============================================================
+# 6 Facets
+# ============================================================
+facets:
+  document_type:
+    description: "Clinical and regulatory document classifications"
+    id_prefix: "CO-DOC"
+    values:
+      - protocol
+      - csr
+      - csr_synopsis
+      - ib                    # Investigator's Brochure
+      - sap                   # Statistical Analysis Plan
+      - icf                   # Informed Consent Form
+      - dsur                  # Development Safety Update Report
+      - pbrer                 # Periodic Benefit-Risk Evaluation Report
+      - ctd_summary           # CTD Module 2 summaries
+      - fda_guidance
+      - fda_review
+      - ectd_module
+      - crf                   # Case Report Form
+      - acrf                  # Annotated CRF
+      - data_dictionary
+      - label                 # FDA-approved product labeling
+
+  regulatory_pathway:
+    description: "FDA submission types, expedited programs, and meeting types"
+    id_prefix: "CO-REG"
+    values:
+      # Submission Types
+      - nda_505b1             # New Drug Application (full)
+      - nda_505b2             # NDA (505(b)(2))
+      - bla                   # Biologics License Application
+      - anda                  # Abbreviated NDA (generics)
+      - ind                   # Investigational New Drug
+      - 510k                  # Premarket Notification (devices)
+      - pma                   # Premarket Approval (devices)
+      - de_novo               # De Novo Classification (devices)
+      # Expedited Programs
+      - fast_track
+      - breakthrough_therapy
+      - accelerated_approval
+      - priority_review
+      - rmat                  # Regenerative Medicine Advanced Therapy
+      - orphan_drug_designation
+      # Meeting Types
+      - fda_meeting_type_a
+      - fda_meeting_type_b
+      - fda_meeting_type_c
+      # Review Outcomes
+      - complete_response_letter
+      - refuse_to_file
+      - advisory_committee
+      - pdufa_date
+
+  development_phase:
+    description: "Drug development lifecycle stages"
+    id_prefix: "CO-DEV"
+    values:
+      - ind_enabling
+      - phase_i
+      - phase_i_ii
+      - phase_ii
+      - phase_ii_iii
+      - phase_iii
+      - phase_iv
+      - nda_bla_submission
+
+  therapeutic_modality:
+    description: "Drug modality classifications"
+    id_prefix: "CO-MOD"
+    values:
+      - small_molecule
+      - monoclonal_antibody
+      - cell_therapy
+      - gene_therapy
+      - rna_therapeutic
+      - combination_product
+
+  clinical_domain:
+    description: "Clinical science domains: efficacy/safety/PK/statistics/data standards/trial design/therapeutic areas"
+    id_prefix: "CO-CLI"
+    values:
+      # Efficacy Endpoints
+      - os                    # Overall Survival
+      - pfs                   # Progression-Free Survival
+      - orr                   # Overall Response Rate
+      - dfs                   # Disease-Free Survival
+      - efs                   # Event-Free Survival
+      - pcr                   # Pathological Complete Response
+      - mrd                   # Minimal Residual Disease
+      - dor                   # Duration of Response
+      - pro                   # Patient-Reported Outcome
+      - biomarker
+      - companion_diagnostic
+      - recist                # Response Evaluation Criteria in Solid Tumors
+      # Safety
+      - ae                    # Adverse Event
+      - sae                   # Serious Adverse Event
+      # PK
+      - cmax
+      - auc
+      # Statistical Methodology
+      - estimand
+      - intercurrent_event_strategy
+      - multiplicity_adjustment
+      - ni_margin             # Non-inferiority Margin
+      - alpha_spending_function
+      - gatekeeping_procedure
+      - interim_analysis
+      - sample_size_calculation
+      - statistical_power
+      - type_i_error_control
+      - sensitivity_analysis
+      - missing_data_handling
+      # Analysis Populations
+      - itt_population
+      - mitt_population
+      - pp_population
+      - safety_population
+      # Trial Designs
+      - superiority_design
+      - non_inferiority_design
+      - equivalence_design
+      - single_arm_design
+      - adaptive_design
+      # CDASH Domains
+      - cdash_dm              # Demographics
+      - cdash_vs              # Vital Signs
+      - cdash_ae              # Adverse Events domain
+      - cdash_cm              # Concomitant Medications
+      - cdash_mh              # Medical History
+      - cdash_lb              # Laboratory Tests
+      - cdash_eg              # ECG
+      - cdash_pe              # Physical Examination
+      # Data Management
+      - sdtm                  # Study Data Tabulation Model
+      - controlled_terminology
+      - visit_schedule
+      - edit_check
+      - query_management
+      - database_lock
+      - medical_coding        # MedDRA, WHODrug
+      # Subgroup / Dose
+      - subgroup_analysis
+      # Therapeutic Areas
+      - ta_oncology
+      - ta_cns
+      - ta_cardiovascular
+      - ta_rare_disease
+      - ta_immunology
+      - ta_infectious_disease
+
+  evidence_category:
+    description: "Evidence tier and knowledge classifications for trust framework"
+    id_prefix: "CO-EVI"
+    values:
+      - tier_1_binding        # Laws, regulations (21 CFR)
+      - tier_2_authoritative  # FDA Guidance (Final), ICH Guidelines
+      - tier_3_informative    # Draft guidance, publications, textbooks
+      - tier_4_experiential   # CRO internal SOPs, expert opinion
+      - knowledge_execution_rule
+      - knowledge_reference
+      - knowledge_template
+      - verification_l0       # Dual-extraction verified
+
+# ============================================================
+# 8 Relationship Types
+# ============================================================
+relationship_types:
+  is_a:
+    description: "Hierarchical classification (e.g., BLA is_a submission_type)"
+    inverse: "has_subtype"
+    example: "CO-REG-003 (BLA) is_a submission_type"
+
+  part_of:
+    description: "Compositional relationship (e.g., SAP part_of eCTD Module 5)"
+    inverse: "has_part"
+    example: "CO-DOC-005 (SAP) part_of CO-DOC-012 (eCTD Module)"
+
+  requires:
+    description: "Prerequisite dependency (e.g., NDA requires Protocol)"
+    inverse: "required_by"
+    example: "CO-REG-001 (NDA) requires CO-DOC-001 (Protocol)"
+
+  supersedes:
+    description: "Temporal replacement (e.g., new guidance supersedes old)"
+    inverse: "superseded_by"
+    example: "ICH E9(R1) supersedes ICH E9 for estimand framework"
+
+  cross_references:
+    description: "Bidirectional reference linkage"
+    inverse: "cross_references"
+    example: "CO-CLI-001 (OS) cross_references CO-CLI-002 (PFS)"
+
+  applies_to:
+    description: "Scope applicability (e.g., RECIST applies_to Oncology)"
+    inverse: "applicable_from"
+    example: "CO-CLI-012 (RECIST) applies_to CO-CLI-049 (ta_oncology)"
+
+  evidenced_by:
+    description: "Evidence support link"
+    inverse: "provides_evidence_for"
+    example: "CO-CLI-017 (Estimand) evidenced_by CO-EVI-002 (Tier 2 Authoritative)"
+
+  contraindicated_by:
+    description: "Mutual exclusion or incompatibility"
+    inverse: "contraindicates"
+    example: "CO-CLI-035 (Single-Arm Design) contraindicated_by CO-CLI-019 (NI Margin requirement)"
