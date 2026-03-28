@@ -1,0 +1,251 @@
+{
+  "$schema": "kb-engine-api-v1",
+  "description": "Standard error response definitions for KB Engine API v2.1",
+  "errors": {
+    "empty_result": {
+      "description": "No matching results found in KB for the given query",
+      "response": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "description": "Unique request identifier"
+          },
+          "results": {
+            "type": "array",
+            "items": {},
+            "description": "Empty array indicating no results",
+            "example": []
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string",
+                "description": "Statement about data coverage",
+                "example": "No matching results found in KB"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time",
+                "description": "ISO8601 timestamp of last KB update"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Known gaps relevant to this query"
+              },
+              "confidence_qualifier": {
+                "type": "string",
+                "description": "Qualifying statement about result confidence"
+              }
+            },
+            "required": ["data_completeness", "last_updated", "known_gaps"]
+          },
+          "suggested_external_sources": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Name of the external source"
+                },
+                "url": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "URL of the external source"
+                },
+                "relevance": {
+                  "type": "string",
+                  "description": "Why this source may have the missing data"
+                }
+              },
+              "required": ["name", "url"]
+            },
+            "description": "Suggested external data sources when KB has no results"
+          },
+          "fallback_instruction": {
+            "type": "string",
+            "description": "Instruction for the calling Agent on how to proceed",
+            "example": "KB 无匹配结果。Agent 应查询上述外部来源，并将结果标记为 unverified_external"
+          }
+        },
+        "required": ["request_id", "results", "coverage_statement", "suggested_external_sources", "fallback_instruction"]
+      }
+    },
+    "validation_failed": {
+      "description": "Numerical validation failed — L0 dual extraction mismatch or L1/L2 cross-document inconsistency",
+      "response": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "description": "Unique request identifier"
+          },
+          "error_code": {
+            "type": "string",
+            "enum": ["VALIDATION_L0_MISMATCH", "VALIDATION_L1_FAILED", "VALIDATION_L2_INCONSISTENCY"],
+            "description": "Specific validation failure code"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "assertion_id": {
+                  "type": "string",
+                  "description": "ID of the numerical assertion that failed validation"
+                },
+                "value": {
+                  "type": "number",
+                  "description": "Extracted value (may be inaccurate)"
+                },
+                "verification_status": {
+                  "type": "string",
+                  "enum": ["unverified"],
+                  "description": "Always 'unverified' for validation failures"
+                },
+                "verification_details": {
+                  "type": "object",
+                  "properties": {
+                    "extraction_1": { "type": "number" },
+                    "extraction_2": { "type": "number" },
+                    "discrepancy_type": {
+                      "type": "string",
+                      "enum": ["value_mismatch", "unit_mismatch", "cross_doc_inconsistency"]
+                    }
+                  },
+                  "description": "Details of the validation failure"
+                },
+                "trust_metadata": {
+                  "type": "object",
+                  "properties": {
+                    "trust_level": {
+                      "type": "string",
+                      "enum": ["unverified"]
+                    },
+                    "verification_level": {
+                      "type": "string",
+                      "enum": ["L0"]
+                    },
+                    "source_tier": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 4
+                    },
+                    "last_verified": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Results with unverified markers"
+          },
+          "review_queue": {
+            "type": "object",
+            "properties": {
+              "queue_id": {
+                "type": "string",
+                "description": "ID of the review queue entry"
+              },
+              "priority": {
+                "type": "string",
+                "enum": ["critical", "high", "normal"],
+                "description": "Review priority based on numerical_category"
+              },
+              "assigned_to": {
+                "type": "string",
+                "description": "Agent or role assigned for review",
+                "example": "kb-convergence-agent"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": ["queue_id", "priority", "assigned_to", "created_at"]
+          },
+          "warning": {
+            "type": "string",
+            "example": "⚠️ unverified — 数值验证失败，不可用于监管决策输出。已加入人工复核队列。"
+          }
+        },
+        "required": ["request_id", "error_code", "results", "review_queue", "warning"]
+      }
+    },
+    "service_degraded": {
+      "description": "KB service is unavailable or partially degraded — Agent should use local cache",
+      "response": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "description": "Unique request identifier"
+          },
+          "error_code": {
+            "type": "string",
+            "enum": ["SERVICE_UNAVAILABLE", "SERVICE_DEGRADED", "COMPONENT_FAILURE"],
+            "description": "Service status code"
+          },
+          "degraded_mode": {
+            "type": "boolean",
+            "description": "Always true when service is degraded",
+            "example": true
+          },
+          "available_components": {
+            "type": "object",
+            "properties": {
+              "vector_store": { "type": "string", "enum": ["healthy", "degraded", "unavailable"] },
+              "document_store": { "type": "string", "enum": ["healthy", "degraded", "unavailable"] },
+              "numerical_registry": { "type": "string", "enum": ["healthy", "degraded", "unavailable"] },
+              "api_gateway": { "type": "string", "enum": ["healthy", "degraded", "unavailable"] }
+            },
+            "description": "Status of individual components"
+          },
+          "cache_instruction": {
+            "type": "object",
+            "properties": {
+              "use_local_cache": {
+                "type": "boolean",
+                "description": "Whether Agent should fall back to local LRU cache"
+              },
+              "cache_max_entries": {
+                "type": "integer",
+                "description": "Maximum cached query results (LRU)",
+                "example": 100
+              },
+              "cache_staleness_warning": {
+                "type": "string",
+                "example": "⚠️ KB degraded mode — results from local cache, may be stale"
+              }
+            },
+            "required": ["use_local_cache", "cache_staleness_warning"]
+          },
+          "escalation": {
+            "type": "object",
+            "properties": {
+              "notify_helix_after_minutes": {
+                "type": "integer",
+                "description": "Minutes of degradation before notifying Helix",
+                "example": 30
+              },
+              "escalation_channel": {
+                "type": "string",
+                "description": "Channel for escalation notification"
+              }
+            },
+            "required": ["notify_helix_after_minutes"]
+          },
+          "warning": {
+            "type": "string",
+            "example": "⚠️ KB degraded mode — results from local cache, may be stale"
+          }
+        },
+        "required": ["request_id", "error_code", "degraded_mode", "cache_instruction", "escalation", "warning"]
+      }
+    }
+  }
+}

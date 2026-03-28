@@ -1,0 +1,954 @@
+{
+  "$schema": "kb-engine-api-v1",
+  "agent_type": "public",
+  "mvp_priority": "MUST",
+  "endpoints": [
+    {
+      "id": "PUB-001",
+      "name": "document-detail",
+      "method": "GET",
+      "path": "/api/v1/kb/document/{doc_id}",
+      "description": "Retrieve full document content and metadata by document ID. This is the implementation of detail_ref URIs returned by domain APIs.",
+      "x_sla": {
+        "p95_ms": 500
+      },
+      "x_risk_level": "normal",
+      "request": {
+        "content_type": "application/json",
+        "body": {
+          "agent_id": {
+            "type": "string",
+            "required": true,
+            "description": "Calling agent identifier (passed as query parameter or header)"
+          },
+          "context": {
+            "type": "object",
+            "required": false,
+            "properties": {
+              "indication": {
+                "type": "string",
+                "required": false
+              },
+              "phase": {
+                "type": "string",
+                "required": false
+              },
+              "ta": {
+                "type": "string",
+                "required": false
+              },
+              "submission_type": {
+                "type": "string",
+                "required": false
+              }
+            }
+          },
+          "doc_id": {
+            "type": "string",
+            "required": true,
+            "description": "Document identifier (path parameter, e.g., FDA-2023-D-0045)"
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "Optional: specific sections to retrieve (if omitted, returns full document)"
+          },
+          "include_raw": {
+            "type": "boolean",
+            "required": false,
+            "description": "Whether to include the raw/original text alongside structured content"
+          }
+        }
+      },
+      "response": {
+        "success": {
+          "request_id": {
+            "type": "string"
+          },
+          "doc_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string",
+            "description": "Document title"
+          },
+          "full_content": {
+            "type": "string",
+            "description": "Full document content (markdown or structured text)"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "document_type": {
+                "type": "string",
+                "description": "Document classification (e.g., fda_guidance, fda_review, protocol, csr)"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "Draft",
+                  "Final",
+                  "Withdrawn",
+                  "Superseded"
+                ]
+              },
+              "effective_date": {
+                "type": "string",
+                "format": "date"
+              },
+              "sha256": {
+                "type": "string",
+                "description": "SHA-256 hash of the immutable source"
+              },
+              "source_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "Original source URL"
+              },
+              "page_count": {
+                "type": "integer"
+              },
+              "ingestion_date": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "evidence_category": {
+                "type": "string",
+                "enum": [
+                  "Binding",
+                  "Authoritative",
+                  "Informative",
+                  "Experiential"
+                ]
+              },
+              "knowledge_type": {
+                "type": "string",
+                "enum": [
+                  "execution-rule",
+                  "reference",
+                  "template"
+                ]
+              },
+              "facets": {
+                "type": "object",
+                "properties": {
+                  "document_type": {
+                    "type": "string"
+                  },
+                  "regulatory_pathway": {
+                    "type": "string"
+                  },
+                  "development_phase": {
+                    "type": "string"
+                  },
+                  "therapeutic_modality": {
+                    "type": "string"
+                  },
+                  "clinical_domain": {
+                    "type": "string"
+                  },
+                  "evidence_category": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "trust_metadata": {
+            "type": "object",
+            "properties": {
+              "trust_level": {
+                "type": "string",
+                "enum": [
+                  "verified",
+                  "reference",
+                  "unverified",
+                  "stale"
+                ]
+              },
+              "verification_level": {
+                "type": "string",
+                "enum": [
+                  "L0",
+                  "L1",
+                  "L2",
+                  "L3"
+                ]
+              },
+              "source_tier": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "last_verified": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "elevated",
+              "critical"
+            ]
+          },
+          "log_id": {
+            "type": "string"
+          }
+        },
+        "error": {
+          "$ref": "error_handling.json#/errors"
+        }
+      },
+      "access_control": {
+        "allowed_agents": [
+          "all"
+        ],
+        "permission_level": "L1_read"
+      }
+    },
+    {
+      "id": "PUB-002",
+      "name": "concept-lookup",
+      "method": "GET",
+      "path": "/api/v1/kb/concept/{concept_id}",
+      "description": "Retrieve full Core Ontology concept information including canonical definition, relationships, validity periods, and facets.",
+      "x_sla": {
+        "p95_ms": 200
+      },
+      "x_risk_level": "normal",
+      "request": {
+        "content_type": "application/json",
+        "body": {
+          "agent_id": {
+            "type": "string",
+            "required": true,
+            "description": "Calling agent identifier"
+          },
+          "context": {
+            "type": "object",
+            "required": false,
+            "properties": {
+              "indication": {
+                "type": "string",
+                "required": false
+              },
+              "phase": {
+                "type": "string",
+                "required": false
+              },
+              "ta": {
+                "type": "string",
+                "required": false
+              },
+              "submission_type": {
+                "type": "string",
+                "required": false
+              }
+            }
+          },
+          "concept_id": {
+            "type": "string",
+            "required": true,
+            "description": "Core Ontology concept ID (path parameter, e.g., CO-REG-001)"
+          },
+          "context_date": {
+            "type": "string",
+            "required": false,
+            "format": "date",
+            "description": "Bi-temporal query — returns concept valid at this date"
+          },
+          "include_relationships": {
+            "type": "boolean",
+            "required": false,
+            "description": "Whether to include concept relationships (default: true)"
+          }
+        }
+      },
+      "response": {
+        "success": {
+          "request_id": {
+            "type": "string"
+          },
+          "concept_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "Concept name (snake_case)"
+          },
+          "canonical_definition": {
+            "type": "string",
+            "description": "Immutable canonical definition from official source"
+          },
+          "definition_source": {
+            "type": "string",
+            "description": "Source citation for the canonical definition"
+          },
+          "ai_summary": {
+            "type": "string",
+            "description": "AI-generated summary (derived, not authoritative)"
+          },
+          "facets": {
+            "type": "object",
+            "properties": {
+              "document_type": {
+                "type": "string"
+              },
+              "regulatory_pathway": {
+                "type": "string"
+              },
+              "development_phase": {
+                "type": "string"
+              },
+              "therapeutic_modality": {
+                "type": "string"
+              },
+              "clinical_domain": {
+                "type": "string"
+              },
+              "evidence_category": {
+                "type": "string"
+              }
+            }
+          },
+          "relationships": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "is_a",
+                    "part_of",
+                    "requires",
+                    "supersedes",
+                    "cross_references",
+                    "applies_to",
+                    "evidenced_by",
+                    "contraindicated_by"
+                  ]
+                },
+                "target": {
+                  "type": "string",
+                  "description": "Target concept ID"
+                },
+                "target_name": {
+                  "type": "string",
+                  "description": "Target concept name"
+                }
+              }
+            }
+          },
+          "validity_periods": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "start": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "end": {
+                  "type": "string",
+                  "format": "date",
+                  "description": "Null if currently valid"
+                },
+                "context": {
+                  "type": "string"
+                },
+                "superseded_by": {
+                  "type": "string",
+                  "description": "Concept ID that supersedes this period"
+                }
+              }
+            }
+          },
+          "version_history": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "change": {
+                  "type": "string"
+                },
+                "author": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "trust_metadata": {
+            "type": "object",
+            "properties": {
+              "trust_level": {
+                "type": "string",
+                "enum": [
+                  "verified",
+                  "reference",
+                  "unverified",
+                  "stale"
+                ]
+              },
+              "verification_level": {
+                "type": "string",
+                "enum": [
+                  "L0",
+                  "L1",
+                  "L2",
+                  "L3"
+                ]
+              },
+              "source_tier": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "last_verified": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "elevated",
+              "critical"
+            ]
+          },
+          "log_id": {
+            "type": "string"
+          }
+        },
+        "error": {
+          "$ref": "error_handling.json#/errors"
+        }
+      },
+      "access_control": {
+        "allowed_agents": [
+          "all"
+        ],
+        "permission_level": "L1_read"
+      }
+    },
+    {
+      "id": "PUB-003",
+      "name": "search",
+      "method": "POST",
+      "path": "/api/v1/kb/search",
+      "description": "Universal cross-domain search combining semantic retrieval, structured filtering, and numerical assertion lookup. Supports all four retrieval channels.",
+      "x_sla": {
+        "p95_ms": 5000
+      },
+      "x_risk_level": "normal",
+      "request": {
+        "content_type": "application/json",
+        "body": {
+          "agent_id": {
+            "type": "string",
+            "required": true,
+            "description": "Calling agent identifier"
+          },
+          "context": {
+            "type": "object",
+            "required": false,
+            "properties": {
+              "indication": {
+                "type": "string",
+                "required": false
+              },
+              "phase": {
+                "type": "string",
+                "required": false
+              },
+              "ta": {
+                "type": "string",
+                "required": false
+              },
+              "submission_type": {
+                "type": "string",
+                "required": false
+              }
+            }
+          },
+          "query": {
+            "type": "string",
+            "required": true,
+            "description": "Natural language or structured search query"
+          },
+          "filters": {
+            "type": "object",
+            "required": false,
+            "description": "Structured filters for faceted search",
+            "properties": {
+              "document_type": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Filter by document type (e.g., fda_guidance, fda_review, protocol, csr)"
+              },
+              "evidence_category": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "Binding",
+                    "Authoritative",
+                    "Informative",
+                    "Experiential"
+                  ]
+                }
+              },
+              "knowledge_type": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "execution-rule",
+                    "reference",
+                    "template"
+                  ]
+                }
+              },
+              "date_range": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "description": "Date range filter [start, end]"
+              },
+              "therapeutic_area": {
+                "type": "string"
+              },
+              "development_phase": {
+                "type": "string"
+              },
+              "regulatory_pathway": {
+                "type": "string"
+              },
+              "min_trust_level": {
+                "type": "string",
+                "enum": [
+                  "verified",
+                  "reference",
+                  "unverified",
+                  "stale"
+                ],
+                "description": "Minimum trust level filter"
+              },
+              "sponsor_id": {
+                "type": "string",
+                "description": "Sponsor namespace filter (for tenant isolation)"
+              }
+            }
+          },
+          "limit": {
+            "type": "integer",
+            "required": false,
+            "description": "Maximum results to return",
+            "default": 20,
+            "maximum": 100
+          },
+          "offset": {
+            "type": "integer",
+            "required": false,
+            "description": "Pagination offset",
+            "default": 0
+          },
+          "include_trust_metadata": {
+            "type": "boolean",
+            "required": false,
+            "description": "Include trust metadata per result",
+            "default": true
+          }
+        }
+      },
+      "response": {
+        "success": {
+          "request_id": {
+            "type": "string"
+          },
+          "total_hits": {
+            "type": "integer",
+            "description": "Total matching results"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "doc_id": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "document_type": {
+                  "type": "string"
+                },
+                "snippet": {
+                  "type": "string",
+                  "description": "Relevant text excerpt"
+                },
+                "relevance_score": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "knowledge_type": {
+                  "type": "string",
+                  "enum": [
+                    "execution-rule",
+                    "reference",
+                    "template"
+                  ]
+                },
+                "evidence_category": {
+                  "type": "string"
+                },
+                "trust_metadata": {
+                  "type": "object",
+                  "properties": {
+                    "trust_level": {
+                      "type": "string",
+                      "enum": [
+                        "verified",
+                        "reference",
+                        "unverified",
+                        "stale"
+                      ]
+                    },
+                    "verification_level": {
+                      "type": "string",
+                      "enum": [
+                        "L0",
+                        "L1",
+                        "L2",
+                        "L3"
+                      ]
+                    },
+                    "source_tier": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 4
+                    },
+                    "last_verified": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "detail_ref": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              }
+            }
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "elevated",
+              "critical"
+            ]
+          },
+          "log_id": {
+            "type": "string"
+          },
+          "trust_metadata": {
+            "trust_level": {
+              "type": "string",
+              "enum": [
+                "verified",
+                "reference",
+                "unverified",
+                "stale"
+              ]
+            },
+            "verification_level": {
+              "type": "string",
+              "enum": [
+                "L0",
+                "L1",
+                "L2",
+                "L3"
+              ]
+            },
+            "source_tier": {
+              "type": "integer",
+              "enum": [
+                1,
+                2,
+                3,
+                4
+              ]
+            },
+            "last_verified": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "error": {
+          "$ref": "error_handling.json#/errors"
+        }
+      },
+      "access_control": {
+        "allowed_agents": [
+          "all"
+        ],
+        "permission_level": "L1_read"
+      }
+    },
+    {
+      "id": "PUB-004",
+      "name": "health",
+      "method": "GET",
+      "path": "/api/v1/kb/health",
+      "description": "Health check endpoint returning system status, component health, global coverage statement, and KB statistics summary.",
+      "x_sla": {
+        "p95_ms": 100
+      },
+      "x_risk_level": "normal",
+      "request": {
+        "content_type": "application/json",
+        "body": {
+          "agent_id": {
+            "type": "string",
+            "required": false,
+            "description": "Calling agent identifier (optional for health check)"
+          }
+        }
+      },
+      "response": {
+        "success": {
+          "request_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "healthy",
+              "degraded",
+              "unavailable"
+            ],
+            "description": "Overall system status"
+          },
+          "uptime_seconds": {
+            "type": "integer",
+            "description": "Time since last restart in seconds"
+          },
+          "components": {
+            "type": "object",
+            "properties": {
+              "vector_store": {
+                "type": "string",
+                "enum": [
+                  "healthy",
+                  "degraded",
+                  "unavailable"
+                ]
+              },
+              "document_store": {
+                "type": "string",
+                "enum": [
+                  "healthy",
+                  "degraded",
+                  "unavailable"
+                ]
+              },
+              "numerical_registry": {
+                "type": "string",
+                "enum": [
+                  "healthy",
+                  "degraded",
+                  "unavailable"
+                ]
+              },
+              "api_gateway": {
+                "type": "string",
+                "enum": [
+                  "healthy",
+                  "degraded",
+                  "unavailable"
+                ]
+              }
+            }
+          },
+          "global_coverage": {
+            "type": "object",
+            "properties": {
+              "total_documents": {
+                "type": "integer"
+              },
+              "total_concepts": {
+                "type": "integer"
+              },
+              "total_numerical_assertions": {
+                "type": "integer"
+              },
+              "total_execution_rules": {
+                "type": "integer"
+              },
+              "total_templates": {
+                "type": "integer"
+              },
+              "last_ingestion": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "version": {
+            "type": "string",
+            "description": "KB Engine version"
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "normal"
+            ]
+          },
+          "log_id": {
+            "type": "string"
+          },
+          "trust_metadata": {
+            "trust_level": {
+              "type": "string",
+              "enum": [
+                "verified",
+                "reference",
+                "unverified",
+                "stale"
+              ]
+            },
+            "verification_level": {
+              "type": "string",
+              "enum": [
+                "L0",
+                "L1",
+                "L2",
+                "L3"
+              ]
+            },
+            "source_tier": {
+              "type": "integer",
+              "enum": [
+                1,
+                2,
+                3,
+                4
+              ]
+            },
+            "last_verified": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "error": {
+          "$ref": "error_handling.json#/errors"
+        }
+      },
+      "access_control": {
+        "allowed_agents": [
+          "all"
+        ],
+        "permission_level": "L1_read"
+      }
+    }
+  ]
+}

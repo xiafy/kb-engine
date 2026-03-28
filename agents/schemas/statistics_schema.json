@@ -1,0 +1,1317 @@
+{
+  "$schema": "kb-engine-api-v1",
+  "agent_type": "statistics",
+  "mvp_priority": "SHOULD",
+  "endpoints": [
+    {
+      "id": "STAT-001",
+      "name": "sap-precedent",
+      "method": "POST",
+      "path": "/api/v1/kb/statistics/sap-precedent",
+      "description": "Given indication and endpoint, return historical SAP design precedents including statistical methods, analysis populations, and FDA acceptance.",
+      "x_sla": {
+        "p95_ms": 2000
+      },
+      "x_risk_level": "normal",
+      "request": {
+        "content_type": "application/json",
+        "body": {
+          "agent_id": {
+            "type": "string",
+            "required": true,
+            "description": "Calling agent identifier"
+          },
+          "context": {
+            "type": "object",
+            "required": false,
+            "properties": {
+              "indication": {
+                "type": "string",
+                "required": false
+              },
+              "phase": {
+                "type": "string",
+                "required": false
+              },
+              "ta": {
+                "type": "string",
+                "required": false
+              },
+              "submission_type": {
+                "type": "string",
+                "required": false
+              }
+            }
+          },
+          "indication": {
+            "type": "string",
+            "required": true,
+            "description": "Target indication"
+          },
+          "endpoint": {
+            "type": "string",
+            "required": true,
+            "description": "Primary endpoint type (e.g., OS, PFS, ORR)"
+          },
+          "design": {
+            "type": "string",
+            "required": false,
+            "description": "Trial design type (e.g., randomized_controlled, single_arm, non_inferiority)"
+          },
+          "estimand_framework": {
+            "type": "string",
+            "required": false,
+            "enum": [
+              "pre-E9R1",
+              "post-E9R1"
+            ],
+            "description": "Filter by ICH E9(R1) estimand framework usage"
+          }
+        }
+      },
+      "response": {
+        "success": {
+          "request_id": {
+            "type": "string"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "trial_name": {
+                  "type": "string",
+                  "description": "Trial name or identifier"
+                },
+                "nct_number": {
+                  "type": "string",
+                  "description": "ClinicalTrials.gov NCT number"
+                },
+                "nda_bla_number": {
+                  "type": "string"
+                },
+                "primary_analysis_method": {
+                  "type": "string",
+                  "description": "Primary statistical method (e.g., Stratified log-rank test)"
+                },
+                "analysis_population": {
+                  "type": "string",
+                  "description": "Analysis population (ITT, mITT, PP)"
+                },
+                "estimand": {
+                  "type": "object",
+                  "properties": {
+                    "population": {
+                      "type": "string"
+                    },
+                    "endpoint": {
+                      "type": "string"
+                    },
+                    "intercurrent_events": {
+                      "type": "string",
+                      "description": "Strategy for intercurrent events"
+                    },
+                    "summary_measure": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "sensitivity_analyses": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "multiplicity_adjustment": {
+                  "type": "string",
+                  "description": "Multiplicity adjustment method if applicable"
+                },
+                "alpha_allocation": {
+                  "type": "string",
+                  "description": "Alpha spending or allocation strategy"
+                },
+                "interim_analysis": {
+                  "type": "object",
+                  "properties": {
+                    "planned": {
+                      "type": "boolean"
+                    },
+                    "method": {
+                      "type": "string"
+                    },
+                    "n_interim": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "fda_statistical_review_notes": {
+                  "type": "string",
+                  "description": "Key notes from FDA Statistical Review"
+                },
+                "trust_metadata": {
+                  "type": "object",
+                  "properties": {
+                    "trust_level": {
+                      "type": "string",
+                      "enum": [
+                        "verified",
+                        "reference",
+                        "unverified",
+                        "stale"
+                      ]
+                    },
+                    "verification_level": {
+                      "type": "string",
+                      "enum": [
+                        "L0",
+                        "L1",
+                        "L2",
+                        "L3"
+                      ]
+                    },
+                    "source_tier": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 4
+                    },
+                    "last_verified": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "detail_ref": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              }
+            }
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "elevated",
+              "critical"
+            ]
+          },
+          "log_id": {
+            "type": "string"
+          },
+          "trust_metadata": {
+            "trust_level": {
+              "type": "string",
+              "enum": [
+                "verified",
+                "reference",
+                "unverified",
+                "stale"
+              ],
+              "description": "Discrete trust level for MVP"
+            },
+            "verification_level": {
+              "type": "string",
+              "enum": [
+                "L0",
+                "L1",
+                "L2",
+                "L3"
+              ],
+              "description": "Highest verification level passed"
+            },
+            "source_tier": {
+              "type": "integer",
+              "enum": [
+                1,
+                2,
+                3,
+                4
+              ],
+              "description": "Evidence tier (1=Binding, 4=Experiential)"
+            },
+            "last_verified": {
+              "type": "string",
+              "format": "date-time",
+              "description": "ISO8601 timestamp of last verification"
+            }
+          }
+        },
+        "error": {
+          "$ref": "error_handling.json#/errors"
+        }
+      },
+      "access_control": {
+        "allowed_agents": [
+          "statistics",
+          "learner",
+          "reviewer",
+          "helix",
+          "convergence",
+          "boss"
+        ],
+        "permission_level": "L1_read"
+      }
+    },
+    {
+      "id": "STAT-002",
+      "name": "numerical-query",
+      "method": "POST",
+      "path": "/api/v1/kb/statistics/numerical-query",
+      "description": "Precise numerical value lookup from the Numerical Assertion Registry. Returns exact values with full provenance chain and cross-document verification status.",
+      "x_sla": {
+        "p95_ms": 200
+      },
+      "x_risk_level": "elevated",
+      "request": {
+        "content_type": "application/json",
+        "body": {
+          "agent_id": {
+            "type": "string",
+            "required": true,
+            "description": "Calling agent identifier"
+          },
+          "context": {
+            "type": "object",
+            "required": false,
+            "properties": {
+              "indication": {
+                "type": "string",
+                "required": false
+              },
+              "phase": {
+                "type": "string",
+                "required": false
+              },
+              "ta": {
+                "type": "string",
+                "required": false
+              },
+              "submission_type": {
+                "type": "string",
+                "required": false
+              }
+            }
+          },
+          "identifier": {
+            "type": "string",
+            "required": true,
+            "description": "NCT number, NDA/BLA number, or assertion_id to look up"
+          },
+          "identifier_type": {
+            "type": "string",
+            "required": true,
+            "enum": [
+              "nct",
+              "nda",
+              "bla",
+              "assertion_id"
+            ],
+            "description": "Type of identifier provided"
+          },
+          "metric_type": {
+            "type": "string",
+            "required": true,
+            "description": "Type of numerical metric to retrieve (e.g., p_value, hazard_ratio, confidence_interval, orr, median_os, median_pfs, cmax, auc, sae_rate)"
+          },
+          "population": {
+            "type": "string",
+            "required": false,
+            "description": "Analysis population filter (ITT, mITT, PP, safety)"
+          }
+        }
+      },
+      "response": {
+        "success": {
+          "request_id": {
+            "type": "string"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "assertion_id": {
+                  "type": "string",
+                  "description": "Numerical Assertion Registry ID"
+                },
+                "value": {
+                  "type": "number",
+                  "description": "The numerical value"
+                },
+                "unit": {
+                  "type": "string",
+                  "description": "Unit of measurement (e.g., months, %, p-value)"
+                },
+                "precision": {
+                  "type": "string",
+                  "description": "Decimal precision (e.g., 3dp)"
+                },
+                "confidence_interval": {
+                  "type": "object",
+                  "properties": {
+                    "lower": {
+                      "type": "number"
+                    },
+                    "upper": {
+                      "type": "number"
+                    },
+                    "level": {
+                      "type": "number",
+                      "description": "CI level (e.g., 0.95)"
+                    }
+                  }
+                },
+                "context": {
+                  "type": "string",
+                  "description": "Full context string (e.g., Primary endpoint OS, ITT population)"
+                },
+                "source_doc": {
+                  "type": "string",
+                  "description": "Source document SHA-256 or ID"
+                },
+                "source_location": {
+                  "type": "string",
+                  "description": "Precise location in source (e.g., Table 14.2, Row 3, Col 5)"
+                },
+                "extraction_confidence": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "numerical_category": {
+                  "type": "string",
+                  "enum": [
+                    "critical",
+                    "non_critical"
+                  ]
+                },
+                "verification_level": {
+                  "type": "string",
+                  "enum": [
+                    "L0",
+                    "L1",
+                    "L2",
+                    "L3"
+                  ]
+                },
+                "l0_verified": {
+                  "type": "boolean",
+                  "description": "Whether L0 dual-extraction verification passed"
+                },
+                "consistency_flag": {
+                  "type": "string",
+                  "enum": [
+                    "CONSISTENT",
+                    "DISCREPANCY",
+                    "SINGLE_SOURCE"
+                  ]
+                },
+                "all_sources": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "source": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "number"
+                      },
+                      "precision": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "cross_references": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "trust_metadata": {
+                  "type": "object",
+                  "properties": {
+                    "trust_level": {
+                      "type": "string",
+                      "enum": [
+                        "verified",
+                        "reference",
+                        "unverified",
+                        "stale"
+                      ]
+                    },
+                    "verification_level": {
+                      "type": "string",
+                      "enum": [
+                        "L0",
+                        "L1",
+                        "L2",
+                        "L3"
+                      ]
+                    },
+                    "source_tier": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 4
+                    },
+                    "last_verified": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "elevated"
+            ]
+          },
+          "log_id": {
+            "type": "string"
+          },
+          "trust_metadata": {
+            "trust_level": {
+              "type": "string",
+              "enum": [
+                "verified",
+                "reference",
+                "unverified",
+                "stale"
+              ]
+            },
+            "verification_level": {
+              "type": "string",
+              "enum": [
+                "L0",
+                "L1",
+                "L2",
+                "L3"
+              ]
+            },
+            "source_tier": {
+              "type": "integer",
+              "enum": [
+                1,
+                2,
+                3,
+                4
+              ]
+            },
+            "last_verified": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "error": {
+          "$ref": "error_handling.json#/errors"
+        }
+      },
+      "access_control": {
+        "allowed_agents": [
+          "statistics",
+          "learner",
+          "reviewer",
+          "helix",
+          "convergence",
+          "boss"
+        ],
+        "permission_level": "L1_read"
+      }
+    },
+    {
+      "id": "STAT-003",
+      "name": "sample-size-ref",
+      "method": "POST",
+      "path": "/api/v1/kb/statistics/sample-size-ref",
+      "description": "Given indication and trial design, return historical sample size references with power assumptions and effect sizes from approved drugs.",
+      "x_sla": {
+        "p95_ms": 2000
+      },
+      "x_risk_level": "normal",
+      "request": {
+        "content_type": "application/json",
+        "body": {
+          "agent_id": {
+            "type": "string",
+            "required": true,
+            "description": "Calling agent identifier"
+          },
+          "context": {
+            "type": "object",
+            "required": false,
+            "properties": {
+              "indication": {
+                "type": "string",
+                "required": false
+              },
+              "phase": {
+                "type": "string",
+                "required": false
+              },
+              "ta": {
+                "type": "string",
+                "required": false
+              },
+              "submission_type": {
+                "type": "string",
+                "required": false
+              }
+            }
+          },
+          "indication": {
+            "type": "string",
+            "required": true,
+            "description": "Target indication"
+          },
+          "design": {
+            "type": "string",
+            "required": true,
+            "description": "Trial design type",
+            "enum": [
+              "superiority",
+              "non_inferiority",
+              "equivalence",
+              "single_arm",
+              "adaptive"
+            ]
+          },
+          "endpoint": {
+            "type": "string",
+            "required": false,
+            "description": "Primary endpoint type for filtering"
+          },
+          "phase": {
+            "type": "string",
+            "required": false,
+            "enum": [
+              "Phase_II",
+              "Phase_III"
+            ]
+          }
+        }
+      },
+      "response": {
+        "success": {
+          "request_id": {
+            "type": "string"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "trial_name": {
+                  "type": "string"
+                },
+                "nct_number": {
+                  "type": "string"
+                },
+                "sample_size_planned": {
+                  "type": "integer"
+                },
+                "sample_size_enrolled": {
+                  "type": "integer"
+                },
+                "randomization_ratio": {
+                  "type": "string",
+                  "description": "e.g., 1:1, 2:1"
+                },
+                "primary_endpoint": {
+                  "type": "string"
+                },
+                "power": {
+                  "type": "number",
+                  "description": "Statistical power (e.g., 0.80, 0.90)"
+                },
+                "alpha": {
+                  "type": "number",
+                  "description": "Significance level (e.g., 0.05, 0.025)"
+                },
+                "effect_size_assumed": {
+                  "type": "string",
+                  "description": "Assumed effect size for power calculation"
+                },
+                "effect_size_observed": {
+                  "type": "string",
+                  "description": "Actually observed effect size"
+                },
+                "dropout_rate_assumed": {
+                  "type": "number"
+                },
+                "ni_margin": {
+                  "type": "string",
+                  "description": "Non-inferiority margin if applicable"
+                },
+                "fda_comments_on_sample_size": {
+                  "type": "string"
+                },
+                "trust_metadata": {
+                  "type": "object",
+                  "properties": {
+                    "trust_level": {
+                      "type": "string",
+                      "enum": [
+                        "verified",
+                        "reference",
+                        "unverified",
+                        "stale"
+                      ]
+                    },
+                    "verification_level": {
+                      "type": "string",
+                      "enum": [
+                        "L0",
+                        "L1",
+                        "L2",
+                        "L3"
+                      ]
+                    },
+                    "source_tier": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 4
+                    },
+                    "last_verified": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "elevated",
+              "critical"
+            ]
+          },
+          "log_id": {
+            "type": "string"
+          },
+          "trust_metadata": {
+            "trust_level": {
+              "type": "string",
+              "enum": [
+                "verified",
+                "reference",
+                "unverified",
+                "stale"
+              ]
+            },
+            "verification_level": {
+              "type": "string",
+              "enum": [
+                "L0",
+                "L1",
+                "L2",
+                "L3"
+              ]
+            },
+            "source_tier": {
+              "type": "integer",
+              "enum": [
+                1,
+                2,
+                3,
+                4
+              ]
+            },
+            "last_verified": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "error": {
+          "$ref": "error_handling.json#/errors"
+        }
+      },
+      "access_control": {
+        "allowed_agents": [
+          "statistics",
+          "learner",
+          "reviewer",
+          "helix",
+          "convergence",
+          "boss"
+        ],
+        "permission_level": "L1_read"
+      }
+    },
+    {
+      "id": "STAT-004",
+      "name": "multiplicity-strategy",
+      "method": "POST",
+      "path": "/api/v1/kb/statistics/multiplicity-strategy",
+      "description": "Given an endpoint hierarchy, return multiplicity adjustment strategy precedents including alpha allocation, gatekeeping procedures, and FDA feedback.",
+      "x_sla": {
+        "p95_ms": 2000
+      },
+      "x_risk_level": "normal",
+      "request": {
+        "content_type": "application/json",
+        "body": {
+          "agent_id": {
+            "type": "string",
+            "required": true,
+            "description": "Calling agent identifier"
+          },
+          "context": {
+            "type": "object",
+            "required": false,
+            "properties": {
+              "indication": {
+                "type": "string",
+                "required": false
+              },
+              "phase": {
+                "type": "string",
+                "required": false
+              },
+              "ta": {
+                "type": "string",
+                "required": false
+              },
+              "submission_type": {
+                "type": "string",
+                "required": false
+              }
+            }
+          },
+          "endpoint_hierarchy": {
+            "type": "array",
+            "required": true,
+            "description": "Ordered list of endpoints with their role in the testing hierarchy",
+            "items": {
+              "type": "object",
+              "properties": {
+                "endpoint_name": {
+                  "type": "string"
+                },
+                "endpoint_type": {
+                  "type": "string",
+                  "enum": [
+                    "primary",
+                    "key_secondary",
+                    "secondary"
+                  ]
+                },
+                "priority_order": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "indication": {
+            "type": "string",
+            "required": false,
+            "description": "Indication for precedent matching"
+          },
+          "design": {
+            "type": "string",
+            "required": false,
+            "description": "Trial design type"
+          }
+        }
+      },
+      "response": {
+        "success": {
+          "request_id": {
+            "type": "string"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "trial_name": {
+                  "type": "string"
+                },
+                "nct_number": {
+                  "type": "string"
+                },
+                "multiplicity_method": {
+                  "type": "string",
+                  "description": "Method used (e.g., Hochberg, Holm, fixed-sequence, graphical approach)"
+                },
+                "alpha_allocation": {
+                  "type": "object",
+                  "properties": {
+                    "overall_alpha": {
+                      "type": "number"
+                    },
+                    "allocation_strategy": {
+                      "type": "string"
+                    },
+                    "per_endpoint_alpha": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "endpoint": {
+                            "type": "string"
+                          },
+                          "allocated_alpha": {
+                            "type": "number"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "gatekeeping_procedure": {
+                  "type": "string",
+                  "description": "Gatekeeping procedure description if used"
+                },
+                "conditional_testing": {
+                  "type": "string",
+                  "description": "Conditional superiority/non-inferiority strategy"
+                },
+                "alpha_recycling": {
+                  "type": "boolean",
+                  "description": "Whether alpha recycling was used"
+                },
+                "fda_feedback": {
+                  "type": "string",
+                  "description": "FDA's feedback on the multiplicity strategy"
+                },
+                "trust_metadata": {
+                  "type": "object",
+                  "properties": {
+                    "trust_level": {
+                      "type": "string",
+                      "enum": [
+                        "verified",
+                        "reference",
+                        "unverified",
+                        "stale"
+                      ]
+                    },
+                    "verification_level": {
+                      "type": "string",
+                      "enum": [
+                        "L0",
+                        "L1",
+                        "L2",
+                        "L3"
+                      ]
+                    },
+                    "source_tier": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 4
+                    },
+                    "last_verified": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "elevated",
+              "critical"
+            ]
+          },
+          "log_id": {
+            "type": "string"
+          },
+          "trust_metadata": {
+            "trust_level": {
+              "type": "string",
+              "enum": [
+                "verified",
+                "reference",
+                "unverified",
+                "stale"
+              ]
+            },
+            "verification_level": {
+              "type": "string",
+              "enum": [
+                "L0",
+                "L1",
+                "L2",
+                "L3"
+              ]
+            },
+            "source_tier": {
+              "type": "integer",
+              "enum": [
+                1,
+                2,
+                3,
+                4
+              ]
+            },
+            "last_verified": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "error": {
+          "$ref": "error_handling.json#/errors"
+        }
+      },
+      "access_control": {
+        "allowed_agents": [
+          "statistics",
+          "learner",
+          "reviewer",
+          "helix",
+          "convergence",
+          "boss"
+        ],
+        "permission_level": "L1_read"
+      }
+    },
+    {
+      "id": "STAT-005",
+      "name": "estimand-template",
+      "method": "POST",
+      "path": "/api/v1/kb/statistics/estimand-template",
+      "description": "Given indication and design, return ICH E9(R1) estimand framework templates covering primary and supplementary estimands with intercurrent event strategies.",
+      "x_sla": {
+        "p95_ms": 2000
+      },
+      "x_risk_level": "normal",
+      "request": {
+        "content_type": "application/json",
+        "body": {
+          "agent_id": {
+            "type": "string",
+            "required": true,
+            "description": "Calling agent identifier"
+          },
+          "context": {
+            "type": "object",
+            "required": false,
+            "properties": {
+              "indication": {
+                "type": "string",
+                "required": false
+              },
+              "phase": {
+                "type": "string",
+                "required": false
+              },
+              "ta": {
+                "type": "string",
+                "required": false
+              },
+              "submission_type": {
+                "type": "string",
+                "required": false
+              }
+            }
+          },
+          "indication": {
+            "type": "string",
+            "required": true,
+            "description": "Target indication"
+          },
+          "design": {
+            "type": "string",
+            "required": true,
+            "description": "Trial design type",
+            "enum": [
+              "superiority",
+              "non_inferiority",
+              "equivalence",
+              "single_arm"
+            ]
+          },
+          "endpoint": {
+            "type": "string",
+            "required": false,
+            "description": "Primary endpoint type"
+          }
+        }
+      },
+      "response": {
+        "success": {
+          "request_id": {
+            "type": "string"
+          },
+          "results": {
+            "type": "object",
+            "properties": {
+              "primary_estimand": {
+                "type": "object",
+                "properties": {
+                  "population": {
+                    "type": "string",
+                    "description": "Target population description"
+                  },
+                  "variable": {
+                    "type": "string",
+                    "description": "Endpoint variable"
+                  },
+                  "intercurrent_events": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "description": "Intercurrent event type (e.g., treatment discontinuation, crossover, rescue medication)"
+                        },
+                        "strategy": {
+                          "type": "string",
+                          "enum": [
+                            "treatment_policy",
+                            "composite",
+                            "hypothetical",
+                            "while_on_treatment",
+                            "principal_stratum"
+                          ]
+                        },
+                        "rationale": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "summary_measure": {
+                    "type": "string",
+                    "description": "Population-level summary measure"
+                  }
+                }
+              },
+              "supplementary_estimands": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string",
+                      "description": "Estimand label (e.g., Supplementary Estimand 1)"
+                    },
+                    "population": {
+                      "type": "string"
+                    },
+                    "variable": {
+                      "type": "string"
+                    },
+                    "intercurrent_events": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "event": {
+                            "type": "string"
+                          },
+                          "strategy": {
+                            "type": "string"
+                          },
+                          "rationale": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "summary_measure": {
+                      "type": "string"
+                    },
+                    "purpose": {
+                      "type": "string",
+                      "description": "Why this supplementary estimand is included"
+                    }
+                  }
+                }
+              },
+              "precedent_trials": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "trial_name": {
+                      "type": "string"
+                    },
+                    "nct_number": {
+                      "type": "string"
+                    },
+                    "estimand_approach": {
+                      "type": "string"
+                    },
+                    "fda_acceptance": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "regulatory_notes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Key regulatory considerations for estimand design"
+              }
+            }
+          },
+          "trust_metadata": {
+            "type": "object",
+            "properties": {
+              "trust_level": {
+                "type": "string",
+                "enum": [
+                  "verified",
+                  "reference",
+                  "unverified",
+                  "stale"
+                ]
+              },
+              "verification_level": {
+                "type": "string",
+                "enum": [
+                  "L0",
+                  "L1",
+                  "L2",
+                  "L3"
+                ]
+              },
+              "source_tier": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "last_verified": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "elevated",
+              "critical"
+            ]
+          },
+          "log_id": {
+            "type": "string"
+          }
+        },
+        "error": {
+          "$ref": "error_handling.json#/errors"
+        }
+      },
+      "access_control": {
+        "allowed_agents": [
+          "statistics",
+          "learner",
+          "reviewer",
+          "helix",
+          "convergence",
+          "boss"
+        ],
+        "permission_level": "L1_read"
+      }
+    }
+  ]
+}

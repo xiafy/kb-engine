@@ -1,0 +1,992 @@
+{
+  "$schema": "kb-engine-api-v1",
+  "agent_type": "system",
+  "mvp_priority": "MUST",
+  "endpoints": [
+    {
+      "id": "SYS-001",
+      "name": "rules-push",
+      "method": "POST",
+      "path": "/api/v1/kb/rules/push",
+      "description": "Push Execution Rules to an Agent based on task_type. System-level internal call triggered when an Agent starts a task. Returns all mandatory rules that MUST be injected into the Agent's system prompt.",
+      "x_sla": {
+        "p95_ms": 100
+      },
+      "x_risk_level": "elevated",
+      "request": {
+        "content_type": "application/json",
+        "body": {
+          "agent_id": {
+            "type": "string",
+            "required": true,
+            "description": "ID of the Agent receiving the rules"
+          },
+          "context": {
+            "type": "object",
+            "required": false,
+            "properties": {
+              "indication": {
+                "type": "string",
+                "required": false
+              },
+              "phase": {
+                "type": "string",
+                "required": false
+              },
+              "ta": {
+                "type": "string",
+                "required": false
+              },
+              "submission_type": {
+                "type": "string",
+                "required": false
+              }
+            }
+          },
+          "task_type": {
+            "type": "string",
+            "required": true,
+            "description": "Task type triggering rule push",
+            "enum": [
+              "crf_design",
+              "protocol_writing",
+              "csr_writing",
+              "sap_generation",
+              "nda_checklist",
+              "ectd_review",
+              "data_validation",
+              "safety_review",
+              "pk_analysis"
+            ]
+          },
+          "agent_type": {
+            "type": "string",
+            "required": false,
+            "description": "Type of the receiving Agent for rule filtering"
+          }
+        }
+      },
+      "response": {
+        "success": {
+          "request_id": {
+            "type": "string"
+          },
+          "rules_count": {
+            "type": "integer",
+            "description": "Total number of rules pushed"
+          },
+          "mandatory_rules": {
+            "type": "array",
+            "description": "Rules that MUST be injected into Agent system prompt — skipping any rule is a compliance violation",
+            "items": {
+              "type": "object",
+              "properties": {
+                "rule_id": {
+                  "type": "string",
+                  "description": "Rule identifier"
+                },
+                "rule": {
+                  "type": "string",
+                  "description": "Full rule text"
+                },
+                "injection_priority": {
+                  "type": "integer",
+                  "description": "Injection order priority (1 = highest)"
+                },
+                "source": {
+                  "type": "string",
+                  "description": "Source reference"
+                },
+                "scope": {
+                  "type": "string",
+                  "description": "Scope of applicability (e.g., all_phases, phase_i_only)"
+                },
+                "trust_metadata": {
+                  "type": "object",
+                  "properties": {
+                    "trust_level": {
+                      "type": "string",
+                      "enum": [
+                        "verified",
+                        "reference",
+                        "unverified",
+                        "stale"
+                      ]
+                    },
+                    "verification_level": {
+                      "type": "string",
+                      "enum": [
+                        "L0",
+                        "L1",
+                        "L2",
+                        "L3"
+                      ]
+                    },
+                    "source_tier": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 4
+                    },
+                    "last_verified": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "injection_instruction": {
+            "type": "string",
+            "description": "Mandatory instruction — all rules MUST be injected before task execution"
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "elevated"
+            ]
+          },
+          "log_id": {
+            "type": "string"
+          },
+          "trust_metadata": {
+            "trust_level": {
+              "type": "string",
+              "enum": [
+                "verified",
+                "reference",
+                "unverified",
+                "stale"
+              ],
+              "description": "Discrete trust level for MVP"
+            },
+            "verification_level": {
+              "type": "string",
+              "enum": [
+                "L0",
+                "L1",
+                "L2",
+                "L3"
+              ],
+              "description": "Highest verification level passed"
+            },
+            "source_tier": {
+              "type": "integer",
+              "enum": [
+                1,
+                2,
+                3,
+                4
+              ],
+              "description": "Evidence tier (1=Binding, 4=Experiential)"
+            },
+            "last_verified": {
+              "type": "string",
+              "format": "date-time",
+              "description": "ISO8601 timestamp of last verification"
+            }
+          }
+        },
+        "error": {
+          "$ref": "error_handling.json#/errors"
+        }
+      },
+      "access_control": {
+        "allowed_agents": [
+          "helix",
+          "boss"
+        ],
+        "permission_level": "L3_admin",
+        "notes": "PM sub-agents receive rules automatically (system push) — they do not call this endpoint directly"
+      }
+    },
+    {
+      "id": "SYS-002",
+      "name": "feedback",
+      "method": "POST",
+      "path": "/api/v1/kb/feedback",
+      "description": "Submit correction or feedback about KB content. Creates a task for KB Convergence Agent to process. All agents can submit feedback — this is the reverse convergence channel.",
+      "x_sla": {
+        "p95_ms": 500
+      },
+      "x_risk_level": "normal",
+      "request": {
+        "content_type": "application/json",
+        "body": {
+          "agent_id": {
+            "type": "string",
+            "required": true,
+            "description": "Calling agent identifier"
+          },
+          "context": {
+            "type": "object",
+            "required": false,
+            "properties": {
+              "indication": {
+                "type": "string",
+                "required": false
+              },
+              "phase": {
+                "type": "string",
+                "required": false
+              },
+              "ta": {
+                "type": "string",
+                "required": false
+              },
+              "submission_type": {
+                "type": "string",
+                "required": false
+              }
+            }
+          },
+          "target_id": {
+            "type": "string",
+            "required": true,
+            "description": "ID of the KB content being reported (rule_id, doc_id, assertion_id, concept_id)"
+          },
+          "feedback_type": {
+            "type": "string",
+            "required": true,
+            "description": "Type of feedback",
+            "enum": [
+              "correction",
+              "addition",
+              "deprecation",
+              "quality_concern",
+              "stale_content"
+            ]
+          },
+          "reported_by": {
+            "type": "string",
+            "required": true,
+            "description": "Reporter identifier (format: agent:<agent_id> or human:<user_id>)"
+          },
+          "current_content": {
+            "type": "string",
+            "required": false,
+            "description": "Current (incorrect) content as seen by reporter"
+          },
+          "correct_content": {
+            "type": "string",
+            "required": false,
+            "description": "Proposed correct content"
+          },
+          "evidence": {
+            "type": "string",
+            "required": true,
+            "description": "Evidence supporting the correction (citation, URL, section reference)"
+          },
+          "severity": {
+            "type": "string",
+            "required": true,
+            "description": "Severity of the issue",
+            "enum": [
+              "critical",
+              "high",
+              "normal",
+              "low"
+            ]
+          }
+        }
+      },
+      "response": {
+        "success": {
+          "request_id": {
+            "type": "string"
+          },
+          "feedback_id": {
+            "type": "string",
+            "description": "Unique feedback identifier (e.g., FB-2026-03-28-001)"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "task_created",
+              "duplicate_detected",
+              "auto_resolved"
+            ],
+            "description": "Processing status"
+          },
+          "task_id": {
+            "type": "string",
+            "description": "Associated KB update task ID"
+          },
+          "assigned_to": {
+            "type": "string",
+            "description": "Agent assigned to process this feedback"
+          },
+          "estimated_resolution": {
+            "type": "string",
+            "description": "Estimated resolution timeline (e.g., next_convergence_cycle, immediate)"
+          },
+          "trust_metadata": {
+            "type": "object",
+            "properties": {
+              "trust_level": {
+                "type": "string",
+                "enum": [
+                  "verified",
+                  "reference",
+                  "unverified",
+                  "stale"
+                ]
+              },
+              "verification_level": {
+                "type": "string",
+                "enum": [
+                  "L0",
+                  "L1",
+                  "L2",
+                  "L3"
+                ]
+              },
+              "source_tier": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "last_verified": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "elevated",
+              "critical"
+            ]
+          },
+          "log_id": {
+            "type": "string"
+          }
+        },
+        "error": {
+          "$ref": "error_handling.json#/errors"
+        }
+      },
+      "access_control": {
+        "allowed_agents": [
+          "all"
+        ],
+        "permission_level": "L1_read",
+        "notes": "All agents can submit feedback. KB Convergence Agent processes feedback tasks."
+      }
+    },
+    {
+      "id": "SYS-003",
+      "name": "verify",
+      "method": "POST",
+      "path": "/api/v1/kb/verify",
+      "description": "Submit verification results for KB content. Used by Learner (write-verify separation: cannot verify own writes) and REVIEWER (marks review opinions, does not directly update trust_score).",
+      "x_sla": {
+        "p95_ms": 500
+      },
+      "x_risk_level": "normal",
+      "request": {
+        "content_type": "application/json",
+        "body": {
+          "agent_id": {
+            "type": "string",
+            "required": true,
+            "description": "Calling agent identifier"
+          },
+          "context": {
+            "type": "object",
+            "required": false,
+            "properties": {
+              "indication": {
+                "type": "string",
+                "required": false
+              },
+              "phase": {
+                "type": "string",
+                "required": false
+              },
+              "ta": {
+                "type": "string",
+                "required": false
+              },
+              "submission_type": {
+                "type": "string",
+                "required": false
+              }
+            }
+          },
+          "target_id": {
+            "type": "string",
+            "required": true,
+            "description": "ID of the KB content being verified"
+          },
+          "verification_type": {
+            "type": "string",
+            "required": true,
+            "description": "Type of verification performed",
+            "enum": [
+              "source_accuracy",
+              "numerical_validation",
+              "completeness_check",
+              "consistency_check",
+              "review_opinion"
+            ]
+          },
+          "verified_by": {
+            "type": "string",
+            "required": true,
+            "description": "Verifier identifier"
+          },
+          "result": {
+            "type": "string",
+            "required": true,
+            "description": "Verification result",
+            "enum": [
+              "passed",
+              "failed",
+              "partial",
+              "inconclusive"
+            ]
+          },
+          "verification_details": {
+            "type": "object",
+            "required": false,
+            "description": "Detailed verification information",
+            "properties": {
+              "method": {
+                "type": "string",
+                "description": "Verification method used"
+              },
+              "reference_sources": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Sources used for verification"
+              },
+              "discrepancies_found": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "field": {
+                      "type": "string"
+                    },
+                    "expected": {
+                      "type": "string"
+                    },
+                    "actual": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "critical",
+                        "high",
+                        "normal",
+                        "low"
+                      ]
+                    }
+                  }
+                }
+              },
+              "notes": {
+                "type": "string"
+              }
+            }
+          },
+          "proposed_verification_level": {
+            "type": "string",
+            "required": false,
+            "enum": [
+              "L0",
+              "L1",
+              "L2",
+              "L3"
+            ],
+            "description": "Proposed new verification level (final update by Convergence Agent)"
+          }
+        }
+      },
+      "response": {
+        "success": {
+          "request_id": {
+            "type": "string"
+          },
+          "verification_id": {
+            "type": "string",
+            "description": "Unique verification record ID"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "recorded",
+              "trust_update_queued",
+              "escalated"
+            ],
+            "description": "Processing status — trust_score updates are queued for Convergence Agent"
+          },
+          "target_id": {
+            "type": "string"
+          },
+          "current_trust_level": {
+            "type": "string",
+            "enum": [
+              "verified",
+              "reference",
+              "unverified",
+              "stale"
+            ],
+            "description": "Current trust level (before Convergence Agent processes the update)"
+          },
+          "trust_metadata": {
+            "type": "object",
+            "properties": {
+              "trust_level": {
+                "type": "string",
+                "enum": [
+                  "verified",
+                  "reference",
+                  "unverified",
+                  "stale"
+                ]
+              },
+              "verification_level": {
+                "type": "string",
+                "enum": [
+                  "L0",
+                  "L1",
+                  "L2",
+                  "L3"
+                ]
+              },
+              "source_tier": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "last_verified": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "elevated",
+              "critical"
+            ]
+          },
+          "log_id": {
+            "type": "string"
+          }
+        },
+        "error": {
+          "$ref": "error_handling.json#/errors"
+        }
+      },
+      "access_control": {
+        "allowed_agents": [
+          "learner",
+          "reviewer",
+          "helix",
+          "convergence",
+          "boss"
+        ],
+        "permission_level": "L2_write",
+        "notes": "Learner can verify content NOT written by itself (write-verify separation). REVIEWER marks review opinions only — trust_score updates handled by Convergence Agent."
+      }
+    },
+    {
+      "id": "SYS-004",
+      "name": "ingest",
+      "method": "POST",
+      "path": "/api/v1/kb/ingest",
+      "description": "Ingest new knowledge into KB. Content passes through Ingestion Quality Gate (L0-L3) before being stored. PM LRN sub-agent has restricted access (common/ and cro-internal/ only, new files only, reference type only).",
+      "x_sla": {
+        "p95_ms": 5000
+      },
+      "x_risk_level": "elevated",
+      "request": {
+        "content_type": "application/json",
+        "body": {
+          "agent_id": {
+            "type": "string",
+            "required": true,
+            "description": "Calling agent identifier"
+          },
+          "context": {
+            "type": "object",
+            "required": false,
+            "properties": {
+              "indication": {
+                "type": "string",
+                "required": false
+              },
+              "phase": {
+                "type": "string",
+                "required": false
+              },
+              "ta": {
+                "type": "string",
+                "required": false
+              },
+              "submission_type": {
+                "type": "string",
+                "required": false
+              }
+            }
+          },
+          "content": {
+            "type": "object",
+            "required": true,
+            "description": "The knowledge content to ingest",
+            "properties": {
+              "title": {
+                "type": "string",
+                "required": true,
+                "description": "Document or knowledge entry title"
+              },
+              "body": {
+                "type": "string",
+                "required": true,
+                "description": "Full content (markdown supported)"
+              },
+              "content_hash": {
+                "type": "string",
+                "required": false,
+                "description": "SHA-256 hash of the original source (for Layer 1 immutability)"
+              }
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "required": true,
+            "description": "Structured metadata for the ingested content",
+            "properties": {
+              "document_type": {
+                "type": "string",
+                "required": true,
+                "description": "Document classification"
+              },
+              "knowledge_type": {
+                "type": "string",
+                "required": true,
+                "enum": [
+                  "execution-rule",
+                  "reference",
+                  "template"
+                ],
+                "description": "Knowledge type classification"
+              },
+              "evidence_category": {
+                "type": "string",
+                "required": true,
+                "enum": [
+                  "Binding",
+                  "Authoritative",
+                  "Informative",
+                  "Experiential"
+                ]
+              },
+              "source_url": {
+                "type": "string",
+                "required": false,
+                "format": "uri",
+                "description": "Original source URL"
+              },
+              "source_citation": {
+                "type": "string",
+                "required": true,
+                "description": "Full citation (PMID, NCT, FDA document number, etc.)"
+              },
+              "facets": {
+                "type": "object",
+                "properties": {
+                  "document_type": {
+                    "type": "string"
+                  },
+                  "regulatory_pathway": {
+                    "type": "string"
+                  },
+                  "development_phase": {
+                    "type": "string"
+                  },
+                  "therapeutic_modality": {
+                    "type": "string"
+                  },
+                  "clinical_domain": {
+                    "type": "string"
+                  },
+                  "evidence_category": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "target_area": {
+            "type": "string",
+            "required": true,
+            "description": "KB storage area",
+            "enum": [
+              "common",
+              "cro_internal",
+              "sponsors"
+            ]
+          },
+          "sponsor_id": {
+            "type": "string",
+            "required": false,
+            "description": "Required if target_area = sponsors"
+          },
+          "initial_trust_assessment": {
+            "type": "object",
+            "required": false,
+            "description": "Initial trust metadata proposed by the ingesting agent",
+            "properties": {
+              "proposed_trust_level": {
+                "type": "string",
+                "enum": [
+                  "verified",
+                  "reference",
+                  "unverified"
+                ]
+              },
+              "proposed_source_tier": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "verification_notes": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "response": {
+        "success": {
+          "request_id": {
+            "type": "string"
+          },
+          "ingestion_id": {
+            "type": "string",
+            "description": "Unique ingestion record ID"
+          },
+          "doc_id": {
+            "type": "string",
+            "description": "Assigned document ID in KB"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ingested",
+              "ingested_unverified",
+              "rejected",
+              "duplicate_detected"
+            ],
+            "description": "Ingestion result status"
+          },
+          "quality_gate_results": {
+            "type": "object",
+            "description": "Results from the L0-L3 Ingestion Quality Gate",
+            "properties": {
+              "l0_source_verification": {
+                "type": "object",
+                "properties": {
+                  "passed": {
+                    "type": "boolean"
+                  },
+                  "details": {
+                    "type": "string"
+                  }
+                }
+              },
+              "l1_metadata_completeness": {
+                "type": "object",
+                "properties": {
+                  "passed": {
+                    "type": "boolean"
+                  },
+                  "missing_fields": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "l2_semantic_consistency": {
+                "type": "object",
+                "properties": {
+                  "passed": {
+                    "type": "boolean"
+                  },
+                  "conflicts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "l3_trust_assignment": {
+                "type": "object",
+                "properties": {
+                  "assigned_trust_level": {
+                    "type": "string",
+                    "enum": [
+                      "verified",
+                      "reference",
+                      "unverified"
+                    ]
+                  },
+                  "assigned_source_tier": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 4
+                  }
+                }
+              }
+            }
+          },
+          "sha256": {
+            "type": "string",
+            "description": "SHA-256 hash of the ingested content"
+          },
+          "trust_metadata": {
+            "type": "object",
+            "properties": {
+              "trust_level": {
+                "type": "string",
+                "enum": [
+                  "verified",
+                  "reference",
+                  "unverified",
+                  "stale"
+                ]
+              },
+              "verification_level": {
+                "type": "string",
+                "enum": [
+                  "L0",
+                  "L1",
+                  "L2",
+                  "L3"
+                ]
+              },
+              "source_tier": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "last_verified": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "elevated"
+            ]
+          },
+          "log_id": {
+            "type": "string"
+          }
+        },
+        "error": {
+          "$ref": "error_handling.json#/errors"
+        }
+      },
+      "access_control": {
+        "allowed_agents": [
+          "learner",
+          "lrn_sub",
+          "helix",
+          "convergence",
+          "boss"
+        ],
+        "permission_level": "L2_write",
+        "notes": "PM LRN sub-agent restricted: common/ and cro_internal/ only, new files only, reference type only. Must pass Ingestion Quality Gate."
+      }
+    }
+  ]
+}

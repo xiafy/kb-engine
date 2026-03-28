@@ -1,0 +1,1199 @@
+{
+  "$schema": "kb-engine-api-v1",
+  "agent_type": "writing",
+  "mvp_priority": "SHOULD",
+  "endpoints": [
+    {
+      "id": "WRT-001",
+      "name": "template-retrieve",
+      "method": "POST",
+      "path": "/api/v1/kb/writing/template-retrieve",
+      "description": "Given document type, therapeutic area, and phase, return the applicable document template structure with section list, guidance notes, and execution rules.",
+      "x_sla": {
+        "p95_ms": 500
+      },
+      "x_risk_level": "normal",
+      "request": {
+        "content_type": "application/json",
+        "body": {
+          "agent_id": {
+            "type": "string",
+            "required": true,
+            "description": "Calling agent identifier"
+          },
+          "context": {
+            "type": "object",
+            "required": false,
+            "properties": {
+              "indication": {
+                "type": "string",
+                "required": false
+              },
+              "phase": {
+                "type": "string",
+                "required": false
+              },
+              "ta": {
+                "type": "string",
+                "required": false
+              },
+              "submission_type": {
+                "type": "string",
+                "required": false
+              }
+            }
+          },
+          "document_type": {
+            "type": "string",
+            "required": true,
+            "description": "Type of clinical document",
+            "enum": [
+              "protocol",
+              "csr",
+              "csr_synopsis",
+              "ib",
+              "sap",
+              "icf",
+              "dsur",
+              "pbrer",
+              "ctd_summary"
+            ]
+          },
+          "ta": {
+            "type": "string",
+            "required": true,
+            "description": "Therapeutic area"
+          },
+          "phase": {
+            "type": "string",
+            "required": true,
+            "description": "Development phase",
+            "enum": [
+              "Phase_I",
+              "Phase_I_II",
+              "Phase_II",
+              "Phase_II_III",
+              "Phase_III",
+              "Phase_IV",
+              "NDA_BLA"
+            ]
+          },
+          "indication": {
+            "type": "string",
+            "required": false,
+            "description": "Specific indication for template refinement"
+          },
+          "ectd_module": {
+            "type": "string",
+            "required": false,
+            "description": "eCTD module reference (e.g., 5.3.5.1)"
+          }
+        }
+      },
+      "response": {
+        "success": {
+          "request_id": {
+            "type": "string"
+          },
+          "results": {
+            "type": "object",
+            "properties": {
+              "template_id": {
+                "type": "string",
+                "description": "Template identifier (e.g., TPL-PROTO-ONCO-P3-v1.2)"
+              },
+              "template_version": {
+                "type": "string"
+              },
+              "document_type": {
+                "type": "string"
+              },
+              "template_structure": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "section": {
+                      "type": "string",
+                      "description": "Section number (e.g., 1.0, 2.1)"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "Section title"
+                    },
+                    "guidance_notes": {
+                      "type": "string",
+                      "description": "Writing guidance for this section"
+                    },
+                    "is_mandatory": {
+                      "type": "boolean"
+                    },
+                    "typical_length": {
+                      "type": "string",
+                      "description": "Expected length range (e.g., 1-2 pages)"
+                    },
+                    "execution_rules": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Applicable execution rules for this section"
+                    },
+                    "subsections": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "section": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "guidance_notes": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "similar_precedents": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "drug_name": {
+                      "type": "string"
+                    },
+                    "document_title": {
+                      "type": "string"
+                    },
+                    "detail_ref": {
+                      "type": "string",
+                      "format": "uri"
+                    }
+                  }
+                }
+              },
+              "regulatory_requirements": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Key regulatory requirements for this document type"
+              }
+            }
+          },
+          "trust_metadata": {
+            "type": "object",
+            "properties": {
+              "trust_level": {
+                "type": "string",
+                "enum": [
+                  "verified",
+                  "reference",
+                  "unverified",
+                  "stale"
+                ]
+              },
+              "verification_level": {
+                "type": "string",
+                "enum": [
+                  "L0",
+                  "L1",
+                  "L2",
+                  "L3"
+                ]
+              },
+              "source_tier": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "last_verified": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "elevated",
+              "critical"
+            ]
+          },
+          "log_id": {
+            "type": "string"
+          }
+        },
+        "error": {
+          "$ref": "error_handling.json#/errors"
+        }
+      },
+      "access_control": {
+        "allowed_agents": [
+          "writing",
+          "learner",
+          "reviewer",
+          "helix",
+          "convergence",
+          "boss"
+        ],
+        "permission_level": "L1_read"
+      }
+    },
+    {
+      "id": "WRT-002",
+      "name": "section-reference",
+      "method": "POST",
+      "path": "/api/v1/kb/writing/section-reference",
+      "description": "Given document type and section, return writing guidelines, precedent examples, and common FDA reviewer concerns for that specific section.",
+      "x_sla": {
+        "p95_ms": 2000
+      },
+      "x_risk_level": "normal",
+      "request": {
+        "content_type": "application/json",
+        "body": {
+          "agent_id": {
+            "type": "string",
+            "required": true,
+            "description": "Calling agent identifier"
+          },
+          "context": {
+            "type": "object",
+            "required": false,
+            "properties": {
+              "indication": {
+                "type": "string",
+                "required": false
+              },
+              "phase": {
+                "type": "string",
+                "required": false
+              },
+              "ta": {
+                "type": "string",
+                "required": false
+              },
+              "submission_type": {
+                "type": "string",
+                "required": false
+              }
+            }
+          },
+          "document_type": {
+            "type": "string",
+            "required": true,
+            "description": "Document type",
+            "enum": [
+              "protocol",
+              "csr",
+              "csr_synopsis",
+              "ib",
+              "sap",
+              "icf",
+              "dsur",
+              "pbrer",
+              "ctd_summary"
+            ]
+          },
+          "section": {
+            "type": "string",
+            "required": true,
+            "description": "Section number or title (e.g., '6.0' or 'Study Design')"
+          },
+          "indication": {
+            "type": "string",
+            "required": false,
+            "description": "Indication for context-specific guidance"
+          }
+        }
+      },
+      "response": {
+        "success": {
+          "request_id": {
+            "type": "string"
+          },
+          "results": {
+            "type": "object",
+            "properties": {
+              "section_id": {
+                "type": "string"
+              },
+              "section_title": {
+                "type": "string"
+              },
+              "writing_guidelines": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Key writing guidelines for this section"
+              },
+              "content_requirements": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Required content elements per regulatory standards"
+              },
+              "precedent_examples": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "drug_name": {
+                      "type": "string"
+                    },
+                    "excerpt": {
+                      "type": "string",
+                      "description": "Relevant excerpt from the precedent document"
+                    },
+                    "context": {
+                      "type": "string"
+                    },
+                    "detail_ref": {
+                      "type": "string",
+                      "format": "uri"
+                    }
+                  }
+                }
+              },
+              "common_reviewer_concerns": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "concern": {
+                      "type": "string"
+                    },
+                    "frequency": {
+                      "type": "string",
+                      "enum": [
+                        "common",
+                        "occasional",
+                        "rare"
+                      ]
+                    },
+                    "mitigation": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "dos_and_donts": {
+                "type": "object",
+                "properties": {
+                  "do": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "dont": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "trust_metadata": {
+            "type": "object",
+            "properties": {
+              "trust_level": {
+                "type": "string",
+                "enum": [
+                  "verified",
+                  "reference",
+                  "unverified",
+                  "stale"
+                ]
+              },
+              "verification_level": {
+                "type": "string",
+                "enum": [
+                  "L0",
+                  "L1",
+                  "L2",
+                  "L3"
+                ]
+              },
+              "source_tier": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "last_verified": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "elevated",
+              "critical"
+            ]
+          },
+          "log_id": {
+            "type": "string"
+          }
+        },
+        "error": {
+          "$ref": "error_handling.json#/errors"
+        }
+      },
+      "access_control": {
+        "allowed_agents": [
+          "writing",
+          "learner",
+          "reviewer",
+          "helix",
+          "convergence",
+          "boss"
+        ],
+        "permission_level": "L1_read"
+      }
+    },
+    {
+      "id": "WRT-003",
+      "name": "ectd-format",
+      "method": "POST",
+      "path": "/api/v1/kb/writing/ectd-format",
+      "description": "Given an eCTD module, return format specifications, content expectations, common formatting errors, and compliance tips.",
+      "x_sla": {
+        "p95_ms": 500
+      },
+      "x_risk_level": "elevated",
+      "request": {
+        "content_type": "application/json",
+        "body": {
+          "agent_id": {
+            "type": "string",
+            "required": true,
+            "description": "Calling agent identifier"
+          },
+          "context": {
+            "type": "object",
+            "required": false,
+            "properties": {
+              "indication": {
+                "type": "string",
+                "required": false
+              },
+              "phase": {
+                "type": "string",
+                "required": false
+              },
+              "ta": {
+                "type": "string",
+                "required": false
+              },
+              "submission_type": {
+                "type": "string",
+                "required": false
+              }
+            }
+          },
+          "module": {
+            "type": "string",
+            "required": true,
+            "description": "eCTD module number (e.g., 1.1, 2.3, 2.5, 2.7, 5.3.5.1)"
+          },
+          "submission_type": {
+            "type": "string",
+            "required": false,
+            "enum": [
+              "NDA",
+              "BLA",
+              "ANDA",
+              "IND"
+            ],
+            "description": "Submission type for type-specific requirements"
+          }
+        }
+      },
+      "response": {
+        "success": {
+          "request_id": {
+            "type": "string"
+          },
+          "results": {
+            "type": "object",
+            "properties": {
+              "module": {
+                "type": "string"
+              },
+              "module_name": {
+                "type": "string"
+              },
+              "ectd_version": {
+                "type": "string",
+                "description": "eCTD specification version"
+              },
+              "format_specifications": {
+                "type": "object",
+                "properties": {
+                  "file_format": {
+                    "type": "string",
+                    "description": "Required file format (PDF, XML)"
+                  },
+                  "page_size": {
+                    "type": "string"
+                  },
+                  "font_requirements": {
+                    "type": "string"
+                  },
+                  "bookmarking": {
+                    "type": "string",
+                    "description": "Bookmarking requirements"
+                  },
+                  "hyperlinks": {
+                    "type": "string",
+                    "description": "Hyperlink requirements"
+                  },
+                  "pagination": {
+                    "type": "string"
+                  },
+                  "max_file_size": {
+                    "type": "string"
+                  }
+                }
+              },
+              "content_expectations": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "What FDA expects to find in this module"
+              },
+              "common_errors": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Common error description"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "rtf_risk",
+                        "deficiency",
+                        "minor"
+                      ]
+                    },
+                    "prevention": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "compliance_tips": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "trust_metadata": {
+            "type": "object",
+            "properties": {
+              "trust_level": {
+                "type": "string",
+                "enum": [
+                  "verified",
+                  "reference",
+                  "unverified",
+                  "stale"
+                ]
+              },
+              "verification_level": {
+                "type": "string",
+                "enum": [
+                  "L0",
+                  "L1",
+                  "L2",
+                  "L3"
+                ]
+              },
+              "source_tier": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "last_verified": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "elevated"
+            ]
+          },
+          "log_id": {
+            "type": "string"
+          }
+        },
+        "error": {
+          "$ref": "error_handling.json#/errors"
+        }
+      },
+      "access_control": {
+        "allowed_agents": [
+          "writing",
+          "learner",
+          "reviewer",
+          "helix",
+          "convergence",
+          "boss"
+        ],
+        "permission_level": "L1_read"
+      }
+    },
+    {
+      "id": "WRT-004",
+      "name": "language-standard",
+      "method": "POST",
+      "path": "/api/v1/kb/writing/language-standard",
+      "description": "Given a writing context, return terminology standards, canonical definitions, prohibited terms, and style requirements for regulatory documents.",
+      "x_sla": {
+        "p95_ms": 500
+      },
+      "x_risk_level": "normal",
+      "request": {
+        "content_type": "application/json",
+        "body": {
+          "agent_id": {
+            "type": "string",
+            "required": true,
+            "description": "Calling agent identifier"
+          },
+          "context": {
+            "type": "object",
+            "required": false,
+            "properties": {
+              "indication": {
+                "type": "string",
+                "required": false
+              },
+              "phase": {
+                "type": "string",
+                "required": false
+              },
+              "ta": {
+                "type": "string",
+                "required": false
+              },
+              "submission_type": {
+                "type": "string",
+                "required": false
+              }
+            }
+          },
+          "writing_context": {
+            "type": "string",
+            "required": true,
+            "description": "Context for terminology lookup (e.g., safety_reporting, efficacy_analysis, pk_parameters, study_design, informed_consent)"
+          },
+          "document_type": {
+            "type": "string",
+            "required": false,
+            "description": "Document type for document-specific standards"
+          },
+          "terms_to_check": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "Specific terms to validate against standards"
+          }
+        }
+      },
+      "response": {
+        "success": {
+          "request_id": {
+            "type": "string"
+          },
+          "results": {
+            "type": "object",
+            "properties": {
+              "canonical_terms": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "term": {
+                      "type": "string",
+                      "description": "Canonical (preferred) term"
+                    },
+                    "definition": {
+                      "type": "string",
+                      "description": "Standard definition"
+                    },
+                    "definition_source": {
+                      "type": "string",
+                      "description": "Source of the definition (e.g., ICH E6, 21 CFR 312)"
+                    },
+                    "synonyms": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Acceptable alternative terms"
+                    },
+                    "context_of_use": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "prohibited_terms": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "term": {
+                      "type": "string",
+                      "description": "Prohibited or discouraged term"
+                    },
+                    "reason": {
+                      "type": "string",
+                      "description": "Why this term should not be used"
+                    },
+                    "preferred_alternative": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "style_requirements": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Style and formatting requirements for this context"
+              },
+              "term_validation_results": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "submitted_term": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "canonical",
+                        "acceptable_synonym",
+                        "deprecated",
+                        "prohibited",
+                        "unknown"
+                      ]
+                    },
+                    "canonical_form": {
+                      "type": "string"
+                    },
+                    "note": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "description": "Validation results for terms_to_check if provided"
+              }
+            }
+          },
+          "trust_metadata": {
+            "type": "object",
+            "properties": {
+              "trust_level": {
+                "type": "string",
+                "enum": [
+                  "verified",
+                  "reference",
+                  "unverified",
+                  "stale"
+                ]
+              },
+              "verification_level": {
+                "type": "string",
+                "enum": [
+                  "L0",
+                  "L1",
+                  "L2",
+                  "L3"
+                ]
+              },
+              "source_tier": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "last_verified": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "elevated",
+              "critical"
+            ]
+          },
+          "log_id": {
+            "type": "string"
+          }
+        },
+        "error": {
+          "$ref": "error_handling.json#/errors"
+        }
+      },
+      "access_control": {
+        "allowed_agents": [
+          "writing",
+          "regulatory",
+          "dm_crf",
+          "strategy",
+          "statistics",
+          "learner",
+          "reviewer",
+          "helix",
+          "convergence",
+          "boss"
+        ],
+        "permission_level": "L1_read"
+      }
+    },
+    {
+      "id": "WRT-005",
+      "name": "similar-document",
+      "method": "POST",
+      "path": "/api/v1/kb/writing/similar-document",
+      "description": "Given document type and indication, return similar document fragments from approved submissions for reference and benchmarking.",
+      "x_sla": {
+        "p95_ms": 2000
+      },
+      "x_risk_level": "normal",
+      "request": {
+        "content_type": "application/json",
+        "body": {
+          "agent_id": {
+            "type": "string",
+            "required": true,
+            "description": "Calling agent identifier"
+          },
+          "context": {
+            "type": "object",
+            "required": false,
+            "properties": {
+              "indication": {
+                "type": "string",
+                "required": false
+              },
+              "phase": {
+                "type": "string",
+                "required": false
+              },
+              "ta": {
+                "type": "string",
+                "required": false
+              },
+              "submission_type": {
+                "type": "string",
+                "required": false
+              }
+            }
+          },
+          "document_type": {
+            "type": "string",
+            "required": true,
+            "description": "Document type to find similar examples",
+            "enum": [
+              "protocol",
+              "csr",
+              "csr_synopsis",
+              "ib",
+              "sap",
+              "icf",
+              "dsur",
+              "pbrer",
+              "ctd_summary"
+            ]
+          },
+          "indication": {
+            "type": "string",
+            "required": true,
+            "description": "Indication for similarity matching"
+          },
+          "section": {
+            "type": "string",
+            "required": false,
+            "description": "Specific section to retrieve (if omitted, returns full document summary)"
+          },
+          "drug_class": {
+            "type": "string",
+            "required": false,
+            "description": "Drug class for better matching"
+          },
+          "limit": {
+            "type": "integer",
+            "required": false,
+            "description": "Maximum number of similar documents to return",
+            "default": 5
+          }
+        }
+      },
+      "response": {
+        "success": {
+          "request_id": {
+            "type": "string"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "document_id": {
+                  "type": "string"
+                },
+                "drug_name": {
+                  "type": "string"
+                },
+                "document_type": {
+                  "type": "string"
+                },
+                "indication": {
+                  "type": "string"
+                },
+                "similarity_score": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "excerpt": {
+                  "type": "string",
+                  "description": "Relevant excerpt or section content"
+                },
+                "section_matched": {
+                  "type": "string",
+                  "description": "Which section matched"
+                },
+                "approval_year": {
+                  "type": "integer"
+                },
+                "detail_ref": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "trust_metadata": {
+                  "type": "object",
+                  "properties": {
+                    "trust_level": {
+                      "type": "string",
+                      "enum": [
+                        "verified",
+                        "reference",
+                        "unverified",
+                        "stale"
+                      ]
+                    },
+                    "verification_level": {
+                      "type": "string",
+                      "enum": [
+                        "L0",
+                        "L1",
+                        "L2",
+                        "L3"
+                      ]
+                    },
+                    "source_tier": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 4
+                    },
+                    "last_verified": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "elevated",
+              "critical"
+            ]
+          },
+          "log_id": {
+            "type": "string"
+          },
+          "trust_metadata": {
+            "trust_level": {
+              "type": "string",
+              "enum": [
+                "verified",
+                "reference",
+                "unverified",
+                "stale"
+              ],
+              "description": "Discrete trust level for MVP"
+            },
+            "verification_level": {
+              "type": "string",
+              "enum": [
+                "L0",
+                "L1",
+                "L2",
+                "L3"
+              ],
+              "description": "Highest verification level passed"
+            },
+            "source_tier": {
+              "type": "integer",
+              "enum": [
+                1,
+                2,
+                3,
+                4
+              ],
+              "description": "Evidence tier (1=Binding, 4=Experiential)"
+            },
+            "last_verified": {
+              "type": "string",
+              "format": "date-time",
+              "description": "ISO8601 timestamp of last verification"
+            }
+          }
+        },
+        "error": {
+          "$ref": "error_handling.json#/errors"
+        }
+      },
+      "access_control": {
+        "allowed_agents": [
+          "writing",
+          "learner",
+          "reviewer",
+          "helix",
+          "convergence",
+          "boss"
+        ],
+        "permission_level": "L1_read"
+      }
+    }
+  ]
+}

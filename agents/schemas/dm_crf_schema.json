@@ -1,0 +1,1181 @@
+{
+  "$schema": "kb-engine-api-v1",
+  "agent_type": "dm_crf",
+  "mvp_priority": "MUST",
+  "endpoints": [
+    {
+      "id": "DM-001",
+      "name": "execution-rules",
+      "method": "POST",
+      "path": "/api/v1/kb/dm/execution-rules",
+      "description": "Given task type, phase, and therapeutic area, return applicable Execution Rules with mandatory injection instruction. Rules MUST be injected into Agent system prompt.",
+      "x_sla": {
+        "p95_ms": 500
+      },
+      "x_risk_level": "normal",
+      "request": {
+        "content_type": "application/json",
+        "body": {
+          "agent_id": {
+            "type": "string",
+            "required": true,
+            "description": "Calling agent identifier"
+          },
+          "context": {
+            "type": "object",
+            "required": false,
+            "properties": {
+              "indication": {
+                "type": "string",
+                "required": false
+              },
+              "phase": {
+                "type": "string",
+                "required": false
+              },
+              "ta": {
+                "type": "string",
+                "required": false
+              },
+              "submission_type": {
+                "type": "string",
+                "required": false
+              }
+            }
+          },
+          "task_type": {
+            "type": "string",
+            "required": true,
+            "description": "DM task type triggering rule lookup",
+            "enum": [
+              "crf_design",
+              "data_validation",
+              "coding",
+              "query_management",
+              "database_lock"
+            ]
+          },
+          "phase": {
+            "type": "string",
+            "required": true,
+            "description": "Clinical trial phase",
+            "enum": [
+              "Phase_I",
+              "Phase_I_II",
+              "Phase_II",
+              "Phase_II_III",
+              "Phase_III",
+              "Phase_IV"
+            ]
+          },
+          "ta": {
+            "type": "string",
+            "required": true,
+            "description": "Therapeutic area (e.g., Oncology, CNS, Cardiology)"
+          },
+          "therapeutic_modality": {
+            "type": "string",
+            "required": false,
+            "description": "Drug modality for modality-specific rules"
+          }
+        }
+      },
+      "response": {
+        "success": {
+          "request_id": {
+            "type": "string"
+          },
+          "results": {
+            "type": "object",
+            "properties": {
+              "mandatory_rules": {
+                "type": "array",
+                "description": "Rules that MUST be followed — injected into Agent prompt",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "rule_id": {
+                      "type": "string",
+                      "description": "Rule identifier (e.g., R1, R3)"
+                    },
+                    "rule": {
+                      "type": "string",
+                      "description": "Full rule text"
+                    },
+                    "source": {
+                      "type": "string",
+                      "description": "Source reference (e.g., CDASHIG v2.2 Section 4.3)"
+                    },
+                    "knowledge_type": {
+                      "type": "string",
+                      "enum": [
+                        "execution-rule"
+                      ],
+                      "description": "Always execution-rule"
+                    },
+                    "injection_priority": {
+                      "type": "integer",
+                      "description": "Priority order for prompt injection (1 = highest)"
+                    },
+                    "trust_metadata": {
+                      "type": "object",
+                      "properties": {
+                        "trust_level": {
+                          "type": "string",
+                          "enum": [
+                            "verified",
+                            "reference",
+                            "unverified",
+                            "stale"
+                          ]
+                        },
+                        "verification_level": {
+                          "type": "string",
+                          "enum": [
+                            "L0",
+                            "L1",
+                            "L2",
+                            "L3"
+                          ]
+                        },
+                        "source_tier": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 4
+                        },
+                        "last_verified": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "recommended_rules": {
+                "type": "array",
+                "description": "Rules that SHOULD be followed unless Protocol overrides",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "rule_id": {
+                      "type": "string"
+                    },
+                    "rule": {
+                      "type": "string"
+                    },
+                    "source": {
+                      "type": "string"
+                    },
+                    "knowledge_type": {
+                      "type": "string",
+                      "enum": [
+                        "execution-rule"
+                      ]
+                    }
+                  }
+                }
+              },
+              "injection_instruction": {
+                "type": "string",
+                "description": "Mandatory instruction text — Agent must inject all mandatory_rules into system prompt"
+              }
+            }
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "elevated",
+              "critical"
+            ]
+          },
+          "log_id": {
+            "type": "string"
+          },
+          "trust_metadata": {
+            "trust_level": {
+              "type": "string",
+              "enum": [
+                "verified",
+                "reference",
+                "unverified",
+                "stale"
+              ],
+              "description": "Discrete trust level for MVP"
+            },
+            "verification_level": {
+              "type": "string",
+              "enum": [
+                "L0",
+                "L1",
+                "L2",
+                "L3"
+              ],
+              "description": "Highest verification level passed"
+            },
+            "source_tier": {
+              "type": "integer",
+              "enum": [
+                1,
+                2,
+                3,
+                4
+              ],
+              "description": "Evidence tier (1=Binding, 4=Experiential)"
+            },
+            "last_verified": {
+              "type": "string",
+              "format": "date-time",
+              "description": "ISO8601 timestamp of last verification"
+            }
+          }
+        },
+        "error": {
+          "$ref": "error_handling.json#/errors"
+        }
+      },
+      "access_control": {
+        "allowed_agents": [
+          "dm_crf",
+          "learner",
+          "reviewer",
+          "helix",
+          "convergence",
+          "boss"
+        ],
+        "permission_level": "L1_read"
+      }
+    },
+    {
+      "id": "DM-002",
+      "name": "crf-template",
+      "method": "POST",
+      "path": "/api/v1/kb/dm/crf-template",
+      "description": "Given trial phase, therapeutic area, and study type, return CRF template structure with form list, visit schedule skeleton, and domain mappings.",
+      "x_sla": {
+        "p95_ms": 500
+      },
+      "x_risk_level": "normal",
+      "request": {
+        "content_type": "application/json",
+        "body": {
+          "agent_id": {
+            "type": "string",
+            "required": true,
+            "description": "Calling agent identifier"
+          },
+          "context": {
+            "type": "object",
+            "required": false,
+            "properties": {
+              "indication": {
+                "type": "string",
+                "required": false
+              },
+              "phase": {
+                "type": "string",
+                "required": false
+              },
+              "ta": {
+                "type": "string",
+                "required": false
+              },
+              "submission_type": {
+                "type": "string",
+                "required": false
+              }
+            }
+          },
+          "trial_phase": {
+            "type": "string",
+            "required": true,
+            "description": "Clinical trial phase",
+            "enum": [
+              "Phase_I",
+              "Phase_I_II",
+              "Phase_II",
+              "Phase_II_III",
+              "Phase_III",
+              "Phase_IV"
+            ]
+          },
+          "ta": {
+            "type": "string",
+            "required": true,
+            "description": "Therapeutic area"
+          },
+          "study_type": {
+            "type": "string",
+            "required": true,
+            "description": "Study design type",
+            "enum": [
+              "interventional",
+              "observational",
+              "expanded_access",
+              "bioequivalence"
+            ]
+          },
+          "indication": {
+            "type": "string",
+            "required": false,
+            "description": "Specific indication for template refinement"
+          }
+        }
+      },
+      "response": {
+        "success": {
+          "request_id": {
+            "type": "string"
+          },
+          "results": {
+            "type": "object",
+            "properties": {
+              "template_id": {
+                "type": "string",
+                "description": "CRF template identifier"
+              },
+              "template_version": {
+                "type": "string",
+                "description": "Template version (Phase × TA × StudyType)"
+              },
+              "form_list": {
+                "type": "array",
+                "description": "Ordered list of CRF forms",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "form_id": {
+                      "type": "string"
+                    },
+                    "form_name": {
+                      "type": "string"
+                    },
+                    "cdash_domain": {
+                      "type": "string",
+                      "description": "CDASH domain mapping (e.g., DM, VS, AE)"
+                    },
+                    "visit_types": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Applicable visit types (screening, baseline, treatment, follow_up, unscheduled)"
+                    },
+                    "is_mandatory": {
+                      "type": "boolean"
+                    },
+                    "field_count": {
+                      "type": "integer",
+                      "description": "Number of fields in this form"
+                    }
+                  }
+                }
+              },
+              "visit_schedule_skeleton": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "visit_name": {
+                      "type": "string"
+                    },
+                    "visit_type": {
+                      "type": "string"
+                    },
+                    "forms_included": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "window_days": {
+                      "type": "string",
+                      "description": "Visit window (e.g., ±3 days)"
+                    }
+                  }
+                }
+              },
+              "phase_specific_notes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Phase-specific simplification or extension notes"
+              }
+            }
+          },
+          "trust_metadata": {
+            "type": "object",
+            "properties": {
+              "trust_level": {
+                "type": "string",
+                "enum": [
+                  "verified",
+                  "reference",
+                  "unverified",
+                  "stale"
+                ]
+              },
+              "verification_level": {
+                "type": "string",
+                "enum": [
+                  "L0",
+                  "L1",
+                  "L2",
+                  "L3"
+                ]
+              },
+              "source_tier": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "last_verified": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "elevated",
+              "critical"
+            ]
+          },
+          "log_id": {
+            "type": "string"
+          }
+        },
+        "error": {
+          "$ref": "error_handling.json#/errors"
+        }
+      },
+      "access_control": {
+        "allowed_agents": [
+          "dm_crf",
+          "learner",
+          "reviewer",
+          "helix",
+          "convergence",
+          "boss"
+        ],
+        "permission_level": "L1_read"
+      }
+    },
+    {
+      "id": "DM-003",
+      "name": "cdashig-query",
+      "method": "POST",
+      "path": "/api/v1/kb/dm/cdashig-query",
+      "description": "Given a CDASH domain and optional variable name, return CDASHIG standard definitions, codelists, and mapping notes.",
+      "x_sla": {
+        "p95_ms": 500
+      },
+      "x_risk_level": "normal",
+      "request": {
+        "content_type": "application/json",
+        "body": {
+          "agent_id": {
+            "type": "string",
+            "required": true,
+            "description": "Calling agent identifier"
+          },
+          "context": {
+            "type": "object",
+            "required": false,
+            "properties": {
+              "indication": {
+                "type": "string",
+                "required": false
+              },
+              "phase": {
+                "type": "string",
+                "required": false
+              },
+              "ta": {
+                "type": "string",
+                "required": false
+              },
+              "submission_type": {
+                "type": "string",
+                "required": false
+              }
+            }
+          },
+          "domain": {
+            "type": "string",
+            "required": true,
+            "description": "CDASH domain code (e.g., DM, VS, AE, CM, MH, LB)"
+          },
+          "variable": {
+            "type": "string",
+            "required": false,
+            "description": "Specific variable name within the domain (e.g., AETERM, VSORRES)"
+          }
+        }
+      },
+      "response": {
+        "success": {
+          "request_id": {
+            "type": "string"
+          },
+          "results": {
+            "type": "object",
+            "properties": {
+              "domain": {
+                "type": "string",
+                "description": "CDASH domain code"
+              },
+              "domain_full_name": {
+                "type": "string",
+                "description": "Full domain name (e.g., Demographics, Adverse Events)"
+              },
+              "cdashig_version": {
+                "type": "string",
+                "description": "CDASHIG version referenced"
+              },
+              "variables": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "variable_name": {
+                      "type": "string",
+                      "description": "Variable name (e.g., AETERM)"
+                    },
+                    "label": {
+                      "type": "string",
+                      "description": "Variable label"
+                    },
+                    "definition": {
+                      "type": "string",
+                      "description": "Standard definition from CDASHIG"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "enum": [
+                        "Char",
+                        "Num",
+                        "Date",
+                        "DateTime"
+                      ],
+                      "description": "Data type"
+                    },
+                    "core": {
+                      "type": "string",
+                      "enum": [
+                        "Req",
+                        "Exp",
+                        "Perm"
+                      ],
+                      "description": "CDASH Core designation"
+                    },
+                    "codelist": {
+                      "type": "object",
+                      "description": "Controlled terminology codelist if applicable",
+                      "properties": {
+                        "codelist_name": {
+                          "type": "string"
+                        },
+                        "codelist_code": {
+                          "type": "string"
+                        },
+                        "terms": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "code": {
+                                "type": "string"
+                              },
+                              "decode": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "sdtm_mapping": {
+                      "type": "string",
+                      "description": "Corresponding SDTM variable for mapping"
+                    },
+                    "collection_notes": {
+                      "type": "string",
+                      "description": "Notes on data collection best practices"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "trust_metadata": {
+            "type": "object",
+            "properties": {
+              "trust_level": {
+                "type": "string",
+                "enum": [
+                  "verified",
+                  "reference",
+                  "unverified",
+                  "stale"
+                ]
+              },
+              "verification_level": {
+                "type": "string",
+                "enum": [
+                  "L0",
+                  "L1",
+                  "L2",
+                  "L3"
+                ]
+              },
+              "source_tier": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "last_verified": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "elevated",
+              "critical"
+            ]
+          },
+          "log_id": {
+            "type": "string"
+          }
+        },
+        "error": {
+          "$ref": "error_handling.json#/errors"
+        }
+      },
+      "access_control": {
+        "allowed_agents": [
+          "dm_crf",
+          "learner",
+          "reviewer",
+          "helix",
+          "convergence",
+          "boss"
+        ],
+        "permission_level": "L1_read"
+      }
+    },
+    {
+      "id": "DM-004",
+      "name": "form-rules",
+      "method": "POST",
+      "path": "/api/v1/kb/dm/form-rules",
+      "description": "Given form type and trial phase, return form merge/split rules, ordering constraints, and phase-specific simplifications.",
+      "x_sla": {
+        "p95_ms": 500
+      },
+      "x_risk_level": "normal",
+      "request": {
+        "content_type": "application/json",
+        "body": {
+          "agent_id": {
+            "type": "string",
+            "required": true,
+            "description": "Calling agent identifier"
+          },
+          "context": {
+            "type": "object",
+            "required": false,
+            "properties": {
+              "indication": {
+                "type": "string",
+                "required": false
+              },
+              "phase": {
+                "type": "string",
+                "required": false
+              },
+              "ta": {
+                "type": "string",
+                "required": false
+              },
+              "submission_type": {
+                "type": "string",
+                "required": false
+              }
+            }
+          },
+          "form_type": {
+            "type": "string",
+            "required": true,
+            "description": "CRF form type (e.g., screening, baseline, adverse_event, concomitant_medication, vital_signs, log_visit)"
+          },
+          "trial_phase": {
+            "type": "string",
+            "required": true,
+            "description": "Clinical trial phase",
+            "enum": [
+              "Phase_I",
+              "Phase_I_II",
+              "Phase_II",
+              "Phase_II_III",
+              "Phase_III",
+              "Phase_IV"
+            ]
+          }
+        }
+      },
+      "response": {
+        "success": {
+          "request_id": {
+            "type": "string"
+          },
+          "results": {
+            "type": "object",
+            "properties": {
+              "merge_rules": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "rule_id": {
+                      "type": "string"
+                    },
+                    "rule": {
+                      "type": "string",
+                      "description": "Merge rule description (e.g., Screening + Baseline can merge in Phase I)"
+                    },
+                    "applicable_phases": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "condition": {
+                      "type": "string",
+                      "description": "Condition for merge applicability"
+                    }
+                  }
+                }
+              },
+              "split_rules": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "rule_id": {
+                      "type": "string"
+                    },
+                    "rule": {
+                      "type": "string"
+                    },
+                    "applicable_phases": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "condition": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "ordering_constraints": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "rule_id": {
+                      "type": "string"
+                    },
+                    "rule": {
+                      "type": "string",
+                      "description": "Ordering rule (e.g., LOG visit must be last in form sequence)"
+                    },
+                    "enforcement": {
+                      "type": "string",
+                      "enum": [
+                        "mandatory",
+                        "recommended"
+                      ]
+                    }
+                  }
+                }
+              },
+              "phase_simplifications": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Phase-specific simplification notes"
+              }
+            }
+          },
+          "trust_metadata": {
+            "type": "object",
+            "properties": {
+              "trust_level": {
+                "type": "string",
+                "enum": [
+                  "verified",
+                  "reference",
+                  "unverified",
+                  "stale"
+                ]
+              },
+              "verification_level": {
+                "type": "string",
+                "enum": [
+                  "L0",
+                  "L1",
+                  "L2",
+                  "L3"
+                ]
+              },
+              "source_tier": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "last_verified": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "elevated",
+              "critical"
+            ]
+          },
+          "log_id": {
+            "type": "string"
+          }
+        },
+        "error": {
+          "$ref": "error_handling.json#/errors"
+        }
+      },
+      "access_control": {
+        "allowed_agents": [
+          "dm_crf",
+          "learner",
+          "reviewer",
+          "helix",
+          "convergence",
+          "boss"
+        ],
+        "permission_level": "L1_read"
+      }
+    },
+    {
+      "id": "DM-005",
+      "name": "data-dictionary",
+      "method": "POST",
+      "path": "/api/v1/kb/dm/data-dictionary",
+      "description": "Given a CDASH domain, return the complete variable list with data types, controlled terminology, and validation rules.",
+      "x_sla": {
+        "p95_ms": 500
+      },
+      "x_risk_level": "normal",
+      "request": {
+        "content_type": "application/json",
+        "body": {
+          "agent_id": {
+            "type": "string",
+            "required": true,
+            "description": "Calling agent identifier"
+          },
+          "context": {
+            "type": "object",
+            "required": false,
+            "properties": {
+              "indication": {
+                "type": "string",
+                "required": false
+              },
+              "phase": {
+                "type": "string",
+                "required": false
+              },
+              "ta": {
+                "type": "string",
+                "required": false
+              },
+              "submission_type": {
+                "type": "string",
+                "required": false
+              }
+            }
+          },
+          "domain": {
+            "type": "string",
+            "required": true,
+            "description": "CDASH domain code (e.g., DM, VS, AE, CM, MH, LB, EG, PE)"
+          }
+        }
+      },
+      "response": {
+        "success": {
+          "request_id": {
+            "type": "string"
+          },
+          "results": {
+            "type": "object",
+            "properties": {
+              "domain": {
+                "type": "string"
+              },
+              "domain_full_name": {
+                "type": "string"
+              },
+              "standard_version": {
+                "type": "string",
+                "description": "CDASHIG version"
+              },
+              "variables": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "variable_name": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "enum": [
+                        "Char",
+                        "Num",
+                        "Date",
+                        "DateTime"
+                      ]
+                    },
+                    "length": {
+                      "type": "integer",
+                      "description": "Maximum field length"
+                    },
+                    "core": {
+                      "type": "string",
+                      "enum": [
+                        "Req",
+                        "Exp",
+                        "Perm"
+                      ]
+                    },
+                    "controlled_terminology": {
+                      "type": "object",
+                      "properties": {
+                        "codelist_name": {
+                          "type": "string"
+                        },
+                        "codelist_oid": {
+                          "type": "string"
+                        },
+                        "extensible": {
+                          "type": "boolean",
+                          "description": "Whether the codelist allows sponsor additions"
+                        },
+                        "terms": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "code": {
+                                "type": "string"
+                              },
+                              "decode": {
+                                "type": "string"
+                              },
+                              "preferred_term": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "validation_rules": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Data validation rules for this variable"
+                    },
+                    "sdtm_target": {
+                      "type": "string",
+                      "description": "Target SDTM variable for downstream mapping"
+                    }
+                  }
+                }
+              },
+              "total_variables": {
+                "type": "integer"
+              }
+            }
+          },
+          "trust_metadata": {
+            "type": "object",
+            "properties": {
+              "trust_level": {
+                "type": "string",
+                "enum": [
+                  "verified",
+                  "reference",
+                  "unverified",
+                  "stale"
+                ]
+              },
+              "verification_level": {
+                "type": "string",
+                "enum": [
+                  "L0",
+                  "L1",
+                  "L2",
+                  "L3"
+                ]
+              },
+              "source_tier": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "last_verified": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "coverage_statement": {
+            "type": "object",
+            "properties": {
+              "data_completeness": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "known_gaps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "elevated",
+              "critical"
+            ]
+          },
+          "log_id": {
+            "type": "string"
+          }
+        },
+        "error": {
+          "$ref": "error_handling.json#/errors"
+        }
+      },
+      "access_control": {
+        "allowed_agents": [
+          "dm_crf",
+          "learner",
+          "reviewer",
+          "helix",
+          "convergence",
+          "boss"
+        ],
+        "permission_level": "L1_read"
+      }
+    }
+  ]
+}
