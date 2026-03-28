@@ -63,12 +63,16 @@
             "required": true,
             "description": "Regulatory submission type",
             "enum": [
+              "IND",
               "NDA",
+              "sNDA",
               "BLA",
+              "sBLA",
+              "ANDA",
               "510k",
               "PMA",
               "EUA",
-              "ANDA"
+              "De_Novo"
             ]
           },
           "context_date": {
@@ -161,15 +165,32 @@
                 },
                 "trust_metadata": {
                   "type": "object",
+                  "description": "Trust metadata. verification_status = knowledge validation state; freshness_status = temporal currency.",
                   "properties": {
-                    "trust_level": {
+                    "verification_status": {
                       "type": "string",
                       "enum": [
                         "verified",
                         "reference",
-                        "unverified",
-                        "stale"
-                      ]
+                        "unverified"
+                      ],
+                      "description": "verified (L2+ confirmed), reference (L1 auto-verified), unverified (L0 only)"
+                    },
+                    "freshness_status": {
+                      "type": "string",
+                      "enum": [
+                        "fresh",
+                        "aging",
+                        "stale",
+                        "expired"
+                      ],
+                      "description": "fresh (<max_days), aging (approaching review date), stale (past review date), expired (exceeds max_days)"
+                    },
+                    "source_tier": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 4,
+                      "description": "1=Binding, 2=Authoritative, 3=Informative, 4=Experiential"
                     },
                     "verification_level": {
                       "type": "string",
@@ -178,16 +199,13 @@
                         "L1",
                         "L2",
                         "L3"
-                      ]
-                    },
-                    "source_tier": {
-                      "type": "integer",
-                      "minimum": 1,
-                      "maximum": 4
+                      ],
+                      "description": "L0=source hash, L1=auto-rules, L2=human/cross-source, L3=external audit"
                     },
                     "last_verified": {
                       "type": "string",
-                      "format": "date-time"
+                      "format": "date",
+                      "description": "Date of last verification"
                     }
                   }
                 },
@@ -201,20 +219,44 @@
           },
           "coverage_statement": {
             "type": "object",
+            "description": "Data completeness declaration.",
             "properties": {
-              "data_completeness": {
+              "description": {
                 "type": "string",
-                "description": "Coverage summary"
+                "description": "Human-readable coverage description"
               },
-              "last_updated": {
+              "coverage_ratio": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Quantified coverage (0-1)"
+              },
+              "total_available": {
+                "type": "integer",
+                "description": "Relevant items in KB"
+              },
+              "total_estimated": {
+                "type": "integer",
+                "description": "Estimated total relevant items"
+              },
+              "confidence": {
                 "type": "string",
-                "format": "date-time"
+                "enum": [
+                  "exact",
+                  "estimated",
+                  "unknown"
+                ]
               },
               "known_gaps": {
                 "type": "array",
                 "items": {
                   "type": "string"
-                }
+                },
+                "description": "Known data gaps"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date"
               }
             }
           },
@@ -232,57 +274,55 @@
             "description": "Retrieval log identifier for audit trail"
           },
           "trust_metadata": {
-            "trust_level": {
-              "type": "string",
-              "enum": [
-                "verified",
-                "reference",
-                "unverified",
-                "stale"
-              ],
-              "description": "Discrete trust level for MVP"
-            },
-            "verification_level": {
-              "type": "string",
-              "enum": [
-                "L0",
-                "L1",
-                "L2",
-                "L3"
-              ],
-              "description": "Highest verification level passed"
-            },
-            "source_tier": {
-              "type": "integer",
-              "enum": [
-                1,
-                2,
-                3,
-                4
-              ],
-              "description": "Evidence tier (1=Binding, 4=Experiential)"
-            },
-            "last_verified": {
-              "type": "string",
-              "format": "date-time",
-              "description": "ISO8601 timestamp of last verification"
+            "type": "object",
+            "description": "Trust metadata. verification_status = knowledge validation state; freshness_status = temporal currency.",
+            "properties": {
+              "verification_status": {
+                "type": "string",
+                "enum": [
+                  "verified",
+                  "reference",
+                  "unverified"
+                ],
+                "description": "verified (L2+ confirmed), reference (L1 auto-verified), unverified (L0 only)"
+              },
+              "freshness_status": {
+                "type": "string",
+                "enum": [
+                  "fresh",
+                  "aging",
+                  "stale",
+                  "expired"
+                ],
+                "description": "fresh (<max_days), aging (approaching review date), stale (past review date), expired (exceeds max_days)"
+              },
+              "source_tier": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4,
+                "description": "1=Binding, 2=Authoritative, 3=Informative, 4=Experiential"
+              },
+              "verification_level": {
+                "type": "string",
+                "enum": [
+                  "L0",
+                  "L1",
+                  "L2",
+                  "L3"
+                ],
+                "description": "L0=source hash, L1=auto-rules, L2=human/cross-source, L3=external audit"
+              },
+              "last_verified": {
+                "type": "string",
+                "format": "date",
+                "description": "Date of last verification"
+              }
             }
           }
         },
         "error": {
           "$ref": "error_handling.json#/errors"
         }
-      },
-      "access_control": {
-        "allowed_agents": [
-          "regulatory",
-          "learner",
-          "reviewer",
-          "helix",
-          "convergence",
-          "boss"
-        ],
-        "permission_level": "L1_read"
       }
     },
     {
@@ -426,15 +466,32 @@
                 },
                 "trust_metadata": {
                   "type": "object",
+                  "description": "Trust metadata. verification_status = knowledge validation state; freshness_status = temporal currency.",
                   "properties": {
-                    "trust_level": {
+                    "verification_status": {
                       "type": "string",
                       "enum": [
                         "verified",
                         "reference",
-                        "unverified",
-                        "stale"
-                      ]
+                        "unverified"
+                      ],
+                      "description": "verified (L2+ confirmed), reference (L1 auto-verified), unverified (L0 only)"
+                    },
+                    "freshness_status": {
+                      "type": "string",
+                      "enum": [
+                        "fresh",
+                        "aging",
+                        "stale",
+                        "expired"
+                      ],
+                      "description": "fresh (<max_days), aging (approaching review date), stale (past review date), expired (exceeds max_days)"
+                    },
+                    "source_tier": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 4,
+                      "description": "1=Binding, 2=Authoritative, 3=Informative, 4=Experiential"
                     },
                     "verification_level": {
                       "type": "string",
@@ -443,16 +500,13 @@
                         "L1",
                         "L2",
                         "L3"
-                      ]
-                    },
-                    "source_tier": {
-                      "type": "integer",
-                      "minimum": 1,
-                      "maximum": 4
+                      ],
+                      "description": "L0=source hash, L1=auto-rules, L2=human/cross-source, L3=external audit"
                     },
                     "last_verified": {
                       "type": "string",
-                      "format": "date-time"
+                      "format": "date",
+                      "description": "Date of last verification"
                     }
                   }
                 },
@@ -465,19 +519,44 @@
           },
           "coverage_statement": {
             "type": "object",
+            "description": "Data completeness declaration.",
             "properties": {
-              "data_completeness": {
-                "type": "string"
-              },
-              "last_updated": {
+              "description": {
                 "type": "string",
-                "format": "date-time"
+                "description": "Human-readable coverage description"
+              },
+              "coverage_ratio": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Quantified coverage (0-1)"
+              },
+              "total_available": {
+                "type": "integer",
+                "description": "Relevant items in KB"
+              },
+              "total_estimated": {
+                "type": "integer",
+                "description": "Estimated total relevant items"
+              },
+              "confidence": {
+                "type": "string",
+                "enum": [
+                  "exact",
+                  "estimated",
+                  "unknown"
+                ]
               },
               "known_gaps": {
                 "type": "array",
                 "items": {
                   "type": "string"
-                }
+                },
+                "description": "Known data gaps"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date"
               }
             }
           },
@@ -493,57 +572,55 @@
             "type": "string"
           },
           "trust_metadata": {
-            "trust_level": {
-              "type": "string",
-              "enum": [
-                "verified",
-                "reference",
-                "unverified",
-                "stale"
-              ],
-              "description": "Discrete trust level for MVP"
-            },
-            "verification_level": {
-              "type": "string",
-              "enum": [
-                "L0",
-                "L1",
-                "L2",
-                "L3"
-              ],
-              "description": "Highest verification level passed"
-            },
-            "source_tier": {
-              "type": "integer",
-              "enum": [
-                1,
-                2,
-                3,
-                4
-              ],
-              "description": "Evidence tier (1=Binding, 4=Experiential)"
-            },
-            "last_verified": {
-              "type": "string",
-              "format": "date-time",
-              "description": "ISO8601 timestamp of last verification"
+            "type": "object",
+            "description": "Trust metadata. verification_status = knowledge validation state; freshness_status = temporal currency.",
+            "properties": {
+              "verification_status": {
+                "type": "string",
+                "enum": [
+                  "verified",
+                  "reference",
+                  "unverified"
+                ],
+                "description": "verified (L2+ confirmed), reference (L1 auto-verified), unverified (L0 only)"
+              },
+              "freshness_status": {
+                "type": "string",
+                "enum": [
+                  "fresh",
+                  "aging",
+                  "stale",
+                  "expired"
+                ],
+                "description": "fresh (<max_days), aging (approaching review date), stale (past review date), expired (exceeds max_days)"
+              },
+              "source_tier": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4,
+                "description": "1=Binding, 2=Authoritative, 3=Informative, 4=Experiential"
+              },
+              "verification_level": {
+                "type": "string",
+                "enum": [
+                  "L0",
+                  "L1",
+                  "L2",
+                  "L3"
+                ],
+                "description": "L0=source hash, L1=auto-rules, L2=human/cross-source, L3=external audit"
+              },
+              "last_verified": {
+                "type": "string",
+                "format": "date",
+                "description": "Date of last verification"
+              }
             }
           }
         },
         "error": {
           "$ref": "error_handling.json#/errors"
         }
-      },
-      "access_control": {
-        "allowed_agents": [
-          "regulatory",
-          "learner",
-          "reviewer",
-          "helix",
-          "convergence",
-          "boss"
-        ],
-        "permission_level": "L1_read"
       }
     },
     {
@@ -599,10 +676,16 @@
             "required": true,
             "description": "Submission type to validate against",
             "enum": [
+              "IND",
               "NDA",
+              "sNDA",
               "BLA",
+              "sBLA",
               "ANDA",
-              "IND"
+              "510k",
+              "PMA",
+              "EUA",
+              "De_Novo"
             ]
           },
           "indication": {
@@ -673,15 +756,32 @@
           },
           "trust_metadata": {
             "type": "object",
+            "description": "Trust metadata. verification_status = knowledge validation state; freshness_status = temporal currency.",
             "properties": {
-              "trust_level": {
+              "verification_status": {
                 "type": "string",
                 "enum": [
                   "verified",
                   "reference",
-                  "unverified",
-                  "stale"
-                ]
+                  "unverified"
+                ],
+                "description": "verified (L2+ confirmed), reference (L1 auto-verified), unverified (L0 only)"
+              },
+              "freshness_status": {
+                "type": "string",
+                "enum": [
+                  "fresh",
+                  "aging",
+                  "stale",
+                  "expired"
+                ],
+                "description": "fresh (<max_days), aging (approaching review date), stale (past review date), expired (exceeds max_days)"
+              },
+              "source_tier": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4,
+                "description": "1=Binding, 2=Authoritative, 3=Informative, 4=Experiential"
               },
               "verification_level": {
                 "type": "string",
@@ -690,34 +790,56 @@
                   "L1",
                   "L2",
                   "L3"
-                ]
-              },
-              "source_tier": {
-                "type": "integer",
-                "minimum": 1,
-                "maximum": 4
+                ],
+                "description": "L0=source hash, L1=auto-rules, L2=human/cross-source, L3=external audit"
               },
               "last_verified": {
                 "type": "string",
-                "format": "date-time"
+                "format": "date",
+                "description": "Date of last verification"
               }
             }
           },
           "coverage_statement": {
             "type": "object",
+            "description": "Data completeness declaration.",
             "properties": {
-              "data_completeness": {
-                "type": "string"
-              },
-              "last_updated": {
+              "description": {
                 "type": "string",
-                "format": "date-time"
+                "description": "Human-readable coverage description"
+              },
+              "coverage_ratio": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Quantified coverage (0-1)"
+              },
+              "total_available": {
+                "type": "integer",
+                "description": "Relevant items in KB"
+              },
+              "total_estimated": {
+                "type": "integer",
+                "description": "Estimated total relevant items"
+              },
+              "confidence": {
+                "type": "string",
+                "enum": [
+                  "exact",
+                  "estimated",
+                  "unknown"
+                ]
               },
               "known_gaps": {
                 "type": "array",
                 "items": {
                   "type": "string"
-                }
+                },
+                "description": "Known data gaps"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date"
               }
             }
           },
@@ -742,17 +864,6 @@
         "error": {
           "$ref": "error_handling.json#/errors"
         }
-      },
-      "access_control": {
-        "allowed_agents": [
-          "regulatory",
-          "learner",
-          "reviewer",
-          "helix",
-          "convergence",
-          "boss"
-        ],
-        "permission_level": "L1_read"
       }
     },
     {
@@ -888,15 +999,32 @@
           },
           "trust_metadata": {
             "type": "object",
+            "description": "Trust metadata. verification_status = knowledge validation state; freshness_status = temporal currency.",
             "properties": {
-              "trust_level": {
+              "verification_status": {
                 "type": "string",
                 "enum": [
                   "verified",
                   "reference",
-                  "unverified",
-                  "stale"
-                ]
+                  "unverified"
+                ],
+                "description": "verified (L2+ confirmed), reference (L1 auto-verified), unverified (L0 only)"
+              },
+              "freshness_status": {
+                "type": "string",
+                "enum": [
+                  "fresh",
+                  "aging",
+                  "stale",
+                  "expired"
+                ],
+                "description": "fresh (<max_days), aging (approaching review date), stale (past review date), expired (exceeds max_days)"
+              },
+              "source_tier": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4,
+                "description": "1=Binding, 2=Authoritative, 3=Informative, 4=Experiential"
               },
               "verification_level": {
                 "type": "string",
@@ -905,34 +1033,56 @@
                   "L1",
                   "L2",
                   "L3"
-                ]
-              },
-              "source_tier": {
-                "type": "integer",
-                "minimum": 1,
-                "maximum": 4
+                ],
+                "description": "L0=source hash, L1=auto-rules, L2=human/cross-source, L3=external audit"
               },
               "last_verified": {
                 "type": "string",
-                "format": "date-time"
+                "format": "date",
+                "description": "Date of last verification"
               }
             }
           },
           "coverage_statement": {
             "type": "object",
+            "description": "Data completeness declaration.",
             "properties": {
-              "data_completeness": {
-                "type": "string"
-              },
-              "last_updated": {
+              "description": {
                 "type": "string",
-                "format": "date-time"
+                "description": "Human-readable coverage description"
+              },
+              "coverage_ratio": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Quantified coverage (0-1)"
+              },
+              "total_available": {
+                "type": "integer",
+                "description": "Relevant items in KB"
+              },
+              "total_estimated": {
+                "type": "integer",
+                "description": "Estimated total relevant items"
+              },
+              "confidence": {
+                "type": "string",
+                "enum": [
+                  "exact",
+                  "estimated",
+                  "unknown"
+                ]
               },
               "known_gaps": {
                 "type": "array",
                 "items": {
                   "type": "string"
-                }
+                },
+                "description": "Known data gaps"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date"
               }
             }
           },
@@ -951,17 +1101,6 @@
         "error": {
           "$ref": "error_handling.json#/errors"
         }
-      },
-      "access_control": {
-        "allowed_agents": [
-          "regulatory",
-          "learner",
-          "reviewer",
-          "helix",
-          "convergence",
-          "boss"
-        ],
-        "permission_level": "L1_read"
       }
     },
     {
@@ -1159,15 +1298,32 @@
           },
           "trust_metadata": {
             "type": "object",
+            "description": "Trust metadata. verification_status = knowledge validation state; freshness_status = temporal currency.",
             "properties": {
-              "trust_level": {
+              "verification_status": {
                 "type": "string",
                 "enum": [
                   "verified",
                   "reference",
-                  "unverified",
-                  "stale"
-                ]
+                  "unverified"
+                ],
+                "description": "verified (L2+ confirmed), reference (L1 auto-verified), unverified (L0 only)"
+              },
+              "freshness_status": {
+                "type": "string",
+                "enum": [
+                  "fresh",
+                  "aging",
+                  "stale",
+                  "expired"
+                ],
+                "description": "fresh (<max_days), aging (approaching review date), stale (past review date), expired (exceeds max_days)"
+              },
+              "source_tier": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4,
+                "description": "1=Binding, 2=Authoritative, 3=Informative, 4=Experiential"
               },
               "verification_level": {
                 "type": "string",
@@ -1176,34 +1332,56 @@
                   "L1",
                   "L2",
                   "L3"
-                ]
-              },
-              "source_tier": {
-                "type": "integer",
-                "minimum": 1,
-                "maximum": 4
+                ],
+                "description": "L0=source hash, L1=auto-rules, L2=human/cross-source, L3=external audit"
               },
               "last_verified": {
                 "type": "string",
-                "format": "date-time"
+                "format": "date",
+                "description": "Date of last verification"
               }
             }
           },
           "coverage_statement": {
             "type": "object",
+            "description": "Data completeness declaration.",
             "properties": {
-              "data_completeness": {
-                "type": "string"
-              },
-              "last_updated": {
+              "description": {
                 "type": "string",
-                "format": "date-time"
+                "description": "Human-readable coverage description"
+              },
+              "coverage_ratio": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Quantified coverage (0-1)"
+              },
+              "total_available": {
+                "type": "integer",
+                "description": "Relevant items in KB"
+              },
+              "total_estimated": {
+                "type": "integer",
+                "description": "Estimated total relevant items"
+              },
+              "confidence": {
+                "type": "string",
+                "enum": [
+                  "exact",
+                  "estimated",
+                  "unknown"
+                ]
               },
               "known_gaps": {
                 "type": "array",
                 "items": {
                   "type": "string"
-                }
+                },
+                "description": "Known data gaps"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date"
               }
             }
           },
@@ -1220,17 +1398,6 @@
         "error": {
           "$ref": "error_handling.json#/errors"
         }
-      },
-      "access_control": {
-        "allowed_agents": [
-          "regulatory",
-          "learner",
-          "reviewer",
-          "helix",
-          "convergence",
-          "boss"
-        ],
-        "permission_level": "L1_read"
       }
     }
   ]

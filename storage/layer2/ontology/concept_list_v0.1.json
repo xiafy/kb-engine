@@ -2662,5 +2662,598 @@
     ],
     "status": "confirmed",
     "confidence": "medium"
+  },
+  {
+    "concept_id": "CO-MOD-007",
+    "name": "Immune Checkpoint Inhibitor (ICI)",
+    "canonical_definition": "An agent that inhibits any of the immune checkpoint inhibitory proteins.",
+    "definition_source": "NCI Thesaurus C143250",
+    "facet": "therapeutic_modality",
+    "related_concepts": [
+      "CO-MOD-008",
+      "CO-MOD-009",
+      "CO-MOD-010",
+      "CO-MOD-002",
+      "CO-CLI-054"
+    ],
+    "relationship_types": [
+      "is_a: CO-MOD-002",
+      "has_subtype: CO-MOD-008",
+      "has_subtype: CO-MOD-009",
+      "has_subtype: CO-MOD-010"
+    ],
+    "validity_periods": [
+      {
+        "start": "2011-03-25",
+        "end": null,
+        "note": "First ICI (ipilimumab) FDA approved 2011"
+      }
+    ],
+    "status": "confirmed"
+  },
+  {
+    "concept_id": "CO-MOD-008",
+    "name": "Anti-PD-1 Antibody",
+    "canonical_definition": "A monoclonal antibody directed against programmed cell death protein 1 (PD-1; PD1; CD279).",
+    "definition_source": "NCI Thesaurus C128037",
+    "facet": "therapeutic_modality",
+    "related_concepts": [
+      "CO-MOD-007",
+      "CO-MOD-009",
+      "CO-MOD-002",
+      "CO-CLI-054"
+    ],
+    "relationship_types": [
+      "is_a: CO-MOD-007",
+      "is_a: CO-MOD-002"
+    ],
+    "validity_periods": [
+      {
+        "start": "2014-09-04",
+        "end": null,
+        "note": "First anti-PD-1 (pembrolizumab) FDA approved 2014"
+      }
+    ],
+    "status": "confirmed"
+  },
+  {
+    "concept_id": "CO-MOD-009",
+    "name": "Anti-PD-L1 Antibody",
+    "canonical_definition": "A monoclonal antibody directed against programmed death-ligand 1 (PD-L1; CD274).",
+    "definition_source": "NCI Thesaurus C128057",
+    "facet": "therapeutic_modality",
+    "related_concepts": [
+      "CO-MOD-007",
+      "CO-MOD-008",
+      "CO-MOD-002",
+      "CO-CLI-054"
+    ],
+    "relationship_types": [
+      "is_a: CO-MOD-007",
+      "is_a: CO-MOD-002"
+    ],
+    "validity_periods": [
+      {
+        "start": "2016-05-18",
+        "end": null,
+        "note": "First anti-PD-L1 (atezolizumab) FDA approved 2016"
+      }
+    ],
+    "status": "confirmed"
+  },
+  {
+    "concept_id": "CO-MOD-010",
+    "name": "Anti-CTLA-4 Antibody",
+    "canonical_definition": "A monoclonal antibody directed against the human T-cell-expressed receptor cytotoxic T-lymphocyte-associated antigen 4 (CTLA-4; CTLA4; CD152), with potential immune checkpoint inhibitory and antineoplastic activities.",
+    "definition_source": "NCI Thesaurus C15262 (Anti-CTLA-4 Monoclonal Antibody class); FDA Guidance 'Cancer Immunotherapy Trials' (2022)",
+    "facet": "therapeutic_modality",
+    "related_concepts": [
+      "CO-MOD-007",
+      "CO-MOD-002",
+      "CO-CLI-054"
+    ],
+    "relationship_types": [
+      "is_a: CO-MOD-007",
+      "is_a: CO-MOD-002"
+    ],
+    "validity_periods": [
+      {
+        "start": "2011-03-25",
+        "end": null,
+        "note": "First anti-CTLA-4 (ipilimumab) FDA approved 2011"
+      }
+    ],
+    "status": "confirmed"
+  },
+  {
+    "concept_id": "CO-MOD-011",
+    "name": "EGFR Tyrosine Kinase Inhibitor",
+    "canonical_definition": "Any agent that inhibits the activity of the epidermal growth factor receptor (EGFR) tyrosine kinase.",
+    "definition_source": "NCI Thesaurus C2167",
+    "facet": "therapeutic_modality",
+    "related_concepts": [
+      "CO-MOD-001",
+      "CO-CLI-011",
+      "CO-CLI-054"
+    ],
+    "relationship_types": [
+      "is_a: CO-MOD-001",
+      "requires: CO-CLI-011"
+    ],
+    "validity_periods": [
+      {
+        "start": "2003-05-05",
+        "end": null,
+        "note": "First EGFR-TKI (gefitinib) FDA approved 2003"
+      }
+    ],
+    "status": "confirmed"
+  },
+  {
+    "concept_id": "CO-MOD-012",
+    "name": "ALK Inhibitor",
+    "canonical_definition": "Any agent that inhibits the activity of the receptor tyrosine kinase anaplastic lymphoma kinase (ALK).",
+    "definition_source": "NCI Thesaurus C141136",
+    "facet": "therapeutic_modality",
+    "related_concepts": [
+      "CO-MOD-001",
+      "CO-CLI-011",
+      "CO-CLI-054"
+    ],
+    "relationship_types": [
+      "is_a: CO-MOD-001",
+      "requires: CO-CLI-011"
+    ],
+    "validity_periods": [
+      {
+        "start": "2011-08-26",
+        "end": null,
+        "note": "First ALK inhibitor (crizotinib) FDA approved 2011"
+      }
+    ],
+    "status": "confirmed"
+  },
+  {
+    "concept_id": "CO-MOD-013",
+    "name": "BRAF/MEK Inhibitor",
+    "canonical_definition": "A combination therapeutic approach using agents that inhibit the serine/threonine-protein kinase BRAF (B-RAF) and agents that inhibit mitogen-activated protein kinase kinase (MEK; MAP2K), used together to overcome adaptive resistance in BRAF-mutant tumors.",
+    "definition_source": "NCI Thesaurus C155322 (BRAF Inhibitor); FDA Guidance 'Clinical Pharmacology Considerations for BRAF/MEK Combination Therapies' (2019)",
+    "facet": "therapeutic_modality",
+    "related_concepts": [
+      "CO-MOD-001",
+      "CO-CLI-011",
+      "CO-CLI-054"
+    ],
+    "relationship_types": [
+      "is_a: CO-MOD-001",
+      "requires: CO-CLI-011"
+    ],
+    "validity_periods": [
+      {
+        "start": "2014-01-10",
+        "end": null,
+        "note": "First BRAF+MEK combo (dabrafenib+trametinib) FDA approved 2014"
+      }
+    ],
+    "status": "confirmed"
+  },
+  {
+    "concept_id": "CO-MOD-014",
+    "name": "CDK4/6 Inhibitor",
+    "canonical_definition": "Any agent that inhibits cyclin-dependent kinase types 4 (CDK4) and 6 (CDK6), thereby blocking cell cycle progression at the G1/S checkpoint and inhibiting tumor cell proliferation.",
+    "definition_source": "NCI Thesaurus C200556 (CDK4/6 Inhibitor class); FDA Guidance 'Clinical Development Programs for Drugs, Devices, and Biological Products Intended for the Treatment of Advanced or Metastatic Solid Tumors' (2019)",
+    "facet": "therapeutic_modality",
+    "related_concepts": [
+      "CO-MOD-001",
+      "CO-CLI-054"
+    ],
+    "relationship_types": [
+      "is_a: CO-MOD-001"
+    ],
+    "validity_periods": [
+      {
+        "start": "2015-02-03",
+        "end": null,
+        "note": "First CDK4/6 inhibitor (palbociclib) FDA approved 2015"
+      }
+    ],
+    "status": "confirmed"
+  },
+  {
+    "concept_id": "CO-MOD-015",
+    "name": "PARP Inhibitor",
+    "canonical_definition": "Any substance that inhibits Poly (ADP-Ribose) polymerase, an enzyme involved in detecting DNA single strand breaks and the initiation of DNA repair. Inhibition of Poly (ADP-Ribose) polymerase has direct antitumor activity in tumors with defects in DNA repair.",
+    "definition_source": "NCI Thesaurus C62554",
+    "facet": "therapeutic_modality",
+    "related_concepts": [
+      "CO-MOD-001",
+      "CO-CLI-011",
+      "CO-CLI-054"
+    ],
+    "relationship_types": [
+      "is_a: CO-MOD-001"
+    ],
+    "validity_periods": [
+      {
+        "start": "2014-12-19",
+        "end": null,
+        "note": "First PARP inhibitor (olaparib) FDA approved 2014"
+      }
+    ],
+    "status": "confirmed"
+  },
+  {
+    "concept_id": "CO-MOD-016",
+    "name": "Antibody-Drug Conjugate (ADC)",
+    "canonical_definition": "Any tumor-targeting antibody conjugated to a cytotoxic agent that exerts an antineoplastic effect.",
+    "definition_source": "NCI Thesaurus C129823",
+    "facet": "therapeutic_modality",
+    "related_concepts": [
+      "CO-MOD-002",
+      "CO-REG-003",
+      "CO-CLI-054"
+    ],
+    "relationship_types": [
+      "is_a: CO-MOD-002",
+      "applies_to: CO-REG-003"
+    ],
+    "validity_periods": [
+      {
+        "start": "2000-05-17",
+        "end": null,
+        "note": "First ADC (gemtuzumab ozogamicin) FDA approved 2000"
+      }
+    ],
+    "status": "confirmed"
+  },
+  {
+    "concept_id": "CO-MOD-017",
+    "name": "Bispecific Antibody (including BiTE)",
+    "canonical_definition": "A type of antibody that can bind to two different antigens at the same time. Bispecific antibodies are being studied in the imaging and treatment of cancer. They are made in the laboratory.",
+    "definition_source": "NCI Thesaurus C1454",
+    "facet": "therapeutic_modality",
+    "related_concepts": [
+      "CO-MOD-002",
+      "CO-REG-003",
+      "CO-CLI-054"
+    ],
+    "relationship_types": [
+      "is_a: CO-MOD-002",
+      "applies_to: CO-REG-003"
+    ],
+    "validity_periods": [
+      {
+        "start": "2014-12-03",
+        "end": null,
+        "note": "First BiTE (blinatumomab) FDA approved 2014"
+      }
+    ],
+    "status": "confirmed"
+  },
+  {
+    "concept_id": "CO-MOD-018",
+    "name": "CAR-T Cell Therapy",
+    "canonical_definition": "Treatment that uses T-cells that have been engineered to contain a chimeric antigen receptor (CAR) that specifically targets a particular antigen.",
+    "definition_source": "NCI Thesaurus C126102",
+    "facet": "therapeutic_modality",
+    "related_concepts": [
+      "CO-MOD-003",
+      "CO-REG-003",
+      "CO-REG-013",
+      "CO-CLI-054"
+    ],
+    "relationship_types": [
+      "is_a: CO-MOD-003",
+      "applies_to: CO-REG-003",
+      "applies_to: CO-REG-013"
+    ],
+    "validity_periods": [
+      {
+        "start": "2017-08-30",
+        "end": null,
+        "note": "First CAR-T (tisagenlecleucel) FDA approved 2017"
+      }
+    ],
+    "status": "confirmed"
+  },
+  {
+    "concept_id": "CO-MOD-019",
+    "name": "Tumor-Agnostic Therapy",
+    "canonical_definition": "A cancer treatment that targets a specific genomic alteration (e.g., NTRK gene fusions, MSI-H/dMMR, TMB-H) regardless of where the cancer originated in the body. Tumor-agnostic approvals are based on a biomarker found across multiple tumor types rather than the specific tumor site.",
+    "definition_source": "FDA Guidance 'Considerations for the Design, Conduct, and Analysis of Observational Studies Using Real-World Data' (2021); FDA OCE Framework for Tumor Agnostic Drug Development (2021 Oncology Program Annual Report)",
+    "facet": "therapeutic_modality",
+    "related_concepts": [
+      "CO-CLI-011",
+      "CO-CLI-054",
+      "CO-REG-011"
+    ],
+    "relationship_types": [
+      "is_a: therapeutic_modality",
+      "requires: CO-CLI-011",
+      "cross_references: CO-REG-011"
+    ],
+    "validity_periods": [
+      {
+        "start": "2017-05-23",
+        "end": null,
+        "note": "First tumor-agnostic approval (pembrolizumab for MSI-H) 2017"
+      }
+    ],
+    "status": "confirmed"
+  },
+  {
+    "concept_id": "CO-MOD-020",
+    "name": "Radiopharmaceutical Therapy",
+    "canonical_definition": "Treatment with an agent that contains a radioactive pharmaceutical agent.",
+    "definition_source": "NCI Thesaurus C192439",
+    "facet": "therapeutic_modality",
+    "related_concepts": [
+      "CO-MOD-001",
+      "CO-REG-001",
+      "CO-CLI-054"
+    ],
+    "relationship_types": [
+      "is_a: therapeutic_modality"
+    ],
+    "validity_periods": [
+      {
+        "start": "2013-05-29",
+        "end": null,
+        "note": "First targeted RPT (radium-223) FDA approved 2013"
+      }
+    ],
+    "status": "confirmed"
+  },
+  {
+    "concept_id": "CO-MOD-021",
+    "name": "VEGF/VEGFR Inhibitor",
+    "canonical_definition": "Any substance that inhibits vascular endothelial growth factor receptor, a family of tyrosine kinase receptors involved in the formation of blood vessels.",
+    "definition_source": "NCI Thesaurus C93259",
+    "facet": "therapeutic_modality",
+    "related_concepts": [
+      "CO-MOD-001",
+      "CO-MOD-002",
+      "CO-CLI-054"
+    ],
+    "relationship_types": [
+      "is_a: therapeutic_modality"
+    ],
+    "validity_periods": [
+      {
+        "start": "2004-02-26",
+        "end": null,
+        "note": "First anti-VEGF (bevacizumab) FDA approved 2004"
+      }
+    ],
+    "status": "confirmed"
+  },
+  {
+    "concept_id": "CO-CLI-060",
+    "name": "ctDNA (Circulating Tumor DNA)",
+    "canonical_definition": "Neoplasm-derived DNA found in blood plasma and other bodily fluids that is not associated with cells.",
+    "definition_source": "NCI Thesaurus C113243",
+    "facet": "clinical_domain",
+    "related_concepts": [
+      "CO-CLI-010",
+      "CO-CLI-011",
+      "CO-CLI-007",
+      "CO-CLI-054"
+    ],
+    "relationship_types": [
+      "is_a: CO-CLI-010",
+      "cross_references: CO-CLI-007"
+    ],
+    "validity_periods": [
+      {
+        "start": "2020-01-01",
+        "end": null,
+        "note": "Emerging use as MRD and efficacy endpoint; FDA biomarker framework"
+      }
+    ],
+    "status": "confirmed"
+  },
+  {
+    "concept_id": "CO-CLI-061",
+    "name": "PD-L1 Expression Level",
+    "canonical_definition": "The determination of cellular CD274 (PD-L1) expression in a biological specimen, typically measured by immunohistochemistry (IHC) as tumor proportion score (TPS) or combined positive score (CPS), used as a predictive biomarker for immune checkpoint inhibitor therapy.",
+    "definition_source": "NCI Thesaurus C199697 (CD274 Expression Measurement); FDA Guidance 'In Vitro Companion Diagnostic Devices' (2014)",
+    "facet": "clinical_domain",
+    "related_concepts": [
+      "CO-CLI-010",
+      "CO-CLI-011",
+      "CO-MOD-008",
+      "CO-MOD-009",
+      "CO-MOD-007"
+    ],
+    "relationship_types": [
+      "is_a: CO-CLI-010",
+      "requires: CO-CLI-011",
+      "cross_references: CO-MOD-007"
+    ],
+    "validity_periods": [
+      {
+        "start": "2015-01-01",
+        "end": null,
+        "note": "PD-L1 IHC companion Dx co-approved with pembrolizumab 2015"
+      }
+    ],
+    "status": "confirmed"
+  },
+  {
+    "concept_id": "CO-CLI-062",
+    "name": "Tumor Mutational Burden (TMB)",
+    "canonical_definition": "The total number of genomic alterations found in the cells of a cancer.",
+    "definition_source": "NCI Thesaurus C150128",
+    "facet": "clinical_domain",
+    "related_concepts": [
+      "CO-CLI-010",
+      "CO-CLI-011",
+      "CO-MOD-007",
+      "CO-MOD-019",
+      "CO-CLI-054"
+    ],
+    "relationship_types": [
+      "is_a: CO-CLI-010",
+      "requires: CO-CLI-011",
+      "cross_references: CO-MOD-019"
+    ],
+    "validity_periods": [
+      {
+        "start": "2020-06-16",
+        "end": null,
+        "note": "FDA approved TMB-H (≥10 mut/Mb) as biomarker for pembrolizumab 2020"
+      }
+    ],
+    "status": "confirmed"
+  },
+  {
+    "concept_id": "CO-CLI-063",
+    "name": "iRECIST (Immune RECIST)",
+    "canonical_definition": "A modification of the Response Evaluation Criteria in Solid Tumors (RECIST), version 1.1, for use as a standard approach to solid tumor measurements and definitions for objective change in tumor size in cancer clinical trials in which an immunotherapy is used.",
+    "definition_source": "NCI Thesaurus C136711; Seymour L, et al. Lancet Oncol 2017;18(3):e143-e152",
+    "facet": "clinical_domain",
+    "related_concepts": [
+      "CO-CLI-012",
+      "CO-MOD-007",
+      "CO-CLI-002",
+      "CO-CLI-054"
+    ],
+    "relationship_types": [
+      "is_a: CO-CLI-012",
+      "applies_to: CO-MOD-007"
+    ],
+    "validity_periods": [
+      {
+        "start": "2017-03-01",
+        "end": null,
+        "note": "iRECIST published Lancet Oncology 2017"
+      }
+    ],
+    "status": "confirmed"
+  },
+  {
+    "concept_id": "CO-CLI-064",
+    "name": "Line of Therapy (1L/2L/3L+)",
+    "canonical_definition": "The sequence of therapies administered to a patient. First-line therapy is the preferred standard treatment for a particular condition; second-line therapy is the second preferred therapy used after first-line treatment fails; subsequent lines follow when prior therapies don't work or stop working.",
+    "definition_source": "NCI Thesaurus C133518 (Line of Therapy); C45792 (First-Line Therapy); C54350 (Second-Line Therapy); C94628 (Third-Line Therapy)",
+    "facet": "clinical_domain",
+    "related_concepts": [
+      "CO-CLI-054",
+      "CO-CLI-001",
+      "CO-CLI-002"
+    ],
+    "relationship_types": [
+      "is_a: clinical_domain",
+      "cross_references: CO-CLI-054"
+    ],
+    "validity_periods": [
+      {
+        "start": "2000-01-01",
+        "end": null,
+        "note": "Standard oncology trial eligibility and endpoint framework"
+      }
+    ],
+    "status": "confirmed"
+  },
+  {
+    "concept_id": "CO-REG-022",
+    "name": "sNDA (Supplemental New Drug Application)",
+    "canonical_definition": "A supplement to an approved New Drug Application submitted to add a new indication, change labeling, add a new strength, or make other changes to an already-approved NDA, pursuant to 21 CFR 314.70.",
+    "definition_source": "21 CFR 314.70; FDA Guidance 'Labeling — Determining Established Pharmacologic Class for Use in the Highlights of Prescribing Information' (2009)",
+    "facet": "regulatory_pathway",
+    "related_concepts": [
+      "CO-REG-001",
+      "CO-REG-002",
+      "CO-REG-020"
+    ],
+    "relationship_types": [
+      "is_a: submission_type",
+      "is_a: CO-REG-001",
+      "cross_references: CO-REG-020"
+    ],
+    "validity_periods": [
+      {
+        "start": "1985-01-01",
+        "end": null,
+        "note": "NDA supplement regulations under 21 CFR 314.70"
+      }
+    ],
+    "status": "confirmed"
+  },
+  {
+    "concept_id": "CO-REG-023",
+    "name": "sBLA (Supplemental Biologics License Application)",
+    "canonical_definition": "A supplement to an approved Biologics License Application submitted to add a new indication, change labeling, add a new strength, or make other post-approval changes pursuant to 21 CFR 601.12.",
+    "definition_source": "21 CFR 601.12; 42 USC 262(a); FDA Guidance 'Changes to an Approved Application for Specified Biotechnology and Specified Synthetic Biological Products' (1997)",
+    "facet": "regulatory_pathway",
+    "related_concepts": [
+      "CO-REG-003",
+      "CO-REG-020"
+    ],
+    "relationship_types": [
+      "is_a: submission_type",
+      "is_a: CO-REG-003",
+      "cross_references: CO-REG-020"
+    ],
+    "validity_periods": [
+      {
+        "start": "1996-01-01",
+        "end": null,
+        "note": "BLA supplement regulations under 21 CFR 601.12"
+      }
+    ],
+    "status": "confirmed"
+  },
+  {
+    "concept_id": "CO-REG-024",
+    "name": "Pediatric Study Plan (PSP)",
+    "canonical_definition": "A plan submitted to FDA that includes an outline of a proposed pediatric study or studies of the drug, any request for a full or partial waiver, any request for a deferral or extension of a deferral, and any other information required by FDA. Under PREA, sponsors of applications for new drugs and biologics must submit a PSP and receive agreement from FDA before submitting their application.",
+    "definition_source": "FD&C Act Section 505B(e); FDA Guidance 'How to Submit a Pediatric Study Plan (PSP)' (2016)",
+    "facet": "regulatory_pathway",
+    "related_concepts": [
+      "CO-REG-001",
+      "CO-REG-003",
+      "CO-REG-014"
+    ],
+    "relationship_types": [
+      "is_a: regulatory_requirement",
+      "applies_to: CO-REG-001",
+      "applies_to: CO-REG-003"
+    ],
+    "validity_periods": [
+      {
+        "start": "2012-07-09",
+        "end": null,
+        "note": "FDASIA Section 505 (PREA reauthorization); implementing regulation FDARA 2022"
+      }
+    ],
+    "status": "confirmed"
+  },
+  {
+    "concept_id": "CO-REG-025",
+    "name": "REMS (Risk Evaluation and Mitigation Strategy)",
+    "canonical_definition": "A drug safety program of the U.S. Food and Drug Administration (FDA), which can be required for certain medications with serious safety concerns to help ensure the benefits of the medication outweigh its risks.",
+    "definition_source": "NCI Thesaurus C221458; FD&C Act Section 505-1; 21 CFR 208",
+    "facet": "regulatory_pathway",
+    "related_concepts": [
+      "CO-REG-001",
+      "CO-REG-003",
+      "CO-CLI-013",
+      "CO-CLI-014"
+    ],
+    "relationship_types": [
+      "is_a: regulatory_requirement",
+      "applies_to: CO-REG-001",
+      "applies_to: CO-REG-003",
+      "cross_references: CO-CLI-014"
+    ],
+    "validity_periods": [
+      {
+        "start": "2007-09-27",
+        "end": null,
+        "note": "FDAAA Section 505-1 enacted; replaced RiskMAP"
+      }
+    ],
+    "status": "confirmed"
   }
 ]
