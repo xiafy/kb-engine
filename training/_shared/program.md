@@ -1,8 +1,8 @@
 # program.md — 多分支闭环训练主程序
 
-> **版本**: v3.5 | **创建**: 2026-03-30 | **来源**: v1.0 重构为多分支架构
+> **版本**: v3.6 | **创建**: 2026-03-30 | **来源**: v1.0 重构为多分支架构
 > **原则**: Karpathy Autoresearch — 极简、自主、闭环
-> **变更**: v3.1 裁判分离 | v3.2 Git PR | v3.3 路径+隔离+收敛 | v3.4 L4 审核 | v3.5 3+3 做题+共识
+> **变更**: v3.1 裁判分离 | v3.2 Git PR | v3.3 路径+隔离+收敛 | v3.4 L4 审核 | v3.5 3+3 做题+共识 | v3.6 规则溯源(Step 5c)
 
 ---
 
@@ -24,6 +24,11 @@
 | `sop/domains/{domain}.md` | ✅ | ✅ | **可变** — 疾病大类知识 |
 | `sop/indications/{indication}.md` | ✅ | ✅ | **可变** — 适应症特定知识 |
 | `sop/regulatory/{path}.md` | ✅ | ✅ | **可变** — 监管路径知识 |
+| `data/fda-guidelines/markdown/INDEX.md` | ✅ | ❌ | FDA/ICH 指南索引（标题+文件名，156 份） |
+| `data/fda-guidelines/markdown/fda/*.md` | ✅ | ❌ | FDA Guidance 原文（MD 格式，115 份） |
+| `data/fda-guidelines/markdown/ich/*.md` | ✅ | ❌ | ICH 指南原文（MD 格式，41 份） |
+
+> **⚠️ FDA Guidance/ICH 仅在 Step 5c 规则溯源时使用，Step 2 做题时禁止访问。**
 
 ## 分支列表
 
@@ -294,6 +299,43 @@ git push --tags
 | 合理但非 FDA 选择 | `ALT` | 方案合理但 FDA 选了别的 | ⚠️ 记录不更新 |
 | 题目信息不足 | `INFO` | 题目未提供做出正确判断所需的信息 | ❌ 不更新 |
 
+### Step 5c: 规则溯源（Rule Grounding）
+
+**目的**：确保写入 SOP 的规则不是单案例经验的简单照搬，而是有权威依据的可泛化决策框架。
+
+**仅对 KNOW / REG / STAT 类差异执行**（ALT / INFO 不触发）。
+
+对每条准备写入 SOP 的规则，按优先级溯源：
+
+```
+1. 查 FDA Guidance / ICH 指南（最高权威，通用原则）
+   → 搜索 data/fda-guidelines/markdown/INDEX.md 匹配关键词
+   → 找到相关指南 → 读原文提取具体章节依据
+   → 规则写为通用决策框架（不限适应症）→ 写入 core/ 或 domains/
+
+2. 查历史训练轮次（多案例交叉验证）
+   → 检查 training/{branch}/rounds/ 中是否有 ≥3 个案例出现同一模式
+   → 有 → 规则标注 [multi-case: case1, case2, case3]
+   → 写入 domains/（疾病大类通用）
+
+3. 仅当前案例支撑（最低可信度）
+   → 规则标注 [single-case: FDA-Review-{drug}]
+   → 写入 indications/（适应症特定）
+   → 同时标注 [low-confidence]
+```
+
+**溯源结果标注（写入 SOP 时必须附加）**：
+- `[grounded: FDA-Guidance-{name}, Section {X}]` — Guidance/ICH 依据
+- `[grounded: ICH-{Exx}, Section {X}]` — ICH 依据
+- `[multi-case: {drug1}, {drug2}, {drug3}]` — 多案例验证
+- `[single-case: FDA-Review-{drug}]` — 单案例，低可信度
+
+**规则形式区别**：
+- 有 Guidance 依据 → 写为"当 [条件] 时，应 [做法]，因为 [原理]"（通用框架）
+- 仅有案例依据 → 写为"对于 [特定适应症]，FDA 在 [药物] 案例中选择了 [做法]"（事实记录）
+
+**⚠️ shared/kb/ 当前质量不稳定，不作为独立溯源依据。仅在 FDA Guidance 和多案例均无法支撑时，可参考但须额外标注 `[kb-ref, unverified]`。**
+
 ### Step 5b: SOP 更新审核（L4 质控门控）
 
 ⚠️ **SOP 更新前必须经独立 Agent 审核。** 这是防止坏规则进入 main 的最后一道防线。
@@ -304,10 +346,11 @@ git push --tags
 **审核流程**：
 1. Spawn 独立审核 Agent（`sessions_spawn`，与做题/裁判不同的 session）
 2. 传入审核 Agent 的输入：
-   - 准备追加的每条规则（完整文本）
+   - 准备追加的每条规则（完整文本 + 溯源标注）
    - 写入目标文件和 section
    - 差异归类理由（KNOW/REG/STAT + 具体说明）
    - FDA Review 中的原始证据（支撑该规则的 FDA 原文摘录）
+   - Step 5c 溯源结果（Guidance 引用 / 多案例列表 / 单案例标注）
 3. **禁止传入**：做题 Agent 的完整答案、裁判评分详情、SOP 当前内容
 4. 审核 Agent 对每条规则独立判定：
    - ✅ **同意追加**：规则准确、归类正确、措辞合规
@@ -370,7 +413,8 @@ rounds/round-{NN}/
 ├── consensus-answer.md  ← 共识合并结果（含分歧标注）
 ├── fda-actual.md        ← FDA 实际方案
 ├── scoring.md           ← 3 裁判多数票评分（基于 consensus vs FDA）
-└── analysis.md          ← 差异归类 + SOP 更新审核 + 共识分歧分析
+├── analysis.md          ← 差异归类 + 规则溯源 + SOP 更新审核 + 共识分歧分析
+└── grounding.md         ← Step 5c 溯源记录（查了哪些 Guidance、匹配结果）
 ```
 
 #### 7b. 追加汇总评分
