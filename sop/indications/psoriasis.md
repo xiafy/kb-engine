@@ -1,7 +1,7 @@
 ---
-version: 1.0
-source: sop.md v2.2 split
-rule_count: 3
+version: 1.1
+source: sop.md v2.2 split + Round 01 training
+rule_count: 4
 ---
 
 # Psoriasis
@@ -23,6 +23,12 @@ IF indication == "psoriasis":
 IF indication == "psoriasis":
 → Placebo group blinded switch at Week 16 (placebo escape)
 → Randomized withdrawal period may be designed to assess durability of response
+
+### Sensitivity Analysis Suite
+IF indication == "moderate-to-severe plaque psoriasis" AND co-primary binary endpoints (e.g., PASI 75, sPGA 0/1):
+→ Sensitivity analyses should include at minimum: (1) NRI (primary); (2) LOCF; (3) Hybrid: LOCF for placebo + NRI for active arm (standard when placebo arm is truncated/rescued mid-study); (4) Multiple imputation (MI); (5) Tipping-point analysis.
+This 5-method suite is consistently observed across recent psoriasis NDA filings.
+[multi-case pattern: Sotyktu FDA Review §8.1.3; consistent with risankizumab, ixekizumab FDA reviews]
 
 ## SAP Design
 

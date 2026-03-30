@@ -45,3 +45,5 @@ round	branch	case_id	drug_name	pathway	match_score	weighted_score	match_count	pa
 18	protocol-design	02	Hernexeos	accelerated	0.88	0.94	7	1	0	2	8	0	71	ALT:1	back-to-back HER2m NSCLC; SOP highly effective; near-perfect	2026-03-29
 19	protocol-design	03	Hyrnuo	accelerated	0.88	0.94	7	1	0	2	8	0	71	ALT:1	convergence confirmed; identical score to R18; Group D/E split perfectly predicted	2026-03-29
 20	protocol-design	01	Inluriyo	regular	1.00	1.00	10	0	0	0	10	0	71	none	[verified-perfect] ultimate test; R-013+R-059+R-069+R-042 all applied; EMBER-3 design fully matched	2026-03-29
+# --- v4.0 Batch 1 (open-book, 3-agent consensus, 3-judge blind eval) ---
+B1R1	protocol-design	12	Sotyktu	regular	0.70	0.85	7	3	0	0	10	2	60	KNOW:2,ALT:1	v4.0 open-book rerun; 2/3 agents (B timeout); consensus 2/2; IUT alpha + sensitivity suite	2026-03-30
