@@ -1,8 +1,8 @@
 # program.md — 多分支闭环训练主程序
 
-> **版本**: v3.4 | **创建**: 2026-03-30 | **来源**: v1.0 重构为多分支架构
+> **版本**: v3.5 | **创建**: 2026-03-30 | **来源**: v1.0 重构为多分支架构
 > **原则**: Karpathy Autoresearch — 极简、自主、闭环
-> **变更**: v3.1 裁判分离 | v3.2 Git PR | v3.3 路径+隔离+收敛 | v3.4 L4 SOP 更新审核门控
+> **变更**: v3.1 裁判分离 | v3.2 Git PR | v3.3 路径+隔离+收敛 | v3.4 L4 审核 | v3.5 3+3 做题+共识
 
 ---
 
@@ -174,15 +174,18 @@ git push --tags
   这些参数作为"已知条件"提供给做题步骤
 ```
 
-### Step 2: 做题（闭卷）
+### Step 2: 并行做题（3 Agent 闭卷）
 
 **严格要求：不得查看答案文件，不得使用外部搜索。仅基于题目信息 + SOP 文件作答。**
 
-按分支 config.yaml 的 scoring.dimensions 定义的维度输出答案。
+**并行 3 个做题 Agent**（独立 subagent session，互不可见）：
+- 每个 Agent 获得相同输入：SOP 文件列表（Step 0b）+ 题目（Step 1）
+- 每个 Agent 独立作答，按分支 config.yaml 的 scoring.dimensions 定义的维度输出
+- 3 个 Agent 使用相同模型但独立 session（不同采样产生多样性）
 
-输出格式：
+输出格式（每个 Agent 各一份）：
 ```markdown
-## My Answer: {drug_name} [{branch}]
+## My Answer: {drug_name} [{branch}] — Agent {A/B/C}
 
 ### 1. {dimension_1}
 [答案内容]
@@ -191,6 +194,33 @@ git push --tags
 [答案内容]
 ...
 ```
+
+### Step 2b: 共识合并
+
+3 份答案提交给调度者（Helix），逐维度合并：
+
+```
+对每个评分维度：
+  IF 3/3 一致 → 直接采纳，标注 [consensus: 3/3]
+  IF 2/3 一致 → 采纳多数意见，标注 [consensus: 2/3, dissent: Agent X 认为...]
+  IF 3/3 各不同 → 列出所有选项 + 各自理由，标注 [no-consensus]
+```
+
+**[no-consensus] 是早期 SOP 质量信号**：3 个 Agent 读同一 SOP 却做出不同答案 → SOP 规则有歧义或缺失，比裁判评分更早暴露问题。
+
+输出：
+```markdown
+## Consensus Answer: {drug_name} [{branch}]
+
+### 1. {dimension_1}
+[共识答案] [consensus: 3/3]
+
+### 2. {dimension_2}
+[多数意见] [consensus: 2/3, dissent: Agent C 认为 xxx]
+...
+```
+
+**裁判评分基于 consensus-answer.md，不是个体答案。**
 
 ### Step 3: 对答案（读课本）
 
@@ -334,9 +364,13 @@ git push --tags
 将本轮完整产出保存到 `training/{branch}/rounds/round-{NN}/`：
 ```
 rounds/round-{NN}/
-├── answer.md       ← 做题 Agent 的完整输出
-├── scoring.md      ← 裁判评分详情（3 裁判 × N 维度 + 多数票 + κ）
-└── analysis.md     ← 差异分析 + SOP 更新决策 + 本轮关键洞察
+├── answer-A.md          ← 做题 Agent A 输出
+├── answer-B.md          ← 做题 Agent B 输出
+├── answer-C.md          ← 做题 Agent C 输出
+├── consensus-answer.md  ← 共识合并结果（含分歧标注）
+├── fda-actual.md        ← FDA 实际方案
+├── scoring.md           ← 3 裁判多数票评分（基于 consensus vs FDA）
+└── analysis.md          ← 差异归类 + SOP 更新审核 + 共识分歧分析
 ```
 
 #### 7b. 追加汇总评分
