@@ -1,19 +1,19 @@
 ---
 version: 1.0
-source: sop.md v2.2 拆分
+source: sop.md v2.2 split
 rule_count: 1
 ---
 
-# 胃癌/胃食管结合部癌 (Gastric/GEJC)
+# Gastric Cancer / Gastroesophageal Junction Cancer (Gastric/GEJC)
 
-> version: 1.0 | source: sop.md v2.2 拆分
+> version: 1.0 | source: sop.md v2.2 split
 
 ## Trial Design
 
-### 分层因子
-胃癌/GEJ 推荐分层因子: 地区(Asia vs non-Asia) + 转移器官数(0-2 vs ≥3) + 既往胃切除。
-注：不用 ECOG PS 作为分层因子。
+### Stratification Factors
+Gastric/GEJ recommended stratification factors: region (Asia vs non-Asia) + number of metastatic organs (0-2 vs ≥3) + prior gastrectomy.
+Note: ECOG PS is not used as a stratification factor.
 
 ## SAP Design
 
-<!-- 训练时按 section-append 约定追加规则 -->
+<!-- Append rules here during training (section-append convention) -->

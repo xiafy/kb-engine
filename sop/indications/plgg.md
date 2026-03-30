@@ -7,12 +7,12 @@ status: placeholder
 
 # plgg
 
-> 占位文件，训练过程中自动增长
+> Placeholder — grows during training
 
 ## Trial Design
 
-（待训练后填充）
+To be populated during training
 
 ## SAP Design
 
-（待训练后填充）
+To be populated during training

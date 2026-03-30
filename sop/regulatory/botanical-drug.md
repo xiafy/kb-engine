@@ -1,24 +1,24 @@
 ---
 version: 1.0
-source: sop.md v2.2 拆分
+source: sop.md v2.2 split
 rule_count: 0
 status: placeholder
 ---
 
-# 植物药 (Botanical Drug)
+# Botanical Drug
 
-> **占位文件** — 当前 sop.md v2.2 无植物药直接规则。
-> 内容来源：康缘项目经验积累（训练后填充）。
+> **Placeholder file** — Current sop.md v2.2 has no direct botanical drug rules.
+> Content source: Kangyuan project accumulated experience (to be populated after training).
 
 ## Trial Design
 
-<!-- 训练时按 section-append 约定追加规则 -->
-<!-- 典型适应症：中药复方制剂申报 NDA（21 CFR 314） -->
+<!-- Append rules here during training (section-append convention) -->
+<!-- Typical indication: Traditional Chinese medicine compound formulation NDA application (21 CFR 314) -->
 
 ## SAP Design
 
-<!-- 训练时按 section-append 约定追加规则 -->
+<!-- Append rules here during training (section-append convention) -->
 
 ## Regulatory Pathway
 
-<!-- 训练时按 section-append 约定追加规则 -->
+<!-- Append rules here during training (section-append convention) -->

@@ -1,23 +1,23 @@
 ---
 version: 1.0
-source: sop.md v2.2 拆分
+source: sop.md v2.2 split
 rule_count: 2
 ---
 
-# IDH-mut 低级别胶质瘤 (LGG)
+# IDH-mut Low-Grade Glioma (LGG)
 
-> version: 1.0 | source: sop.md v2.2 拆分
+> version: 1.0 | source: sop.md v2.2 split
 
 ## Trial Design
 
-### 入组标准
-IF 适应症 == "术后观察替代（缓慢进展肿瘤如 LGG）":
-→ 限定最近手术后时间窗（≥1 年 ≤5 年），确保临床稳定期且安慰剂伦理可接受
+### Eligibility Criteria
+IF indication == "post-surgical observation replacement (slow-progression tumors such as LGG)":
+→ Restrict to time window after most recent surgery (≥1 year ≤5 years), ensuring clinical stability and that placebo use is ethically acceptable
 
-### 分层因子
-IDH-mut LGG 推荐分层因子: 1p/19q 共缺失 + 基线肿瘤大小(≥2cm vs <2cm)。
-注：不用手术范围作为分层因子。
+### Stratification Factors
+IDH-mut LGG recommended stratification factors: 1p/19q co-deletion + baseline tumor size (≥2cm vs <2cm).
+Note: Extent of resection is not used as a stratification factor.
 
 ## SAP Design
 
-<!-- 训练时按 section-append 约定追加规则 -->
+<!-- Append rules here during training (section-append convention) -->

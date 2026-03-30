@@ -1,50 +1,49 @@
-# SOP 服务目录 — PM Agent 路由表
+# SOP Service Catalog — PM Agent Routing Table
 
-> **版本**: v1.0 | **更新**: 2026-03-30
+> **Version**: v1.0 | **Updated**: 2026-03-30
 
-## 服务总览
+## Service Overview
 
-| # | core/ SOP | 能力描述 | 训练状态 | FDA Review 答案章节 |
-|---|-----------|---------|---------|-------------------|
-| 1 | `protocol-design.md` | Protocol 设计（8 步决策流程） | ✅ v2.2（59 规则，20 案例） | Clinical Review — Trial Design |
-| 2 | `sap-design.md` | SAP 统计设计 | ⬜ 待训练 | Statistical Review |
-| 3 | `stat-analysis.md` | 统计分析执行 | ⬜ 待训练 | Statistical Review |
-| 4 | `clinical-pharm.md` | 临床药理评估 | ⬜ 待训练 | Clinical Pharmacology Review |
-| 5 | `efficacy-assessment.md` | 疗效评价 | ⬜ 待训练 | Clinical Review — Efficacy |
-| 6 | `safety-assessment.md` | 安全性评价 | ⬜ 待训练 | Clinical Review — Safety |
-| 7 | `regulatory-strategy.md` | 监管策略决策 | ⬜ 待训练 | 贯穿全文 |
-| 8 | `labeling-review.md` | 标签审核 | ⬜ 待训练 | Labeling Review |
-| 9 | `post-marketing.md` | 上市后要求预测 | ⬜ 待训练 | PMR/PMC sections |
+| # | core/ SOP | Capability Description | Training Status | FDA Review Answer Section |
+|---|-----------|----------------------|----------------|--------------------------|
+| 1 | `protocol-design.md` | Protocol Design (8-step decision process) | ✅ v2.2 (59 rules, 20 cases) | Clinical Review — Trial Design |
+| 2 | `sap-design.md` | SAP Statistical Design | ⬜ Pending training | Statistical Review |
+| 3 | `stat-analysis.md` | Statistical Analysis Execution | ⬜ Pending training | Statistical Review |
+| 4 | `clinical-pharm.md` | Clinical Pharmacology Assessment | ⬜ Pending training | Clinical Pharmacology Review |
+| 5 | `efficacy-assessment.md` | Efficacy Evaluation | ⬜ Pending training | Clinical Review — Efficacy |
+| 6 | `safety-assessment.md` | Safety Evaluation | ⬜ Pending training | Clinical Review — Safety |
+| 7 | `regulatory-strategy.md` | Regulatory Strategy Decisions | ⬜ Pending training | Throughout |
+| 8 | `labeling-review.md` | Labeling Review | ⬜ Pending training | Labeling Review |
+| 9 | `post-marketing.md` | Post-marketing Requirements Forecast | ⬜ Pending training | PMR/PMC sections |
 
-## PM Agent 路由规则
+## PM Agent Routing Rules
 
 ```
-收到客户请求
+Receive client request
     ↓
-识别任务类型 → 匹配 core/ SOP（见上表）
+Identify task type → Match core/ SOP (see table above)
     ↓
-检查训练状态：
-  ✅ → 加载 SOP + domains/ + indications/ + regulatory/ → 执行
-  ⬜ → 告知客户该能力尚未就绪，或降级为通用 LLM 响应
+Check training status:
+  ✅ → Load SOP + domains/ + indications/ + regulatory/ → Execute
+  ⬜ → Inform client that this capability is not yet available, or fall back to generic LLM response
     ↓
-执行 SOP → 按 templates/ 格式化输出 → 交付
+Execute SOP → Format output per templates/ → Deliver
 ```
 
-## 加载示例
+## Loading Example
 
 ```
-任务: "评审一个 ER+/HER2- 乳腺癌 Phase 3 Protocol"
+Task: "Review an ER+/HER2- Breast Cancer Phase 3 Protocol"
 
-加载:
-  1. sop/core/protocol-design.md          ← 必读
-  2. sop/domains/oncology-solid.md         ← 疾病大类
-  3. sop/indications/breast-er-her2neg.md  ← 适应症特定
-  4. (无特殊监管路径)
+Load:
+  1. sop/core/protocol-design.md          ← Required
+  2. sop/domains/oncology-solid.md         ← Disease category
+  3. sop/indications/breast-er-her2neg.md  ← Indication-specific
 
-输出: 按 sop/templates/protocol-review-report.md 格式
+Output: Per sop/templates/protocol-review-report.md format
 ```
 
-## 工作流依赖
+## Workflow Dependencies
 
 ```
 Protocol Design ──→ SAP Design ──→ Stat Analysis
@@ -59,10 +58,10 @@ Regulatory Strategy              Efficacy Assessment
   Post-marketing
 ```
 
-## 目录约定
+## Directory Conventions
 
-- `core/` — 每个文件 ≤200 行，按决策步骤组织，零附录
-- `domains/` — 每个文件 ≤200 行，多维度 section（Trial Design / Safety / CRF）
-- `indications/` — 每个文件 ≤100 行，训练中自动增长
-- `regulatory/` — 每个文件 ≤100 行
-- `templates/` — 每个 core/ SOP 对应一个交付模板
+- `core/` — Each file ≤200 lines, organized by decision steps, no appendices
+- `domains/` — Each file ≤200 lines, multi-dimension sections (Trial Design / Safety / CRF)
+- `indications/` — Each file ≤100 lines, grows automatically during training
+- `regulatory/` — Each file ≤100 lines
+- `templates/` — One delivery template per core/ SOP

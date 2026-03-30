@@ -1,32 +1,32 @@
 ---
 version: 1.0
-source: sop.md v2.2 拆分
+source: sop.md v2.2 split
 rule_count: 2
 ---
 
-# 加速审批 (Accelerated Approval)
+# Accelerated Approval
 
-> version: 1.0 | source: sop.md v2.2 拆分
+> version: 1.0 | source: sop.md v2.2 split
 
 ## Trial Design
 
-### AA 终点与设计要求
+### AA Endpoints and Design Requirements
 
 IF regulatory_pathway == "Accelerated Approval":
-→ 主要终点: ORR(BICR, RECIST 1.1) + DOR
-→ ORR 95% CI 下限 > 历史 benchmark（benchmark 因适应症/线数差异极大）
-→ 样本量 50-200 人
-→ 预设 Bayesian predictive probability 持续 futility 监测
-→ 需在 NDA 提交时已启动确证性试验（评估 OS/EFS 等直接临床获益）
+→ Primary endpoint: ORR (BICR, RECIST 1.1) + DOR
+→ ORR 95% CI lower bound > historical benchmark (benchmark varies greatly by indication/line of therapy)
+→ Sample size 50-200 patients
+→ Pre-specify Bayesian predictive probability for ongoing futility monitoring
+→ Confirmatory trial must be initiated at time of NDA submission (assessing direct clinical benefit such as OS/EFS)
 → skip control_arm, skip stratification
 
-### 确证性试验要求
+### Confirmatory Trial Requirements
 
 IF regulatory_pathway == "Accelerated Approval":
-→ 确证性试验设计须在 NDA 提交时与 FDA 达成一致
-→ 理想情况确证性试验已启动
-→ 需明确入组和完成时间线
+→ Confirmatory trial design must be agreed upon with FDA at time of NDA submission
+→ Ideally confirmatory trial is already underway
+→ Enrollment and completion timelines must be specified
 
 ## SAP Design
 
-<!-- 训练时按 section-append 约定追加规则 -->
+<!-- Append rules here during training (section-append convention) -->

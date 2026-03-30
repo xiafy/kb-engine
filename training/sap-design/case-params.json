@@ -3,35 +3,39 @@
     "drug": "Inluriyo",
     "generic": "imlunestrant",
     "protocol_params": {
-      "primary_endpoint": "TODO",
-      "comparator": "TODO",
-      "population": "TODO",
-      "design": "TODO",
-      "sample_size": "TODO",
-      "stratification_factors": []
+      "primary_endpoint": "Investigator-assessed PFS (3 comparisons: ITT imlunestrant vs SOC; ESR1m subpopulation imlunestrant vs SOC; ITT imlun+abema vs imlunestrant)",
+      "comparator": "Investigator's choice of endocrine therapy (fulvestrant or exemestane) [Arm B SOC]",
+      "population": "ER+/HER2- locally advanced or metastatic breast cancer, post-AI with or without CDK4/6i",
+      "design": "Open-label, randomized, 3-arm, Phase 3 (EMBER-3)",
+      "sample_size": "N=874",
+      "stratification_factors": [
+        "Prior CDK4/6i (yes vs no)",
+        "Presence of visceral metastases (yes vs no)",
+        "Region (East Asia vs North America/Western Europe vs Others)"
+      ]
     }
   },
   "02": {
     "drug": "Hernexeos",
-    "generic": "fam-trastuzumab deruxtecan-nxki",
+    "generic": "zongertinib",
     "protocol_params": {
-      "primary_endpoint": "TODO",
-      "comparator": "TODO",
-      "population": "TODO",
-      "design": "TODO",
-      "sample_size": "TODO",
+      "primary_endpoint": "ORR per BICR per RECIST v1.1 (in FDA primary efficacy population: Cohort 1 patients receiving zongertinib 120 mg QD with ≥1 prior systemic therapy, excluding prior HER2-targeted TKI or ADC)",
+      "comparator": "None (single-arm)",
+      "population": "Unresectable or metastatic non-squamous NSCLC with HER2 (ERBB2) TKD activating mutations, post ≥1 prior systemic therapy",
+      "design": "Non-randomized, open-label, single-arm, multicenter, multi-cohort, first-in-human Phase 1/2 (Beamion LUNG-1, Study 1479-0001); accelerated approval",
+      "sample_size": "N=71 (FDA primary efficacy population); N=75 (Applicant Cohort 1 full); pooled safety N=260",
       "stratification_factors": []
     }
   },
   "03": {
     "drug": "Hyrnuo",
-    "generic": "trastuzumab deruxtecan",
+    "generic": "sevabertinib",
     "protocol_params": {
-      "primary_endpoint": "TODO",
-      "comparator": "TODO",
-      "population": "TODO",
-      "design": "TODO",
-      "sample_size": "TODO",
+      "primary_endpoint": "ORR per BICR per RECIST v1.1 (confirmed; Extension part primary objective)",
+      "comparator": "None (single-arm)",
+      "population": "Advanced NSCLC harboring HER2 activating mutations (including ex20ins); Group D: prior systemic therapy, naïve to HER2 ex20ins-targeted therapy; Group E: prior systemic therapy with documented progression on HER2-targeted ADC",
+      "design": "Non-randomized, open-label, single-arm, multicenter, multi-cohort, first-in-human Phase 1/2 (SOHO-01, Study 21607); accelerated approval",
+      "sample_size": "N=81 (Group D, primary efficacy population); N=55 (Group E, supportive); N=357 (total study safety population)",
       "stratification_factors": []
     }
   },
@@ -39,35 +43,43 @@
     "drug": "Datroway",
     "generic": "datopotamab deruxtecan-dlnk",
     "protocol_params": {
-      "primary_endpoint": "TODO",
-      "comparator": "TODO",
-      "population": "TODO",
-      "design": "TODO",
-      "sample_size": "TODO",
-      "stratification_factors": []
+      "primary_endpoint": "PFS per BICR per RECIST v1.1 (dual primary with OS; PFS analysis conducted at first DCO)",
+      "comparator": "Investigator's choice of chemotherapy (ICC: eribulin, capecitabine, vinorelbine, or gemcitabine)",
+      "population": "Unresectable or metastatic HR+/HER2- breast cancer, ≥1 and ≤2 prior lines of chemotherapy in unresectable/metastatic setting, post-ET",
+      "design": "Open-label, randomized, 1:1, Phase 3 (TROPION-Breast01)",
+      "sample_size": "N=732",
+      "stratification_factors": [
+        "Number of previous lines of chemotherapy in inoperable/metastatic setting",
+        "Geographic region",
+        "Prior use of CDK4/6 inhibitor (yes vs no)"
+      ]
     }
   },
   "05": {
     "drug": "Vyloy",
     "generic": "zolbetuximab-clzb",
     "protocol_params": {
-      "primary_endpoint": "TODO",
-      "comparator": "TODO",
-      "population": "TODO",
-      "design": "TODO",
-      "sample_size": "TODO",
-      "stratification_factors": []
+      "primary_endpoint": "PFS per RECIST v1.1 assessed by IRC (key secondary: OS)",
+      "comparator": "Placebo + mFOLFOX6 (SPOTLIGHT) / Placebo + CAPOX (GLOW)",
+      "population": "Previously untreated unresectable or metastatic gastric or gastroesophageal junction (GEJ) adenocarcinoma; CLDN18.2-positive (≥75% of tumor cells, moderate-to-strong staining), HER2-negative",
+      "design": "Double-blind, placebo-controlled, randomized, 1:1, multicenter, Phase 3 (two pivotal trials: SPOTLIGHT N=565; GLOW N=507)",
+      "sample_size": "N=565 (SPOTLIGHT); N=507 (GLOW)",
+      "stratification_factors": [
+        "Region (Asia vs non-Asia)",
+        "Number of organs with metastatic sites (0-2 vs ≥3)",
+        "Prior gastrectomy (yes vs no)"
+      ]
     }
   },
   "06": {
     "drug": "Retevmo",
     "generic": "selpercatinib",
     "protocol_params": {
-      "primary_endpoint": "TODO",
-      "comparator": "TODO",
-      "population": "TODO",
-      "design": "TODO",
-      "sample_size": "TODO",
+      "primary_endpoint": "ORR per BICR per RECIST v1.1",
+      "comparator": "None (single-arm)",
+      "population": "Multiple cohorts: (1) metastatic RET fusion-positive NSCLC treatment-naïve (n=39); (2) RET fusion-positive NSCLC post-platinum chemo (n=105); (3) RET-mutant MTC cabozantinib/vandetanib-naïve (n=88); (4) RET-mutant MTC post-cabozantinib/vandetanib (n=55); (5) RET fusion-positive thyroid cancer post-RAI (n=19); advanced solid tumors with RET gene alterations",
+      "design": "Open-label, single-arm, multicenter, Phase 1/2 (LIBRETTO-001, Study LOXO-RET-17001); accelerated approval",
+      "sample_size": "N=702 (overall safety population); multiple efficacy populations by tumor type/line (see above)",
       "stratification_factors": []
     }
   },
@@ -75,35 +87,43 @@
     "drug": "Orserdu",
     "generic": "elacestrant",
     "protocol_params": {
-      "primary_endpoint": "TODO",
-      "comparator": "TODO",
-      "population": "TODO",
-      "design": "TODO",
-      "sample_size": "TODO",
-      "stratification_factors": []
+      "primary_endpoint": "PFS per IRC per RECIST v1.1 (family of primary endpoints: ESR1-mut subpopulation and ITT population)",
+      "comparator": "Investigator's choice SOC endocrine therapy (fulvestrant, anastrozole, letrozole, or exemestane)",
+      "population": "ER+/HER2- advanced or metastatic breast cancer; postmenopausal women and men; prior CDK4/6i in combination with ET; 1-2 prior lines of endocrine therapy for mBC",
+      "design": "International, multicenter, randomized, open-label, active-controlled, event-driven, 1:1, Phase 3 (RAD1901-308, EMERALD)",
+      "sample_size": "N=478",
+      "stratification_factors": [
+        "ESR1 mutation status (detected vs not detected)",
+        "Prior treatment with fulvestrant (yes vs no)",
+        "Presence of visceral metastases (yes vs no)"
+      ]
     }
   },
   "08": {
     "drug": "Truqap",
     "generic": "capivasertib",
     "protocol_params": {
-      "primary_endpoint": "TODO",
-      "comparator": "TODO",
-      "population": "TODO",
-      "design": "TODO",
-      "sample_size": "TODO",
-      "stratification_factors": []
+      "primary_endpoint": "PFS (dual primary endpoints: overall population and PIK3CA/AKT1/PTEN-altered population)",
+      "comparator": "Placebo + fulvestrant",
+      "population": "Locally advanced or metastatic HR+/HER2- breast cancer; progression on/after AI treatment; with or without prior CDK4/6i (CDK4/6i required for ≥51% of enrolled patients)",
+      "design": "Double-blind, placebo-controlled, randomized, 1:1, multicenter, Phase 3 (CAPItello-291)",
+      "sample_size": "N=708",
+      "stratification_factors": [
+        "Presence of liver metastases (yes vs no)",
+        "Prior CDK4/6 inhibitor use (yes vs no)",
+        "Geographic region (Region 1: US/Canada/Western Europe/Australia/Israel; Region 2: Latin America/Eastern Europe/Russia; Region 3: Asia)"
+      ]
     }
   },
   "09": {
     "drug": "Komzifti",
     "generic": "revumenib",
     "protocol_params": {
-      "primary_endpoint": "TODO",
-      "comparator": "TODO",
-      "population": "TODO",
-      "design": "TODO",
-      "sample_size": "TODO",
+      "primary_endpoint": "CR/CRh rate (complete remission + complete remission with partial hematologic recovery)",
+      "comparator": "None (single-arm)",
+      "population": "Adult patients with relapsed/refractory NPM1-mutant acute myeloid leukemia (R/R NPM1m AML)",
+      "design": "Open-label, single-arm, multicenter, multi-cohort, Phase 1/2 (KO-MEN-001); Phase 2 portion is pivotal",
+      "sample_size": "N=92 (Phase 2 pivotal cohort)",
       "stratification_factors": []
     }
   },
@@ -111,131 +131,160 @@
     "drug": "Kimmtrak",
     "generic": "tebentafusp-tebn",
     "protocol_params": {
-      "primary_endpoint": "TODO",
-      "comparator": "TODO",
-      "population": "TODO",
-      "design": "TODO",
-      "sample_size": "TODO",
-      "stratification_factors": []
+      "primary_endpoint": "Overall survival (OS) in the ITT population",
+      "comparator": "Investigator's choice (pembrolizumab, ipilimumab, or dacarbazine) — selected prior to randomization",
+      "population": "HLA-A*02:01-positive adults with metastatic uveal melanoma (mUM) previously untreated in the metastatic setting",
+      "design": "Open-label, randomized, 2:1, multicenter, Phase 3 (IMCgp100-202, Study 202)",
+      "sample_size": "N=378 (tebentafusp N=252 randomized/245 treated; IC N=126 randomized/111 treated)",
+      "stratification_factors": [
+        "LDH status (LDH >ULN vs LDH ≤ULN, measured centrally)"
+      ]
     }
   },
   "11": {
     "drug": "Loqtorzi",
     "generic": "toripalimab-tpzi",
     "protocol_params": {
-      "primary_endpoint": "TODO",
-      "comparator": "TODO",
-      "population": "TODO",
-      "design": "TODO",
-      "sample_size": "TODO",
-      "stratification_factors": []
+      "primary_endpoint": "PFS per IRC per RECIST v1.1 (changed from investigator-assessed to IRC by protocol amendment)",
+      "comparator": "Placebo + cisplatin + gemcitabine",
+      "population": "Metastatic or recurrent, locally advanced nasopharyngeal carcinoma (NPC); no prior systemic chemotherapy for recurrent/metastatic disease",
+      "design": "Multinational, randomized, double-blind, placebo-controlled, 1:1, Phase 3 (JUPITER-02)",
+      "sample_size": "N=289",
+      "stratification_factors": [
+        "ECOG performance status (0 vs 1)",
+        "Disease stage (recurrent vs metastatic)"
+      ]
     }
   },
   "12": {
     "drug": "Sotyktu",
     "generic": "deucravacitinib",
     "protocol_params": {
-      "primary_endpoint": "TODO",
-      "comparator": "TODO",
-      "population": "TODO",
-      "design": "TODO",
-      "sample_size": "TODO",
-      "stratification_factors": []
+      "primary_endpoint": "Co-primary at Week 16: (1) proportion achieving sPGA 0 or 1 with ≥2-grade improvement from baseline; (2) proportion achieving PASI 75",
+      "comparator": "Placebo and apremilast 30 mg BID (3-arm active comparator-controlled)",
+      "population": "Adults with moderate to severe plaque psoriasis eligible for systemic therapy or phototherapy (sPGA ≥3, PASI ≥12, BSA ≥10%)",
+      "design": "Randomized, double-blind, placebo- and active comparator-controlled, 2:1:1 (deucravacitinib:placebo:apremilast), multicenter, 52-week Phase 3 (two trials: IM011046 and IM011047)",
+      "sample_size": "N=666 (IM011046); N=1020 (IM011047); combined N=1684 (excluding 2 excluded subjects)",
+      "stratification_factors": [
+        "Geographic region (Trial IM011046: US/Japan/China/Rest of World; Trial IM011047: US/Rest of World)",
+        "Previous biologic use (yes vs no)",
+        "Body weight (≥90 kg vs <90 kg; not applied in Japan or China)"
+      ]
     }
   },
   "13": {
     "drug": "Tavneos",
     "generic": "avacopan",
     "protocol_params": {
-      "primary_endpoint": "TODO",
-      "comparator": "TODO",
-      "population": "TODO",
-      "design": "TODO",
-      "sample_size": "TODO",
-      "stratification_factors": []
+      "primary_endpoint": "Dual primary endpoints: (1) remission at Week 26 (non-inferiority vs high-dose prednisone taper); (2) sustained remission at Week 52 (superiority)",
+      "comparator": "Prednisone taper (starting 60 mg/day if ≥55 kg; tapered to 0 by Day 141) + background CYC or RTX",
+      "population": "Adults with newly diagnosed or relapsing active ANCA-associated vasculitis (GPA or MPA); positive anti-PR3 or anti-MPO; eGFR ≥15 mL/min/1.73m²",
+      "design": "Randomized, double-blind, active-controlled, 1:1, multicenter, 52-week Phase 3 (Study CL010_168)",
+      "sample_size": "N=331",
+      "stratification_factors": [
+        "Background induction therapy (IV rituximab vs IV cyclophosphamide vs oral cyclophosphamide)",
+        "ANCA type (PR3 vs MPO)",
+        "Disease status (newly diagnosed vs relapsing)"
+      ]
     }
   },
   "14": {
     "drug": "Airsupra",
     "generic": "albuterol/budesonide",
     "protocol_params": {
-      "primary_endpoint": "TODO",
-      "comparator": "TODO",
-      "population": "TODO",
-      "design": "TODO",
-      "sample_size": "TODO",
-      "stratification_factors": []
+      "primary_endpoint": "Time to first severe asthma exacerbation",
+      "comparator": "Albuterol sulfate (AS) MDI 180 µg PRN",
+      "population": "Subjects ≥12 years with moderate to severe asthma on background maintenance therapy (adults and adolescents; adult approval only by FDA)",
+      "design": "Randomized, double-blind, active comparator-controlled, variable-length, event-driven, 1:1:1 (BDA 160/180 µg : BDA 80/180 µg : AS 180 µg) for subjects ≥12 years, Phase 3 (MANDALA)",
+      "sample_size": "N=3132",
+      "stratification_factors": [
+        "Age (≥12 to 17 vs ≥18 years)",
+        "Region",
+        "Number of severe exacerbations in prior year (1 vs >1)"
+      ]
     }
   },
   "15": {
     "drug": "Orgovyx",
     "generic": "relugolix",
     "protocol_params": {
-      "primary_endpoint": "TODO",
-      "comparator": "TODO",
-      "population": "TODO",
-      "design": "TODO",
-      "sample_size": "TODO",
-      "stratification_factors": []
+      "primary_endpoint": "Sustained castration rate (testosterone <50 ng/dL from Week 5 Day 1 [Day 29] through 48 weeks)",
+      "comparator": "Leuprolide acetate 3-month depot (22.5 mg; 11.25 mg in Japan/Taiwan/China) every 12 weeks",
+      "population": "Men with androgen-sensitive advanced prostate cancer requiring ≥1 year of continuous ADT; including metastatic, biochemical relapse post-local therapy, and advanced localized disease",
+      "design": "Multinational, randomized, open-label, parallel-group, 2:1 (relugolix:leuprolide), 48-week, Phase 3 (HERO, Study MVT-601-3201)",
+      "sample_size": "N=934 (relugolix N=624; leuprolide N=310)",
+      "stratification_factors": [
+        "Geographic region",
+        "Presence of metastatic disease (metastatic vs nonmetastatic)",
+        "Age"
+      ]
     }
   },
   "16": {
     "drug": "Ogsiveo",
     "generic": "nirogacestat",
     "protocol_params": {
-      "primary_endpoint": "TODO",
-      "comparator": "TODO",
-      "population": "TODO",
-      "design": "TODO",
-      "sample_size": "TODO",
-      "stratification_factors": []
+      "primary_endpoint": "PFS by blinded independent central review per RECIST v1.1",
+      "comparator": "Placebo",
+      "population": "Adults ≥18 years with histologically confirmed desmoid tumor (DT) / deep fibromatosis with RECIST v1.1 progression ≥20% within 12 months of screening scan; treatment-naïve or recurrent/refractory",
+      "design": "Randomized, double-blind, placebo-controlled, 1:1, multicenter, Phase 3 (NIR-DT-301)",
+      "sample_size": "N=142",
+      "stratification_factors": [
+        "Target tumor location (intra-abdominal vs extra-abdominal)"
+      ]
     }
   },
   "17": {
     "drug": "Rytelo",
     "generic": "imetelstat",
     "protocol_params": {
-      "primary_endpoint": "TODO",
-      "comparator": "TODO",
-      "population": "TODO",
-      "design": "TODO",
-      "sample_size": "TODO",
-      "stratification_factors": []
+      "primary_endpoint": "≥8-week RBC transfusion independence (RBC-TI)",
+      "comparator": "Placebo",
+      "population": "IPSS low- or intermediate-1 risk MDS with transfusion-dependent anemia (≥4 RBC units/8 weeks at baseline); relapsed/refractory to or ineligible for ESA treatment",
+      "design": "Double-blind, randomized, 2:1 (imetelstat:placebo), placebo-controlled, multicenter, Phase 3 (Study MDS3001-Part 2 / IMerge Phase 3)",
+      "sample_size": "N=178 (imetelstat N=118; placebo N=60)",
+      "stratification_factors": [
+        "Prior RBC transfusion burden (≤6 vs >6 units RBC over 8 weeks)",
+        "IPSS risk group (low vs intermediate-1)"
+      ]
     }
   },
   "18": {
     "drug": "Voranigo",
     "generic": "vorasidenib",
     "protocol_params": {
-      "primary_endpoint": "TODO",
-      "comparator": "TODO",
-      "population": "TODO",
-      "design": "TODO",
-      "sample_size": "TODO",
-      "stratification_factors": []
+      "primary_endpoint": "PFS per BIRC (per RANO-LGG and modified RANO criteria)",
+      "comparator": "Placebo (with crossover permitted from placebo to vorasidenib upon confirmed radiographic PD)",
+      "population": "Adults and adolescents ≥12 years with residual or recurrent Grade 2 IDH1/IDH2-mutant oligodendroglioma or astrocytoma; surgical intervention as only prior anticancer therapy; most recent surgery 1-5 years before randomization",
+      "design": "Randomized, double-blind, placebo-controlled, 1:1, multicenter, Phase 3 (AG881-C-004, INDIGO)",
+      "sample_size": "N=331 (vorasidenib N=168; placebo N=163)",
+      "stratification_factors": [
+        "Local 1p19q status (co-deleted vs not co-deleted)",
+        "Baseline tumor size per local assessment (longest diameter ≥2 cm vs <2 cm)"
+      ]
     }
   },
   "19": {
     "drug": "Lumakras",
     "generic": "sotorasib",
     "protocol_params": {
-      "primary_endpoint": "TODO",
-      "comparator": "TODO",
-      "population": "TODO",
-      "design": "TODO",
-      "sample_size": "TODO",
+      "primary_endpoint": "ORR per BICR per RECIST v1.1",
+      "comparator": "None (single-arm)",
+      "population": "KRAS G12C-mutated locally advanced or metastatic NSCLC; ≥1 prior systemic therapy; at least one measurable lesion per RECIST v1.1",
+      "design": "Open-label, single-arm, multicenter, multi-cohort, Phase 1/2 (CodeBreaK 100, Study 20170543); accelerated approval",
+      "sample_size": "N=124 (primary efficacy population: NSCLC 960 mg QD with measurable lesion); N=427 (total solid tumor study enrollment)",
       "stratification_factors": []
     }
   },
   "20": {
     "drug": "Modeyso",
-    "generic": "tovorafenib",
+    "generic": "dordaviprone",
     "protocol_params": {
-      "primary_endpoint": "TODO",
-      "comparator": "TODO",
-      "population": "TODO",
-      "design": "TODO",
-      "sample_size": "TODO",
+      "primary_endpoint": "ORR per BICR per RANO 2.0 criteria (integrated efficacy population)",
+      "comparator": "None (single-arm)",
+      "population": "Adult and pediatric patients with recurrent H3 K27M-mutant diffuse midline glioma (DMG); post-radiation therapy progression",
+      "design": "Open-label, non-randomized, multicenter, single-arm across 5 completed Phase 2 studies (ONC006, ONC013, ONC014, ONC016, ONC018); integrated efficacy analysis; accelerated approval",
+      "sample_size": "N=50 (integrated efficacy population meeting pre-defined criteria)",
       "stratification_factors": []
     }
   }

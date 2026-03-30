@@ -7,55 +7,55 @@
 ## 2026-03-30: Git PR model + SOP normalization
 
 ### training/program.md (v3.1 → v3.2)
-- 新增"Git 工作流（PR 模型）"章节：checkout → commit → PR → merge 完整操作
-- 分支命名约定 + tag 命名约定
-- Step 6b 更新为 Section-Append 写入约定
-- 收尾流程新增 tag + 清洗 commit
+- Added "Git Workflow (PR Model)" section: checkout → commit → PR → merge full operations
+- Branch naming conventions + tag naming conventions
+- Step 6b updated to Section-Append write convention
+- Wrap-up flow added: tag + cleanup commits
 
-### 全部 domains/ + indications/ + regulatory/ + core/ 文件
-- 移除所有规则编号引用：`（#NN）` → 删除
+### All domains/ + indications/ + regulatory/ + core/ files
+- Removed all rule number references: `(#NN)` → deleted
 - frontmatter `rules: [...]` → `rule_count: N`
-- indications/ 标题去除"Protocol Design 规则"后缀
-- 符合 SOP 设计原则第 4 条（无冗余元数据）
+- indications/ titles removed "Protocol Design Rules" suffix
+- Compliant with SOP Design Principle #4 (no redundant metadata)
 
 ---
 
-## 2026-03-30: Opus 评审修复
+## 2026-03-30: Opus review fixes
 
 ### core/sap-design.md (v0.2 → v0.3)
-- 移除规则编号标题（#40, #41 等），改为语义化 Step 编号（Step 2-6）
-- 符合 SOP 设计原则第 4 条（无冗余元数据）
-- frontmatter rules 字段改为 rule_count
+- Removed rule-numbered headings (#40, #41 etc.), replaced with semantic Step numbers (Step 2-6)
+- Compliant with SOP Design Principle #4 (no redundant metadata)
+- frontmatter rules field changed to rule_count
 
 ### training/program.md (v3.0 → v3.1)
-- Step 4 补充独立裁判 Agent×3 盲评机制（多数票决定）
-- 明确禁止做题 Agent 自评（实证：自评通胀 ~25%）
-- 新增裁判间 κ < 0.5 校准触发条件
+- Step 4 added independent judge Agent×3 blind evaluation mechanism (majority vote)
+- Explicitly prohibited self-evaluation by the answering Agent (empirical: self-evaluation inflation ~25%)
+- Added inter-rater κ < 0.5 calibration trigger condition
 
 ---
 
-## 2026-03-30: v3.0 三层拆分迁移
+## 2026-03-30: v3.0 three-layer split migration
 
 ### core/protocol-design.md (v3.0)
-- 从 sop.md v2.2 拆分，28 条全局规则
-- 152 行，8 步决策流程
-- Step 5 统计规则部分分流到 sap-design.md
+- Split from sop.md v2.2, 28 global rules
+- 152 lines, 8-step decision process
+- Step 5 statistical rules partially migrated to sap-design.md
 
 ### core/sap-design.md (v0.2)
-- 种子版：7 条从 sop.md v2.2 Step 5 分流的规则
-- v0.2 增强：吸收 D2V SOP-BS-002（流程框架）+ Estimand/缺失数据/亚组分析
-- 145 行，待训练后扩充
+- Seed version: 7 rules migrated from sop.md v2.2 Step 5
+- v0.2 enhancement: absorbed D2V SOP-BS-002 (process framework) + Estimand/missing data/subgroup analysis
+- 145 lines, to be expanded after training
 
 ### domains/ (v1.0)
-- 5 个文件：oncology-solid, oncology-heme, autoimmune, respiratory, rare-disease
-- autoimmune 为框架占位
+- 5 files: oncology-solid, oncology-heme, autoimmune, respiratory, rare-disease
+- autoimmune is a framework placeholder
 
 ### indications/ (v1.0)
-- 11 个文件：breast-er-her2neg, nsclc, gastric-gejc, aml, psoriasis, prostate-adt, anca-vasculitis, asthma, mds, lgg, npc
+- 11 files: breast-er-her2neg, nsclc, gastric-gejc, aml, psoriasis, prostate-adt, anca-vasculitis, asthma, mds, lgg, npc
 
 ### regulatory/ (v1.0)
-- 3 个文件：accelerated-approval, breakthrough, botanical-drug(占位)
+- 3 files: accelerated-approval, breakthrough, botanical-drug (placeholder)
 
-### 零损失验证
-- 42/42 关键词覆盖测试通过
-- 试分类表 65 条规则全映射
+### Zero-loss validation
+- 42/42 keyword coverage test passed
+- Trial classification table: all 65 rules mapped

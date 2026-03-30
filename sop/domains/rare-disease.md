@@ -1,44 +1,44 @@
 ---
 version: 1.0
-source: sop.md v2.2 拆分
+source: sop.md v2.2 split
 rule_count: 3
 ---
 
-# 罕见病通用规则 — Rare Disease
+# Rare Disease General Rules — Rare Disease
 
-> 跨罕见病/罕见肿瘤通用规则。适应症特定内容见 indications/。
+> Cross-indication general rules for rare disease/rare cancer. Indication-specific content: see indications/.
 
 ---
 
 ## Trial Design
 
-### 罕见非转移性肿瘤：PFS 可含临床进展
+### Rare Non-metastatic Cancers: PFS May Include Clinical Progression
 
-对于不转移但通过局部侵犯导致发病的肿瘤（如硬纤维瘤），PFS 可纳入"临床进展"（症状恶化导致停药并开始紧急治疗），需独立中心化裁定确认。
+For cancers that do not metastasize but cause morbidity through local invasion (e.g., desmoid tumors), PFS may incorporate "clinical progression" (symptom worsening leading to treatment discontinuation and initiation of urgent therapy), which must be confirmed by independent centralized adjudication.
 
-### 罕见肿瘤分层因子最小化：仅 LDH
+### Rare Cancer Stratification Factor Minimization: LDH Only
 
-IF 罕见肿瘤（<5/million incidence）:
-→ 最小化至 1-2 个分层因子，仅保留最强预后因子，避免过度分层导致小细胞不平衡
-→ 📌 Kimmtrak（葡萄膜黑色素瘤）: 仅 LDH 状态 1 个因子
+IF rare cancer (<5/million incidence):
+→ Minimize to 1-2 stratification factors; retain only the strongest prognostic factor to avoid over-stratification causing small cell imbalance
+→ 📌 Kimmtrak (uveal melanoma): only LDH status — 1 factor
 
 ---
 
 ## SAP Design
 
-### 罕见病可省略期中分析
+### Rare Disease: Interim Analysis May Be Omitted
 
-- IF 罕见病目标事件数 ≤50-60: → 可省略期中分析，单次最终分析节省 alpha
-- IF 罕见病 RCT: → 次要终点可全部探索性，multiplicity 聚焦 co-primary
+- IF rare disease target events ≤50-60: → May omit interim analysis; single final analysis conserves alpha
+- IF rare disease RCT: → Secondary endpoints may all be exploratory; multiplicity focused on co-primary
 
 ---
 
 ## Safety
 
-<!-- 训练时按 section-append 约定追加规则 -->
+<!-- Append rules here during training (section-append convention) -->
 
 ---
 
 ## CRF Design
 
-<!-- 训练时按 section-append 约定追加规则 -->
+<!-- Append rules here during training (section-append convention) -->

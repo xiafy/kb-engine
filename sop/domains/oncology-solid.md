@@ -1,43 +1,43 @@
 ---
 version: 1.0
-source: sop.md v2.2 拆分
+source: sop.md v2.2 split
 rule_count: 3
 ---
 
-# 实体瘤通用规则 — Oncology Solid
+# Solid Tumor General Rules — Oncology Solid
 
-> 跨适应症通用规则。适应症特定内容见 indications/。
+> Cross-indication general rules. Indication-specific content: see indications/.
 
 ---
 
 ## Trial Design
 
-### 泛瘤种 Basket 试验检测策略
+### Pan-tumor Basket Trial Testing Strategy
 
-IF 设计 == "泛瘤种 basket 试验": → 接受多种 CLIA 认证检测方法（NGS/FISH/RT-PCR），不限单一平台。
+IF design == "pan-tumor basket trial": → Accept multiple CLIA-certified testing methods (NGS/FISH/RT-PCR); do not restrict to a single platform.
 
-### 儿科患者纳入策略
+### Pediatric Patient Inclusion Strategy
 
-分子靶向药应尽早纳入儿科：≥12 岁可直接入成人试验；<12 岁单独 PK/安全性队列。长期安全性须覆盖生长发育、认知、生育安全、二次恶性肿瘤。
+Molecularly targeted drugs should incorporate pediatric patients early: patients ≥12 years old may be enrolled directly in adult trials; patients <12 years require a separate PK/safety cohort. Long-term safety must cover growth and development, cognition, reproductive safety, and secondary malignancies.
 
-### 非细胞毒开放标签 inv-PFS 豁免
+### Non-cytotoxic Open-label inv-PFS Exemption
 
-⚠️ 豁免条件：非细胞毒药物（如口服内分泌治疗 vs IC of ET）的开放标签试验，若对照臂和试验臂均为同类药物机制且疾病进展判断受主观偏倚影响较小，FDA 可接受 investigator-assessed PFS 为主要终点（先例：EMBER-3/Inluriyo）。
+⚠️ Exemption criteria: For open-label trials of non-cytotoxic drugs (e.g., oral endocrine therapy vs IC of ET) where both the control arm and trial arm share the same drug mechanism class and disease progression assessment is minimally subject to subjective bias, FDA may accept investigator-assessed PFS as the primary endpoint (precedent: EMBER-3/Inluriyo).
 
 ---
 
 ## SAP Design
 
-<!-- 训练时按 section-append 约定追加规则 -->
+<!-- Append rules here during training (section-append convention) -->
 
 ---
 
 ## Safety
 
-<!-- 训练时按 section-append 约定追加规则 -->
+<!-- Append rules here during training (section-append convention) -->
 
 ---
 
 ## CRF Design
 
-<!-- 训练时按 section-append 约定追加规则 -->
+<!-- Append rules here during training (section-append convention) -->

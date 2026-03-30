@@ -1,21 +1,21 @@
 ---
 version: 1.0
-source: sop.md v2.2 拆分
+source: sop.md v2.2 split
 rule_count: 1
 ---
 
-# 突破性疗法认定 (Breakthrough Therapy Designation)
+# Breakthrough Therapy Designation
 
-> version: 1.0 | source: sop.md v2.2 拆分
+> version: 1.0 | source: sop.md v2.2 split
 
 ## Trial Design
 
-### BTD 申请时机与获益
+### BTD Application Timing and Benefits
 
-IF 初步临床证据显示实质性改善:
-→ Phase 1/2 阳性信号后即可申请 Breakthrough Therapy（FDA 60 天回应）
-→ 获得后可得密集指导 + Rolling Review
+IF preliminary clinical evidence shows substantial improvement:
+→ May apply for Breakthrough Therapy after positive Phase 1/2 signal (FDA responds within 60 days)
+→ Upon designation: intensive guidance + Rolling Review
 
 ## SAP Design
 
-<!-- 训练时按 section-append 约定追加规则 -->
+<!-- Append rules here during training (section-append convention) -->

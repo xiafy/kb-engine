@@ -1,30 +1,30 @@
 ---
 version: 1.0
-source: sop.md v2.2 拆分
+source: sop.md v2.2 split
 rule_count: 4
 ---
 
-# ER+/HER2- 乳腺癌
+# ER+/HER2- Breast Cancer
 
-> version: 1.0 | source: sop.md v2.2 拆分
+> version: 1.0 | source: sop.md v2.2 split
 
 ## Trial Design
 
-### Biomarker 检测策略
-IF 适应症 == "ER+/HER2- ESR1m 乳腺癌": → ctDNA-based NGS 检测（非组织 IHC）
+### Biomarker Testing Strategy
+IF indication == "ER+/HER2- ESR1m breast cancer": → ctDNA-based NGS testing (not tissue IHC)
 
-### 对照组选择
-IF 适应症 == "ER+/HER2- 2L+ mBC": → IC of endocrine therapy（fulvestrant/AI/tamoxifen 预设列表）
+### Control Arm Selection
+IF indication == "ER+/HER2- 2L+ mBC": → IC of endocrine therapy (fulvestrant/AI/tamoxifen pre-specified list)
 
-### 分层因子
-ER+/HER2- mBC 推荐分层因子: 既往 CDK4/6i(yes/no) + 内脏转移(yes/no) + 地区。
-⚠️ ESR1 突变状态**不是**分层因子——ESR1m 用于定义 co-primary 亚组，不用于随机化分层（先例：EMBER-3 未将 ESR1m 作为分层因子）。
-注：内脏转移为通用预后因子；特定试验可细化为肝转移（更强预后因子）。
+### Stratification Factors
+ER+/HER2- mBC recommended stratification factors: prior CDK4/6i (yes/no) + visceral metastasis (yes/no) + region.
+⚠️ ESR1 mutation status is **NOT** a stratification factor — ESR1m is used to define the co-primary subgroup, not for randomization stratification (precedent: EMBER-3 did not use ESR1m as a stratification factor).
+Note: Visceral metastasis is a general prognostic factor; specific trials may refine to liver metastasis (stronger prognostic factor).
 
-### 运营惯例 4 条
-(1) 对照臂 = IC of endocrine therapy；(2) ctDNA NGS 检测 ESR1；(3) 开放标签 inv-PFS 为主要终点（满足 4.1 豁免条件：非细胞毒口服 ER 拮抗剂 vs IC of ET，BICR 作为敏感性分析）；(4) 可用 co-primary：PFS in ESR1-mut + PFS in ITT，alpha 非对称分配。
-- 📌 EMBER-3: co-primary inv-PFS (ESR1-mut α=0.02, ITT α=0.005)，BIRC = sensitivity
+### 4 Operational Conventions
+(1) Control arm = IC of endocrine therapy; (2) ctDNA NGS testing for ESR1; (3) Open-label inv-PFS as primary endpoint (meeting 4.1 exemption criteria: non-cytotoxic oral ER antagonist vs IC of ET; BICR as sensitivity analysis); (4) Co-primary may be used: PFS in ESR1-mut + PFS in ITT, asymmetric alpha allocation.
+- 📌 EMBER-3: co-primary inv-PFS (ESR1-mut α=0.02, ITT α=0.005), BIRC = sensitivity
 
 ## SAP Design
 
-<!-- 训练时按 section-append 约定追加规则 -->
+<!-- Append rules here during training (section-append convention) -->

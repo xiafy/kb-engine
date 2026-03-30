@@ -1,42 +1,42 @@
 ---
 version: 1.0
-source: sop.md v2.2 拆分
+source: sop.md v2.2 split
 rule_count: 2
 ---
 
-# 呼吸科通用规则 — Respiratory
+# Respiratory General Rules — Respiratory
 
-> 呼吸科/吸入产品跨适应症通用规则。适应症特定内容见 indications/asthma.md。
+> Cross-indication general rules for respiratory/inhaled products. Indication-specific content: see indications/asthma.md.
 
 ---
 
 ## Trial Design
 
-### FDC ICS 含量产品分层策略
+### FDC ICS-Containing Products — Stratification Strategy
 
-FDC 析因设计分层策略（呼吸科/吸入产品）：
-- IF FDC 含 ICS 成分 → 事件驱动 PRN 试验分层因子: 年龄（≥12-17 vs ≥18）+ 地区 + 过去 12 月重度发作次数（1 vs >1）
-- IF FDC 含 ICS 成分 → 析因固定剂量试验分层因子: 年龄（≥12-17 vs ≥18）+ 基线 ACQ-7（≤1.5 vs >1.5）+ 背景 ICS 治疗（ICS vs no ICS）
-- 📌 Airsupra: MANDALA 分层(age+region+exacerbation), DENALI 分层(age+ACQ-7+background ICS)
+FDC factorial design stratification strategy (respiratory/inhaled products):
+- IF FDC contains ICS component → Event-driven PRN trial stratification factors: age (≥12-17 vs ≥18) + region + number of severe exacerbations in past 12 months (1 vs >1)
+- IF FDC contains ICS component → Factorial fixed-dose trial stratification factors: age (≥12-17 vs ≥18) + baseline ACQ-7 (≤1.5 vs >1.5) + background ICS therapy (ICS vs no ICS)
+- 📌 Airsupra: MANDALA stratification (age+region+exacerbation), DENALI stratification (age+ACQ-7+background ICS)
 
-### 4-11 岁儿科亚组不进一步分层
+### Pediatric Subgroup Ages 4-11: No Further Stratification
 
-4-11 岁儿科亚组不进一步分层（样本量限制），安全性按背景 ICS 剂量（低/中/高）分层分析。
+The pediatric subgroup aged 4-11 is not further stratified (sample size limitation); safety is analyzed stratified by background ICS dose (low/medium/high).
 
 ---
 
 ## SAP Design
 
-<!-- 训练时按 section-append 约定追加规则 -->
+<!-- Append rules here during training (section-append convention) -->
 
 ---
 
 ## Safety
 
-<!-- 训练时按 section-append 约定追加规则 -->
+<!-- Append rules here during training (section-append convention) -->
 
 ---
 
 ## CRF Design
 
-<!-- 训练时按 section-append 约定追加规则 -->
+<!-- Append rules here during training (section-append convention) -->

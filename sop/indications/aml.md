@@ -1,25 +1,25 @@
 ---
 version: 1.0
-source: sop.md v2.2 拆分
+source: sop.md v2.2 split
 rule_count: 2
 ---
 
-# AML (急性髓系白血病)
+# AML (Acute Myeloid Leukemia)
 
-> version: 1.0 | source: sop.md v2.2 拆分
+> version: 1.0 | source: sop.md v2.2 split
 
 ## Trial Design
 
-### Biomarker 检测策略
-IF 适应症 == "AML 分子靶向": → 本地实验室检测（PCR/NGS）可入组，CDx 推荐上市后开发（AML 基因检测已是标准诊断流程）。
+### Biomarker Testing Strategy
+IF indication == "AML molecular targeted": → Local laboratory testing (PCR/NGS) acceptable for enrollment; CDx recommended for post-approval development (AML gene testing is already standard diagnostic practice).
 
-### 分层因子
-AML 推荐分层因子: ELN 风险分组(fav/int/adv) + 疾病状态(新诊断 vs R/R) + 年龄(<60 vs ≥60)。
-注：地区通常不分层。
+### Stratification Factors
+AML recommended stratification factors: ELN risk group (fav/int/adv) + disease status (newly diagnosed vs R/R) + age (<60 vs ≥60).
+Note: Region is typically not a stratification factor.
 
-### 终点选择
-见 domains/oncology-heme.md #33（AML 终点按治疗意图 + EFS 定义）。
+### Endpoint Selection
+See domains/oncology-heme.md #33 (AML endpoint by treatment intent + EFS definition).
 
 ## SAP Design
 
-<!-- 训练时按 section-append 约定追加规则 -->
+<!-- Append rules here during training (section-append convention) -->

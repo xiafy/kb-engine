@@ -1,23 +1,23 @@
 ---
 version: 1.0
-source: sop.md v2.2 拆分
+source: sop.md v2.2 split
 rule_count: 2
 ---
 
-# 前列腺癌 ADT
+# Prostate Cancer ADT
 
-> version: 1.0 | source: sop.md v2.2 拆分
+> version: 1.0 | source: sop.md v2.2 split
 
 ## Trial Design
 
-### 入组标准
-IF 适应症 == "ADT（GnRH 类）": → 基线睾酮 ≥150 ng/dL；排除近期 ADT（3 个月内）和长期累积 ADT（>18 个月）
+### Eligibility Criteria
+IF indication == "ADT (GnRH class)": → Baseline testosterone ≥150 ng/dL; exclude recent ADT (within 3 months) and prolonged cumulative ADT (>18 months)
 
-### 终点选择
-IF 适应症 == "ADT（GnRH 类）":
-- IF 口服新药 vs 注射标准 ADT（如 relugolix vs leuprolide）→ 可用 open-label RCT with active comparator（2:1 随机），主要终点仍为持续睾酮抑制率，次要终点含 NI 比较（📌 Orgovyx HERO: 口服 GnRH 拮抗剂 vs 注射 GnRH 激动剂，regular approval via RCT）
-- ELSE（注射 GnRH 类药物无差异化给药途径）→ 单臂阈值法，KM 持续睾酮抑制率 95% CI 下限 ≥90%（T<50 ng/dL, Day 29–48 wk）
+### Endpoint Selection
+IF indication == "ADT (GnRH class)":
+- IF oral new drug vs injectable standard ADT (e.g., relugolix vs leuprolide) → Open-label RCT with active comparator acceptable (2:1 randomization); primary endpoint remains sustained testosterone suppression rate; secondary endpoints include NI comparison (📌 Orgovyx HERO: oral GnRH antagonist vs injectable GnRH agonist, regular approval via RCT)
+- ELSE (injectable GnRH class drug without differentiated route of administration) → Single-arm threshold method: KM sustained testosterone suppression rate 95% CI lower bound ≥90% (T<50 ng/dL, Day 29–48 wk)
 
 ## SAP Design
 
-<!-- 训练时按 section-append 约定追加规则 -->
+<!-- Append rules here during training (section-append convention) -->

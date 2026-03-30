@@ -1,23 +1,23 @@
 ---
 version: 1.0
-source: sop.md v2.2 拆分
+source: sop.md v2.2 split
 rule_count: 2
 ---
 
-# 哮喘 (Asthma)
+# Asthma
 
-> version: 1.0 | source: sop.md v2.2 拆分
+> version: 1.0 | source: sop.md v2.2 split
 
 ## Trial Design
 
-### 终点选择
-IF 适应症 == "哮喘/支气管扩张":
-→ 支气管扩张终点: FEV1 AUC0-6h + trough FEV1（12 周期间评估），非单次急性变化
+### Endpoint Selection
+IF indication == "asthma/bronchodilation":
+→ Bronchodilation endpoints: FEV1 AUC0-6h + trough FEV1 (assessed over 12 weeks); not a single acute change
 
-### 分层因子
-哮喘推荐分层因子: 年龄 + 地区 + 过去 12 月重度发作次数(1 vs >1)。
-注：入组中重度哮喘患者。
+### Stratification Factors
+Asthma recommended stratification factors: age + region + number of severe exacerbations in past 12 months (1 vs >1).
+Note: Enroll patients with moderate-to-severe asthma.
 
 ## SAP Design
 
-<!-- 训练时按 section-append 约定追加规则 -->
+<!-- Append rules here during training (section-append convention) -->

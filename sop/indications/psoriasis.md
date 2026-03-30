@@ -1,29 +1,29 @@
 ---
 version: 1.0
-source: sop.md v2.2 拆分
+source: sop.md v2.2 split
 rule_count: 3
 ---
 
-# 银屑病 (Psoriasis)
+# Psoriasis
 
-> version: 1.0 | source: sop.md v2.2 拆分
+> version: 1.0 | source: sop.md v2.2 split
 
 ## Trial Design
 
-### 入组标准
-IF 适应症 == "银屑病": → sPGA ≥3 + PASI ≥12 + BSA ≥10%
+### Eligibility Criteria
+IF indication == "psoriasis": → sPGA ≥3 + PASI ≥12 + BSA ≥10%
 
-### 终点选择
-IF 适应症 == "银屑病":
-→ 主要终点: sPGA 0/1（含 ≥2-grade improvement 限定）+ PASI 75 at Week 16
-→ 次要终点覆盖: PASI 90/100、头皮(ss-PGA 0/1)、指甲(PGA-F 0/1)、PRO(PSSD 症状评分)
-→ 包含 placebo escape（Wk16 switch）和 randomized withdrawal 设计
+### Endpoint Selection
+IF indication == "psoriasis":
+→ Primary endpoint: sPGA 0/1 (with ≥2-grade improvement restriction) + PASI 75 at Week 16
+→ Secondary endpoints cover: PASI 90/100, scalp (ss-PGA 0/1), nails (PGA-F 0/1), PRO (PSSD symptom score)
+→ Includes placebo escape (Wk16 switch) and randomized withdrawal design
 
-### 安全性监测
-IF 适应症 == "银屑病":
-→ 安慰剂组 Week 16 盲态转换（placebo escape）
-→ 可设计 randomized withdrawal 期评估疗效持久性
+### Safety Monitoring
+IF indication == "psoriasis":
+→ Placebo group blinded switch at Week 16 (placebo escape)
+→ Randomized withdrawal period may be designed to assess durability of response
 
 ## SAP Design
 
-<!-- 训练时按 section-append 约定追加规则 -->
+<!-- Append rules here during training (section-append convention) -->
