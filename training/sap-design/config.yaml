@@ -1,0 +1,64 @@
+# Branch: sap-design
+# SAP 统计设计决策流程
+
+branch: sap-design
+version: 0.1
+status: seed  # 种子版，待训练
+
+sop:
+  core: core/sap-design.md
+  depends_on: core/protocol-design.md  # SAP 需要 Protocol 设计参数作为输入
+  domains_mapping: case-config.json
+  indications_mapping: case-config.json
+
+answer_extraction:
+  chapters:
+    - "Statistical Review — Analysis Plan"
+    - "Statistical Review — Multiplicity"
+    - "Statistical Review — Interim Analysis"
+    - "Statistical Review — Sample Size"
+    - "Statistical Review — Missing Data"
+    - "Statistical Review — Subgroup Analysis"
+    - "Clinical Review — Efficacy"  # 分析集定义、敏感性分析
+
+scoring:
+  dimensions:
+    - 主分析方法选择
+    - 多重性控制策略
+    - 期中分析设计
+    - 分析集定义
+    - 缺失数据处理策略
+    - 亚组分析预设
+    - 敏感性分析设计
+    - 样本量计算方法和假设
+    - Estimand 框架
+  skip_items: null
+  custom_rubric: null  # 训练开始后根据需要添加
+
+input_schema:
+  description: "SAP 做题需要 Protocol 参数作为固定输入"
+  source: case-config.json  # protocol_params 字段（待 Step 3 增强后填充）
+  fields:
+    - primary_endpoint
+    - secondary_endpoints
+    - comparator
+    - population
+    - design
+    - stratification_factors
+
+sop_write_targets:
+  global: sop/core/sap-design.md
+  domain: "sop/domains/{domain}.md ## SAP Design"
+  indication: "sop/indications/{indication}.md ## SAP Design"
+  regulatory: "sop/regulatory/{regulatory}.md"
+
+execution_order: default  # 使用 program.md 默认案例顺序
+
+history:
+  total_rounds: 0
+  current_match: null
+  seed_sources:
+    - sop.md v2.2 Step 5 分流（7 条规则）
+    - kb/d2v-sop/BS/sop-bs-002（SAP 开发流程框架）
+    - kb/methods/sop/statistical-design-sop.md（统计方法决策逻辑）
+  creation_date: "2026-03-30"

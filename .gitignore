@@ -1,0 +1,5 @@
+# Symlink targets (not tracked)
+data
+
+# OS files
+.DS_Store

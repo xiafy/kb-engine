@@ -1,0 +1,21 @@
+# {BRANCH_NAME} Training Branch Config
+# Copy to training/{branch_name}/config.yaml and customize
+
+sop:
+  core: "{branch_name}.md"
+
+answer_extraction:
+  chapters:
+    # List FDA Review chapters to extract answers from
+    - "TODO: Add chapters"
+
+scoring:
+  dimensions:
+    # List scoring dimensions (overrides evaluate.md defaults if set)
+    # - dimension_name: weight
+
+sop_write_targets:
+  global: "sop/core/{branch_name}.md"
+  domain: "sop/domains/{domain}.md"
+  indication: "sop/indications/{indication}.md"
+  regulatory: "sop/regulatory/{path}.md"

@@ -1,0 +1,44 @@
+# Branch: protocol-design
+# Protocol 设计 8 步决策流程
+
+branch: protocol-design
+version: 1.0
+status: migrated  # from docs/training-loop/ v2.2
+
+sop:
+  core: core/protocol-design.md
+  depends_on: null
+  domains_mapping: case-config.json  # domain 字段 → sop/domains/{domain}.md
+  indications_mapping: case-config.json  # indication 字段 → sop/indications/{indication}.md
+
+answer_extraction:
+  chapters:
+    - "Clinical Review — Trial Design"
+    - "Clinical Review — Inclusion/Exclusion"
+    - "Clinical Review — Efficacy"
+    - "Clinical Review — Safety"           # QC D-2 补充
+    - "Statistical Review — Study Design"
+    - "Statistical Review — Sample Size"
+
+scoring:
+  # 使用 evaluate.md 默认 10 项评分维度（不 override）
+  dimensions: default
+  skip_items: null
+  custom_rubric: null
+
+sop_write_targets:
+  global: sop/core/protocol-design.md
+  domain: "sop/domains/{domain}.md ## Trial Design"
+  indication: "sop/indications/{indication}.md ## Trial Design"
+  regulatory: "sop/regulatory/{regulatory}.md"
+
+execution_order: default  # 使用 program.md 中的固定顺序
+
+history:
+  total_rounds: 20
+  current_match: 0.74  # 校准后（自评 0.83，盲评校准 0.74）
+  ood_match: 0.76  # 训练集外 5 案例
+  sop_rules_initial: 59  # v2.2 起始
+  sop_rules_final: 71    # 20 轮训练后实际值
+  migrated_from: docs/training-loop/
+  migration_date: "2026-03-30"
