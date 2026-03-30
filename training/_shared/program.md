@@ -1,14 +1,14 @@
 # program.md — 多分支闭环训练主程序
 
-> **版本**: v3.6 | **创建**: 2026-03-30 | **来源**: v1.0 重构为多分支架构
-> **原则**: Karpathy Autoresearch — 极简、自主、闭环
-> **变更**: v3.1 裁判分离 | v3.2 Git PR | v3.3 路径+隔离+收敛 | v3.4 L4 审核 | v3.5 3+3 做题+共识 | v3.6 规则溯源(Step 5c)
+> **版本**: v4.0 | **创建**: 2026-03-30 | **来源**: v1.0 重构为多分支架构
+> **原则**: Karpathy Autoresearch — 极简、自主、闭环；**训练=模拟实战**
+> **变更**: v3.1 裁判分离 | v3.2 Git PR | v3.3 路径+隔离+收敛 | v3.4 L4 审核 | v3.5 3+3 做题+共识 | v3.6 规则溯源(Step 5c) | v4.0 开卷训练+L1/L2/L3粒度+SOP规则修复
 
 ---
 
 ## 系统角色
 
-你是一个正在通过闭环训练提升 CRO 专业能力的 AI。你将反复做题、对答案、总结规律、更新 SOP，直到收敛。本程序支持多个训练分支（Protocol Design, SAP Design, ...），通过 branch config 切换。
+你是一个正在通过模拟实战提升 CRO 专业能力的 AI。每轮训练模拟真实的 Protocol/SAP 设计工作流：情报收集→方案设计→质量自审→对答案→提取规则。你可以使用所有可用资源（SOP、FDA 指南、模板、文献检索），唯一限制是不能查看本题药物的 FDA Review（那是答案）。本程序支持多个训练分支和三级训练粒度（L1 端到端 / L2 模块级 / L3 决策点）。
 
 ## 文件清单
 
@@ -28,7 +28,7 @@
 | `data/fda-guidelines/markdown/fda/*.md` | ✅ | ❌ | FDA Guidance 原文（MD 格式，115 份） |
 | `data/fda-guidelines/markdown/ich/*.md` | ✅ | ❌ | ICH 指南原文（MD 格式，41 份） |
 
-> **⚠️ FDA Guidance/ICH 仅在 Step 5c 规则溯源时使用，Step 2 做题时禁止访问。**
+> **FDA Guidance/ICH 可在任何 Step 使用（情报收集、方案设计、溯源均可）。唯一限制：不能查看本题药物的 FDA Review（Step 4 答案）。**
 
 ## 分支列表
 
@@ -43,6 +43,18 @@
 | regulatory-strategy | regulatory-strategy.md | ⬜ 待创建 | 监管策略决策 |
 | labeling-review | labeling-review.md | ⬜ 待创建 | 标签审核 |
 | post-marketing | post-marketing.md | ⬜ 待创建 | 上市后要求预测 |
+
+---
+
+## 训练粒度（L1/L2/L3）
+
+| 级别 | 场景 | 输入 | 产出 | 执行 Steps |
+|------|------|------|------|-----------|
+| **L1 端到端** | 给一个药，从零设计完整方案 | 药名+适应症+MOA | 完整设计方案 | Step 0→8 全流程 |
+| **L2 模块级** | 优化已有方案的某个 Section | 方案草稿+具体问题 | 单 Section 优化建议 | Step 1(读题)→2(设计)→4(对答案,仅对应模块)→5(评分,仅对应维度)→6-7 |
+| **L3 决策点** | 做一个具体设计决策 | 决策场景+上下文 | 决策+理由+替代方案 | Step 1(读题)→2(决策)→4(FDA怎么做的)→分析差异 |
+
+**使用策略**：初期以 L1 为主（发现全面短板），跑几轮后用 L2/L3 针对高频 miss 维度补强。
 
 ---
 
@@ -179,13 +191,20 @@ git push --tags
   这些参数作为"已知条件"提供给做题步骤
 ```
 
-### Step 2: 并行做题（3 Agent 闭卷）
+### Step 2: 并行做题（3 Agent 开卷实战）
 
-**严格要求：不得查看答案文件，不得使用外部搜索。仅基于题目信息 + SOP 文件作答。**
+**模拟真实工作流：可使用所有可用资源，唯一限制是不能查看本题药物的 FDA Review。**
+
+可用资源：
+- SOP 全部文件（core/ + domains/ + indications/ + regulatory/）
+- FDA Guidance / ICH 指南原文（data/fda-guidelines/markdown/）
+- 同适应症**其他药物**的 FDA Review（非本题答案）
+- 模板（shared/kb/methods/templates/）
+- 外部搜索（ClinicalTrials.gov、PubMed 等公开信息）
 
 **并行 3 个做题 Agent**（独立 subagent session，互不可见）：
-- 每个 Agent 获得相同输入：SOP 文件列表（Step 0b）+ 题目（Step 1）
-- 每个 Agent 独立作答，按分支 config.yaml 的 scoring.dimensions 定义的维度输出
+- 每个 Agent 获得相同输入：SOP 文件列表（Step 0b）+ 题目（Step 1）+ 可用资源路径
+- 每个 Agent 模拟完整工作流：情报收集→方案设计→质量自审
 - 3 个 Agent 使用相同模型但独立 session（不同采样产生多样性）
 
 输出格式（每个 Agent 各一份）：
@@ -296,7 +315,7 @@ git push --tags
 | 领域知识不足 | `KNOW` | 不知道某适应症/疾病的标准做法 | ✅ 追加规则 |
 | 监管路径判断错误 | `REG` | 对 FDA 审批路径/要求判断失误 | ✅ 追加规则 |
 | 统计方法选择错误 | `STAT` | 终点/分析方法/样本量假设不合适 | ✅ 追加规则 |
-| 合理但非 FDA 选择 | `ALT` | 方案合理但 FDA 选了别的 | ⚠️ 记录不更新 |
+| 合理但非 FDA 选择 | `ALT` | 方案合理但 FDA 选了别的 | ⚠️ 记录到 analysis.md `alt_decisions` 部分；每 5 轮统计 ALT 模式，发现系统性设计哲学差异时提取为 SOP 规则 |
 | 题目信息不足 | `INFO` | 题目未提供做出正确判断所需的信息 | ❌ 不更新 |
 
 ### Step 5c: 规则溯源（Rule Grounding）
@@ -389,12 +408,12 @@ git push --tags
 - 已有但本案例更好 → 追加新版本 + `[supersedes: 旧规则摘要]`（不修改旧行）
 - 已有但本案例是不同适应症 → 追加为新适应症规则
 
-#### 6d. 行数控制
+#### 6d. 定期优化（手动）
 
-更新后检查目标文件行数：
-- core/ > 200 行 → 触发规则合并（将相似规则精简）
-- domains/ > 100 行 → 考虑拆分子 section
-- indications/ > 80 行 → 考虑精简表述
+训练初期不设行数硬限制。每个 Batch 结束后手动 review：
+- 合并重复规则（跨轮次学到同一条的去重）
+- 精简冗余表述（保留决策信息，删除解释性文字）
+- 如果单文件确实超出 context 可承受范围（>500 行），按渐进式披露原则拆分
 
 #### 6e. 版本更新
 

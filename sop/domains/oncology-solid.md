@@ -22,7 +22,8 @@ Molecularly targeted drugs should incorporate pediatric patients early: patients
 
 ### Non-cytotoxic Open-label inv-PFS Exemption
 
-⚠️ Exemption criteria: For open-label trials of non-cytotoxic drugs (e.g., oral endocrine therapy vs IC of ET) where both the control arm and trial arm share the same drug mechanism class and disease progression assessment is minimally subject to subjective bias, FDA may accept investigator-assessed PFS as the primary endpoint (precedent: EMBER-3/Inluriyo).
+⚠️ Exemption criteria: For open-label trials of non-cytotoxic drugs (e.g., oral endocrine therapy vs IC of ET) where ALL of: (1) both arms share the same drug mechanism class, (2) disease progression is assessed primarily by radiographic imaging. FDA may accept investigator-assessed PFS as primary (precedent: EMBER-3/Inluriyo).
+⚠️ Does NOT apply to: ADC, CAR-T, bispecific antibodies, or settings with significant subjective progression assessment.
 
 ### Protocol 11-Section Standard Structure
 All new oncology protocols must follow the 11-section structure: (1) Protocol Summary (Synopsis + Schema + SoA); (2) Introduction (Rationale + Background + B/R); (3) Objectives & Endpoints (table format); (4) Study Design; (5) Study Population (I/E); (6) Study Intervention (dosing + concomitant + dose modification); (7) Discontinuation/Withdrawal; (8) Assessments & Procedures (efficacy + safety + AE + PK + biomarkers + PRO); (9) Statistical Considerations; (10) Supporting Documentation (Appendices); (11) References.

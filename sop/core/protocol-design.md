@@ -85,10 +85,11 @@ ICS/SABA and similar FDC reliever/controller products require: (1) A large event
 ### 4.1 Oncology endpoint assessment approach
 
 IF open-label (including ICC comparator):
-  IF non-cytotoxic drug AND trial arm and control arm are of the same drug mechanism class AND disease progression assessment is minimally subject to subjective bias:
+  IF ALL of: (1) non-cytotoxic drug, (2) trial arm and control arm share the same drug mechanism class, (3) disease progression is assessed primarily by radiographic imaging (not clinical/subjective assessment):
     → FDA may accept investigator-assessed PFS as primary endpoint (BICR as sensitivity analysis)
     → Precedent: EMBER-3/Inluriyo (oral ER antagonist vs IC of ET)
     → See `domains/oncology-solid.md ## Trial Design`
+  ⚠️ This exemption does NOT apply to: ADC trials, CAR-T, bispecific antibodies, or any setting where progression assessment has significant subjective component (e.g., soft tissue measurement, clinical progression).
   ELSE:
     → PFS as primary endpoint requires BICR; investigator PFS as sensitivity analysis
 IF double-blind → PFS may use investigator assessment as primary endpoint; BICR as sensitivity analysis.
@@ -125,13 +126,7 @@ PRO should preferably be included in hierarchical testing in the form of "Time t
 > Detailed SAP rules: `core/sap-design.md`. This section covers only Protocol-level statistical decisions.
 
 ### 5.1 Sample size based on clinically meaningful difference
-Effect size must be based on clinically meaningful minimum differences and SOC data from the literature. Typical parameters: alpha=0.025 one-sided, power=80-90%.
-
-| Design | Typical Effect Size |
-|--------|-------------------|
-| Oncology PFS | HR 0.60-0.75 |
-| Oncology OS | HR 0.70-0.80 |
-| Accelerated approval single-arm | N=50-200 |
+Effect size must be derived from: (1) historical control arm data (≥3 trials, population-weighted); (2) experimental arm evidence (Phase 2/class effect); (3) 3-scenario sensitivity (optimistic/base/conservative). Never pick an HR from a "typical range" without proper derivation. Typical parameters: alpha=0.025 one-sided, power=80-90%. → Detailed estimation framework: `core/sap-design.md` (CA/HR/SS sections).
 
 ### 5.2 Multiplicity correction strategy (framework)
 
@@ -169,11 +164,19 @@ Confirmatory trials must pre-specify: (1) Step-up dosing regimen; (2) In-hospita
 
 ## Step 8: Approval Strategy and Operations
 
-### 8.1 Traditional approval typically requires 2 adequate and well-controlled trials
-Planning should account for 2 independent pivotal trials. Single-trial approval is an exception (e.g., Tavneos — rare disease).
+### 8.1 Pivotal trial count depends on therapeutic area
+Oncology: single pivotal trial is now common (most recent oncology approvals). Non-oncology: plan for 2 independent pivotal trials unless exceptional circumstances (rare disease, breakthrough, large effect size). Single-trial approval requires: large effect size, high statistical significance, consistency across subgroups, and supporting evidence from other studies.
 
 → Accelerated approval / Breakthrough strategy: `regulatory/` directory
 → Indication-specific operational conventions: `indications/{indication}.md`
+
+---
+
+## Dose Selection Rationale
+
+### DOSE.1 Pivotal trial dose must be justified with PK/PD + exposure-response data
+Section 4 (Study Design) must include dose justification referencing: (1) Phase 1/2 dose-finding results; (2) PK/PD modeling (exposure-response relationship); (3) therapeutic window (efficacy threshold vs toxicity); (4) FDA Guidance "Optimizing the Dosage of Human Prescription Drugs" (2023). This is a high-frequency FDA review dimension — inadequate dose justification triggers Information Requests.
+[source: Opus clinical expert review 2026-03-30]
 
 ---
 
