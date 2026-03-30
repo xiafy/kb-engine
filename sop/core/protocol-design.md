@@ -1,6 +1,6 @@
 # Protocol Design SOP — Core Decision Process
 
-> **Version**: v3.0 | **Source**: sop.md v2.2 three-layer split | **Rule Count**: 28
+> **Version**: v4.0 | **Source**: sop.md v2.2 split + KB SOP migration (2026-03-30) | **Rule Count**: 58
 > **Loading**: Required. Use together with domains/{category}.md + indications/{indication}.md
 
 ---
@@ -18,6 +18,10 @@ When benchmarking: (1) Cover all 11 sections (Synopsis→References + Appendices
 
 ### 1.4 Strategy Decision Points — identify upfront
 Multiple points in the Protocol requiring Sponsor business decisions (control arm selection, I/E breadth, regional strategy, etc.) should be flagged as "⚠️ Strategy Decision Point" early in the design process rather than making the decision on behalf of the Sponsor.
+
+### 1.5 Benchmarking: 5-layer root cause attribution + no-copy rule
+For each parameter difference, attribute through: L1 I/E criteria → L2 comparator definition → L3 endpoint definition → L4 operational → L5 sponsor strategic choice. Never report raw numeric differences without mechanistic attribution. Never adopt a parameter without tracing to I/E logic (e.g., "EMBER-3 used mPFS=5.4m; our I/E more restrictive → we use 5.5m" — not "we copy 5.4m"). Before section-by-section comparison, align both ToC structures first.
+[source: kb/methods/sop/protocol-benchmarking-sop.md §8.2, statistical-design-sop.md §8.3]
 
 ---
 
@@ -39,6 +43,14 @@ The trade-offs of enrichment vs. relaxation strategies must be quantified and pr
 ### 2.2 Biomarker-driven indications require a companion diagnostic
 When an indication is restricted to a specific biomarker, the trial must include an FDA-approved or in-development companion diagnostic. Biomarker status must be centrally confirmed prior to enrollment.
 → Indication-specific testing strategy: `indications/{indication}.md`
+
+### 2.4 Enrichment vs relaxation: quantify both directions as SDPs
+Enrichment (biomarker, prognostic factor, therapy line) → ↑O1/O4, may ↓O3. Relaxation (bone-only +15-20%, ECOG 0-2, broader organ function) → ↑O3, may ↓O1. Both must be quantified (Δsample size, Δtime, Δpower) and presented as SDPs. Endpoint-driven I/E: PFS→require evaluable disease; OS→can relax; ORR→must require RECIST-measurable.
+[source: kb/methods/sop/protocol-ie-endpoint-optimization-sop.md §2.2-2.3]
+
+### 2.5 I/E checklist — 10 items to verify against competitors
+(1) Biomarker per latest ASCO/CAP; (2) Prior therapy aligned with competitors; (3) Organ function benchmarked; (4) Washout reasonable; (5) CNS criteria consistent; (6) Cardiac exclusion proportional to drug QT profile; (7) No unnecessary exclusions raising screen failure; (8) No missing exclusions all competitors have; (9) Male patients addressed; (10) CDx timeline aligned with NDA.
+[source: kb/methods/sop/protocol-ie-endpoint-optimization-sop.md §2.3]
 
 ### 2.3 Alpha allocation for predictive enrichment designs
 (1) Biomarker cutoffs must be pre-defined with analytical validation; (2) If both marker+ and marker- patients are enrolled, randomization must be stratified by marker status; (3) Alpha must be pre-allocated between the enriched subgroup and the overall population; (4) Treatment × Biomarker interaction test must be pre-specified.
@@ -89,6 +101,13 @@ PFS requirements: (1) sufficiently large magnitude, (2) open-label requires inde
 ### 4.3 Non-oncology endpoints: follow disease-specific Guidance
 Non-oncology endpoints are generally not OS/PFS/ORR. The relevant FDA Guidance must be consulted.
 → Indication-specific endpoints: `indications/{indication}.md`
+
+### 4.7 PFS assessor decision tree (Investigator vs BICR)
+Default: Investigator PFS primary + BICR secondary. Switch to BICR primary IF: (1) FDA Meeting requires; (2) CRL cited inv bias; (3) Open-label + highly subjective endpoint; (4) Placebo control. Either way, the other method must be pre-specified. BICR adds $500K-$2M + 3-5 day PD delay.
+[source: kb/methods/sop/protocol-ie-endpoint-optimization-sop.md §3.0]
+
+### 4.8 Oncology endpoint selection: PFS(inv)→fastest Phase 3; PFS(BICR)→traditional; OS→gold standard but slow; ORR→accelerated/single-arm; pCR→neoadjuvant; iDFS/EFS→adjuvant.
+[source: kb/methods/sop/protocol-ie-endpoint-optimization-sop.md §3.1]
 
 ### 4.4 Estimand framework must be defined at Protocol stage
 The 5 attributes of the primary Estimand (treatment condition, target population, variable, summary measure, intercurrent event handling strategy) must be pre-specified. Intercurrent events (treatment discontinuation, subsequent therapies, death) must explicitly adopt one of 5 strategies.
@@ -155,3 +174,25 @@ Planning should account for 2 independent pivotal trials. Single-trial approval 
 
 → Accelerated approval / Breakthrough strategy: `regulatory/` directory
 → Indication-specific operational conventions: `indications/{indication}.md`
+
+---
+
+## Strategy Decision Points (SDP) — Identification and Handling
+
+### SDP.1 CRO presents all options with quantification, sponsor decides
+For business-strategy elements: (1) Present all options without pre-filtering; (2) Quantify each (Δsample size, Δtime, Δcost, Δlabel); (3) Provide FDA precedents + competitor benchmarks; (4) Sponsor decides.
+[source: kb/methods/sop/protocol-ie-endpoint-optimization-sop.md §5.5]
+
+### SDP.2 15 SDPs to check for every oncology Protocol
+(1) Prior therapy line; (2) Biomarker enrichment; (3) PFS assessor; (4) Primary endpoint; (5) Control arm; (6) Combination arm; (7) Bone-only disease; (8) CNS criteria; (9) Prior chemo; (10) ECOG; (11) Geography; (12) IA strategy; (13) CDx; (14) PRO level; (15) Accelerated vs traditional path.
+[source: kb/methods/sop/protocol-ie-endpoint-optimization-sop.md §5.5]
+
+---
+
+## FDA Review Lessons — Proactive Quality Checks
+
+### FDA.1 Indication wording must exactly match I/E criteria (FDA routinely narrows vague wording). [source: kb/methods/sop/protocol-writing-sop.md §七]
+### FDA.3 B/R must use PDUFA VI 5-dimension framework (Condition / Treatment Options / Benefit / Risk / Risk Management) with separate subsections. [source: kb/methods/sop/protocol-writing-sop.md §七]
+### FDA.4 B/R Risk section must include competitor safety comparison table (≥Grade 3 AE rates, fatal AEs, discontinuation — vs ≥2 competitors from USPI/FDA Review). [source: kb/methods/sop/protocol-writing-sop.md §七]
+### FDA.5 Dual primary (ITT + biomarker): Section 9.1 must state biomarker subgroup can independently support approval if ITT fails; biomarker subgroup must have ≥80% independent power. [source: kb/methods/sop/protocol-writing-sop.md §七]
+### FDA.7 Self-review 12-item checklist: (1) Synopsis=full text; (2) SoA has refs; (3) I/E benchmarked; (4) Estimand complete; (5) Dose mod covers CTCAE; (6) PFS censoring table; (7) Testing hierarchy+alpha; (8) ConMed matches DDI; (9) Brain imaging clear; (10) PRO schedule; (11) Pending items listed; (12) FDA risks flagged. [source: kb/methods/sop/protocol-writing-sop.md §五]

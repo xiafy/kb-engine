@@ -1,8 +1,8 @@
 ---
-version: 0.2
-status: seed
-source: sop.md v2.2 split + D2V SOP-BS-002 + kb/ statistical methodology
-rule_count: 7
+version: 1.0
+status: active
+source: sop.md v2.2 split + D2V SOP-BS-002 + kb/ statistical methodology + KB migration 2026-03-30
+rule_count: 38
 seed_absorbed:
   - d2v-sop/BS/sop-bs-002 (SAP development process)
   - methods/sop/statistical-design-sop.md (statistical method decisions)
@@ -12,7 +12,7 @@ seed_absorbed:
 
 # SAP Design SOP — Core Decision Process
 
-> Seed version v0.2 — continuously expanded after training
+> Version v1.0 — expanded with independent design→benchmarking dual-step method
 > Loading: Required. Use together with domains/{category}.md ## SAP Design + indications/
 
 ---
@@ -25,6 +25,14 @@ SAP is drafted after the Protocol and CRF are finalized. Study Statistician draf
 
 ### 0.2 Relationship between SAP and Protocol
 SAP is the technical elaboration of the Protocol's statistical section. Protocol defines WHAT (endpoints, hypothesis testing direction); SAP defines HOW (specific analysis methods, missing data handling, sensitivity analyses). The two are not contradictory; SAP does not change the hypothesis testing direction established in the Protocol.
+
+### 0.3 Independent design → benchmarking dual-step method
+Always complete the independent statistical design in full BEFORE opening the reference/approved protocol's statistical section. This ensures knowledge blind spots are exposed through independent reasoning, not masked by copying. The independent design must be timestamped and finalized before benchmarking begins.
+[source: kb/methods/sop/statistical-design-sop.md, conclusion]
+
+### 0.4 Pre-Flight Checklist
+Before beginning statistical design, confirm: (1) Primary endpoint type locked (PFS/OS/ORR); (2) Population biomarker definition locked; (3) Draft I/E criteria available; (4) ≥3 historical trials identified for control arm estimation; (5) Regulatory path known (FDA/EMA/both); (6) Reference approved protocol available but set aside (do NOT open yet).
+[source: kb/methods/sop/statistical-design-sop.md Step 0]
 
 ---
 
@@ -52,7 +60,40 @@ Each primary analysis must pre-define 5 attributes of the Estimand:
 
 ---
 
+## Control Arm Estimation (Independent Design Phase)
+
+### CA.1 Collect ≥3 historical RCTs for control arm median estimation
+Select: same biomarker, same/similar comparator, Phase 2/3 RCT with KM data, ≥50 pts in control. Exclude: single-arm, >10 years old if landscape shifted, markedly different prior therapy.
+[source: kb/methods/sop/statistical-design-sop.md Step 2.1]
+
+### CA.2 Population similarity weighting (5 dimensions: biomarker, therapy line, comparator, enrichment, recency; each 0-3)
+Weighted mPFS = Σ(Weight_i × mPFS_i) / ΣWeight_i. Then apply I/E modifier: more restrictive → ↓ control mPFS (−5% to −20%); less restrictive → ↑ (+5% to +15%). Magnitudes are directional guidance. → Indication-specific modifiers: `indications/{indication}.md ## SAP Design`
+[source: kb/methods/sop/statistical-design-sop.md Step 2.3-2.4]
+
+---
+
+## HR Estimation (Independent Design Phase)
+
+### HR.1 Evidence hierarchy: (1) Phase 2/3 RCT same drug (High); (2) Phase 2 single-arm vs historical (Med); (3) Phase 1 signal (Low); (4) Class effect (Low-Med); (5) KOL judgment (Very low, flag). If mostly early-phase evidence, apply 10-20% conservative upward adjustment. Require 3 scenarios: Optimistic (HR−0.05-0.10), Base Case, Conservative (HR+0.05-0.10).
+[source: kb/methods/sop/statistical-design-sop.md Step 3]
+
+---
+
+## Sample Size Calculation
+
+### SS.1 Schoenfeld formula: D = 4(z_α+z_β)²/[ln(HR)]². Quick ref (90% power, 1:1, α=0.025): HR 0.70→330 events; HR 0.75→508. GSD inflation: D_GSD = D×IF (OBF 1 IA at 75%: IF≈1.03-1.05, use EAST/gsDesign for exact).
+[source: kb/methods/sop/statistical-design-sop.md Step 4]
+
+### SS.2 Assumptions Table must be fully populated before calculation (endpoint, test, α, power, HR, control median, accrual, follow-up, dropout, screen failure — each with source). Sensitivity required: mPFS±20%, HR±0.05, power 80/90%, dropout±5%, accrual±3mo.
+[source: kb/methods/sop/statistical-design-sop.md Step 4.1+4.5]
+
+---
+
 ## Step 2: Multiplicity Control — Alpha Allocation Strategy
+
+### 2.0 Multiplicity decision tree + α-allocation principles
+1 primary → Fixed-Sequence or Graphical for key secondaries. 2 co-primary (both required) → ≥90% power each, Serial Gatekeeping for secondaries. 2 any-one-sufficient → Bonferroni or Graphical. ≥3 → Graphical Testing (Bretz 2009), discuss with FDA. α-allocation: higher weight to higher probability of success; primary before secondary; document rationale.
+[source: kb/methods/sop/statistical-design-sop.md Step 5]
 
 ### 2.1 3-Arm RCT Alpha Allocation
 
@@ -77,6 +118,9 @@ Active comparator + placebo 3-arm RCT: Split into 2 comparison branches (vs. pla
 Alpha spending default: Lan-DeMets O'Brien-Fleming (very conservative early, approaches full alpha late).
 - IF rare disease target events ≤50-60: → May omit interim analysis; single final analysis saves alpha (see domains/rare-disease.md #45)
 - IF rare disease RCT: → Secondary endpoints may all be exploratory; multiplicity focused on co-primary
+
+### 3.1 IA core decisions: 1-2 IAs typical; OBF spending default; timing at 50% or 75% IF; non-binding futility (CP<15-20%, DMC advisory). OBF approximate z-boundaries (α=0.025): IF=50%→z≥2.963; IF=75%→z≈2.337. Use EAST/gsDesign for exact values.
+[source: kb/methods/sop/statistical-design-sop.md Step 6]
 
 ---
 
@@ -145,3 +189,10 @@ Pre-specify the list of subgroups in the SAP (typically 8-12), including:
 
 ### 9.2 Analysis methods
 Forest plot displaying subgroup HRs + 95% CIs. Interaction test p-values used to explore consistency, not for confirmatory conclusions. Pre-specified interaction test alpha is typically 0.10 (exploratory).
+
+---
+
+## Benchmarking Phase (After Independent Design)
+
+### BM.1 After opening reference protocol, compare all statistical parameters (mPFS, HR, events, N, α, power, IA, spending, multiplicity, stratification). Attribute each difference through 5-layer cascade (same as protocol-design.md 1.5). Document knowledge blind spots discovered — what you would not have known without benchmarking. This feeds back into SOP improvement.
+[source: kb/methods/sop/statistical-design-sop.md Step 8-9]
