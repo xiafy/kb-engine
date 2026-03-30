@@ -22,4 +22,4 @@ AML 推荐分层因子: ELN 风险分组(fav/int/adv) + 疾病状态(新诊断 v
 
 ## SAP Design
 
-<!-- 占位 — AML SAP 规则训练后填充 -->
+<!-- 训练时按 section-append 约定追加规则 -->

@@ -16,4 +16,4 @@ rule_count: 1
 
 ## SAP Design
 
-<!-- 占位 — 胃癌/GEJC SAP 规则训练后填充 -->
+<!-- 训练时按 section-append 约定追加规则 -->

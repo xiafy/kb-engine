@@ -3,13 +3,44 @@
 > **状态**: ⬜ 待启动
 > **Core SOP**: `sop/core/{branch_name}.md`
 > **案例数**: 20（共享题库）
+> **评分维度**: N（见 config.yaml）
 
 ## 训练目标
 
-TODO: 描述本分支的训练目标
+TODO: 描述本分支的训练目标和预期产出
 
-## 启动前置条件
+## 依赖
 
-- [ ] config.yaml 配置完成
+- [ ] core SOP 种子版已创建（`sop/core/{branch_name}.md`）
+- [ ] config.yaml 配置完成（评分维度、答案提取章节）
 - [ ] questions/ 题目生成完成
-- [ ] core SOP 种子版存在
+- [ ] case-params.json 填充完成（如有 input_schema）
+
+## 目录结构
+
+```
+training/{branch_name}/
+├── config.yaml         ← 分支配置
+├── README.md           ← 本文件
+├── questions/          ← 分支专属题目
+│   ├── 01-inluriyo.md
+│   └── ...
+├── rounds/             ← 每轮训练记录
+│   ├── round-01/
+│   │   ├── answer.md
+│   │   ├── scoring.md
+│   │   └── analysis.md
+│   └── ...
+├── results.tsv         ← 汇总评分
+└── case-params.json    ← 分支专属输入参数（可选）
+```
+
+## 创建步骤
+
+```bash
+cp -r training/_shared/_branch-template training/{branch_name}
+mv training/{branch_name}/config.yaml.tmpl training/{branch_name}/config.yaml
+mv training/{branch_name}/README.md.tmpl training/{branch_name}/README.md
+# 编辑 config.yaml 和 README.md，替换所有 {placeholder}
+# 生成 questions/（基于 _shared/case-config.json + 分支 prompt 模板）
+```

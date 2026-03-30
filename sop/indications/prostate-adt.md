@@ -20,4 +20,4 @@ IF 适应症 == "ADT（GnRH 类）":
 
 ## SAP Design
 
-<!-- 占位 — 前列腺癌 ADT SAP 规则训练后填充 -->
+<!-- 训练时按 section-append 约定追加规则 -->

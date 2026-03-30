@@ -1,21 +1,54 @@
-# {BRANCH_NAME} Training Branch Config
-# Copy to training/{branch_name}/config.yaml and customize
+# Branch: {BRANCH_NAME}
+# {BRANCH_DESCRIPTION}
 
+branch: {branch_name}
+version: 0.1
+status: seed
+
+# ── SOP 配置 ──────────────────────────────────────
 sop:
-  core: "{branch_name}.md"
+  core: core/{branch_name}.md                    # 必填：对应的 core/ SOP 文件
+  depends_on: null                                # 可选：依赖的其他 core/ SOP（如 sap-design depends_on protocol-design）
+  domains_mapping: case-config.json               # 通常不改
+  indications_mapping: case-config.json           # 通常不改
 
+# ── 答案提取 ──────────────────────────────────────
 answer_extraction:
-  chapters:
-    # List FDA Review chapters to extract answers from
-    - "TODO: Add chapters"
+  chapters:                                       # 必填：从 FDA MultidisciplineReview 提取哪些章节
+    - "TODO: Add chapter name"
+    # 示例：
+    # - "Statistical Review — Analysis Plan"
+    # - "Clinical Review — Efficacy"
 
+# ── 评分 ──────────────────────────────────────────
 scoring:
-  dimensions:
-    # List scoring dimensions (overrides evaluate.md defaults if set)
-    # - dimension_name: weight
+  dimensions:                                     # 必填：评分维度（override evaluate.md 默认 10 项）
+    - "TODO: dimension 1"
+    # 示例：
+    # - 主分析方法选择
+    # - 多重性控制策略
+  skip_items: null                                # 可选：始终 skip 的维度
+  custom_rubric: null                             # 可选：分支特定的评分细则
 
+# ── 输入 schema（可选）────────────────────────────
+input_schema:
+  description: ""                                 # 可选：做题时的固定输入来源
+  source: null                                    # 可选：分支专属 case-params.json
+  fields: []                                      # 可选：需要的字段列表
+
+# ── SOP 写入目标 ──────────────────────────────────
 sop_write_targets:
   global: "sop/core/{branch_name}.md"
-  domain: "sop/domains/{domain}.md"
-  indication: "sop/indications/{indication}.md"
-  regulatory: "sop/regulatory/{path}.md"
+  domain: "sop/domains/{domain}.md ## {SECTION_NAME}"      # 填写分支在 domains 中的 section 名
+  indication: "sop/indications/{indication}.md ## {SECTION_NAME}"
+  regulatory: "sop/regulatory/{regulatory}.md"
+
+# ── 执行顺序 ──────────────────────────────────────
+execution_order: default                          # 'default' = program.md 案例顺序，或自定义列表
+
+# ── 历史 ──────────────────────────────────────────
+history:
+  total_rounds: 0
+  current_match: null
+  seed_sources: []
+  creation_date: "{DATE}"

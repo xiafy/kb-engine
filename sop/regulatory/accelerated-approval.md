@@ -29,5 +29,4 @@ IF regulatory_pathway == "Accelerated Approval":
 
 ## SAP Design
 
-<!-- 占位 — AA 路径 SAP 规则训练后填充 -->
-<!-- futility 监测方法参考 core/sap-design.md -->
+<!-- 训练时按 section-append 约定追加规则 -->

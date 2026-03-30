@@ -12,15 +12,13 @@ status: placeholder
 
 ## Trial Design
 
-<!-- 占位 — 植物药入排/终点/对照规则训练后填充 -->
-<!-- 参考：FDA Guidance for Industry: Botanical Drug Development (2016) -->
+<!-- 训练时按 section-append 约定追加规则 -->
 <!-- 典型适应症：中药复方制剂申报 NDA（21 CFR 314） -->
 
 ## SAP Design
 
-<!-- 占位 — 植物药 SAP 规则 -->
+<!-- 训练时按 section-append 约定追加规则 -->
 
 ## Regulatory Pathway
 
-<!-- 占位 — 植物药 IND/NDA 路径规则 -->
-<!-- 注：植物药可接受批次间差异，需建立质量指纹图谱 -->
+<!-- 训练时按 section-append 约定追加规则 -->

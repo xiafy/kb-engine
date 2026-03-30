@@ -20,4 +20,4 @@ IDH-mut LGG 推荐分层因子: 1p/19q 共缺失 + 基线肿瘤大小(≥2cm vs 
 
 ## SAP Design
 
-<!-- 占位 — LGG SAP 规则训练后填充 -->
+<!-- 训练时按 section-append 约定追加规则 -->

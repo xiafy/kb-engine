@@ -1,0 +1,242 @@
+{
+  "01": {
+    "drug": "Inluriyo",
+    "generic": "imlunestrant",
+    "protocol_params": {
+      "primary_endpoint": "TODO",
+      "comparator": "TODO",
+      "population": "TODO",
+      "design": "TODO",
+      "sample_size": "TODO",
+      "stratification_factors": []
+    }
+  },
+  "02": {
+    "drug": "Hernexeos",
+    "generic": "fam-trastuzumab deruxtecan-nxki",
+    "protocol_params": {
+      "primary_endpoint": "TODO",
+      "comparator": "TODO",
+      "population": "TODO",
+      "design": "TODO",
+      "sample_size": "TODO",
+      "stratification_factors": []
+    }
+  },
+  "03": {
+    "drug": "Hyrnuo",
+    "generic": "trastuzumab deruxtecan",
+    "protocol_params": {
+      "primary_endpoint": "TODO",
+      "comparator": "TODO",
+      "population": "TODO",
+      "design": "TODO",
+      "sample_size": "TODO",
+      "stratification_factors": []
+    }
+  },
+  "04": {
+    "drug": "Datroway",
+    "generic": "datopotamab deruxtecan-dlnk",
+    "protocol_params": {
+      "primary_endpoint": "TODO",
+      "comparator": "TODO",
+      "population": "TODO",
+      "design": "TODO",
+      "sample_size": "TODO",
+      "stratification_factors": []
+    }
+  },
+  "05": {
+    "drug": "Vyloy",
+    "generic": "zolbetuximab-clzb",
+    "protocol_params": {
+      "primary_endpoint": "TODO",
+      "comparator": "TODO",
+      "population": "TODO",
+      "design": "TODO",
+      "sample_size": "TODO",
+      "stratification_factors": []
+    }
+  },
+  "06": {
+    "drug": "Retevmo",
+    "generic": "selpercatinib",
+    "protocol_params": {
+      "primary_endpoint": "TODO",
+      "comparator": "TODO",
+      "population": "TODO",
+      "design": "TODO",
+      "sample_size": "TODO",
+      "stratification_factors": []
+    }
+  },
+  "07": {
+    "drug": "Orserdu",
+    "generic": "elacestrant",
+    "protocol_params": {
+      "primary_endpoint": "TODO",
+      "comparator": "TODO",
+      "population": "TODO",
+      "design": "TODO",
+      "sample_size": "TODO",
+      "stratification_factors": []
+    }
+  },
+  "08": {
+    "drug": "Truqap",
+    "generic": "capivasertib",
+    "protocol_params": {
+      "primary_endpoint": "TODO",
+      "comparator": "TODO",
+      "population": "TODO",
+      "design": "TODO",
+      "sample_size": "TODO",
+      "stratification_factors": []
+    }
+  },
+  "09": {
+    "drug": "Komzifti",
+    "generic": "revumenib",
+    "protocol_params": {
+      "primary_endpoint": "TODO",
+      "comparator": "TODO",
+      "population": "TODO",
+      "design": "TODO",
+      "sample_size": "TODO",
+      "stratification_factors": []
+    }
+  },
+  "10": {
+    "drug": "Kimmtrak",
+    "generic": "tebentafusp-tebn",
+    "protocol_params": {
+      "primary_endpoint": "TODO",
+      "comparator": "TODO",
+      "population": "TODO",
+      "design": "TODO",
+      "sample_size": "TODO",
+      "stratification_factors": []
+    }
+  },
+  "11": {
+    "drug": "Loqtorzi",
+    "generic": "toripalimab-tpzi",
+    "protocol_params": {
+      "primary_endpoint": "TODO",
+      "comparator": "TODO",
+      "population": "TODO",
+      "design": "TODO",
+      "sample_size": "TODO",
+      "stratification_factors": []
+    }
+  },
+  "12": {
+    "drug": "Sotyktu",
+    "generic": "deucravacitinib",
+    "protocol_params": {
+      "primary_endpoint": "TODO",
+      "comparator": "TODO",
+      "population": "TODO",
+      "design": "TODO",
+      "sample_size": "TODO",
+      "stratification_factors": []
+    }
+  },
+  "13": {
+    "drug": "Tavneos",
+    "generic": "avacopan",
+    "protocol_params": {
+      "primary_endpoint": "TODO",
+      "comparator": "TODO",
+      "population": "TODO",
+      "design": "TODO",
+      "sample_size": "TODO",
+      "stratification_factors": []
+    }
+  },
+  "14": {
+    "drug": "Airsupra",
+    "generic": "albuterol/budesonide",
+    "protocol_params": {
+      "primary_endpoint": "TODO",
+      "comparator": "TODO",
+      "population": "TODO",
+      "design": "TODO",
+      "sample_size": "TODO",
+      "stratification_factors": []
+    }
+  },
+  "15": {
+    "drug": "Orgovyx",
+    "generic": "relugolix",
+    "protocol_params": {
+      "primary_endpoint": "TODO",
+      "comparator": "TODO",
+      "population": "TODO",
+      "design": "TODO",
+      "sample_size": "TODO",
+      "stratification_factors": []
+    }
+  },
+  "16": {
+    "drug": "Ogsiveo",
+    "generic": "nirogacestat",
+    "protocol_params": {
+      "primary_endpoint": "TODO",
+      "comparator": "TODO",
+      "population": "TODO",
+      "design": "TODO",
+      "sample_size": "TODO",
+      "stratification_factors": []
+    }
+  },
+  "17": {
+    "drug": "Rytelo",
+    "generic": "imetelstat",
+    "protocol_params": {
+      "primary_endpoint": "TODO",
+      "comparator": "TODO",
+      "population": "TODO",
+      "design": "TODO",
+      "sample_size": "TODO",
+      "stratification_factors": []
+    }
+  },
+  "18": {
+    "drug": "Voranigo",
+    "generic": "vorasidenib",
+    "protocol_params": {
+      "primary_endpoint": "TODO",
+      "comparator": "TODO",
+      "population": "TODO",
+      "design": "TODO",
+      "sample_size": "TODO",
+      "stratification_factors": []
+    }
+  },
+  "19": {
+    "drug": "Lumakras",
+    "generic": "sotorasib",
+    "protocol_params": {
+      "primary_endpoint": "TODO",
+      "comparator": "TODO",
+      "population": "TODO",
+      "design": "TODO",
+      "sample_size": "TODO",
+      "stratification_factors": []
+    }
+  },
+  "20": {
+    "drug": "Modeyso",
+    "generic": "tovorafenib",
+    "protocol_params": {
+      "primary_endpoint": "TODO",
+      "comparator": "TODO",
+      "population": "TODO",
+      "design": "TODO",
+      "sample_size": "TODO",
+      "stratification_factors": []
+    }
+  }
+}

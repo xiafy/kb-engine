@@ -35,10 +35,10 @@ IF 罕见肿瘤（<5/million incidence）:
 
 ## Safety
 
-<!-- 占位 — 罕见病安全性规则 -->
+<!-- 训练时按 section-append 约定追加规则 -->
 
 ---
 
 ## CRF Design
 
-<!-- 占位 — 罕见病 CRF 设计规则 -->
+<!-- 训练时按 section-append 约定追加规则 -->

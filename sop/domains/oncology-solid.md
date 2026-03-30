@@ -28,19 +28,16 @@ IF 设计 == "泛瘤种 basket 试验": → 接受多种 CLIA 认证检测方法
 
 ## SAP Design
 
-<!-- 占位 — 实体瘤 SAP 通用规则训练后填充 -->
-<!-- 参考 core/sap-design.md 通用 alpha 分配和期中分析规则 -->
+<!-- 训练时按 section-append 约定追加规则 -->
 
 ---
 
 ## Safety
 
-<!-- 占位 — 实体瘤安全性监测通用规则 -->
-<!-- 新型生物制剂（ADC/双抗/T 细胞接合器）见 core/protocol-design.md #59 -->
+<!-- 训练时按 section-append 约定追加规则 -->
 
 ---
 
 ## CRF Design
 
-<!-- 占位 — 实体瘤 CRF 通用设计规则 -->
-<!-- RECIST 1.1 评估、BICR 流程等训练后填充 -->
+<!-- 训练时按 section-append 约定追加规则 -->

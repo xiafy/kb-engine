@@ -14,27 +14,22 @@ status: framework
 
 ## Trial Design
 
-<!-- 占位 — 自身免疫通用入排/设计规则训练后填充 -->
-<!-- 目前各适应症规则见：
- - indications/psoriasis.md
- - indications/anca-vasculitis.md
--->
+<!-- 训练时按 section-append 约定追加规则 -->
 
 ---
 
 ## SAP Design
 
-<!-- 占位 — 自身免疫 SAP 通用规则 -->
-<!-- NI 设计参考 core/sap-design.md #46,47 -->
+<!-- 训练时按 section-append 约定追加规则 -->
 
 ---
 
 ## Safety
 
-<!-- 占位 — 自身免疫安全性监测（免疫抑制剂感染风险等） -->
+<!-- 训练时按 section-append 约定追加规则 -->
 
 ---
 
 ## CRF Design
 
-<!-- 占位 — 自身免疫 CRF 设计规则（PRO 量表、缓解评估等） -->
+<!-- 训练时按 section-append 约定追加规则 -->

@@ -20,5 +20,4 @@ IF 适应症 == "哮喘/支气管扩张":
 
 ## SAP Design
 
-<!-- 占位 — 哮喘 SAP 规则训练后填充 -->
-<!-- FDC ICS 分层策略见 domains/respiratory.md #21,22 -->
+<!-- 训练时按 section-append 约定追加规则 -->

@@ -21,4 +21,4 @@ IF 适应症 == "低危/中危 MDS（IPSS low/int-1）伴输血依赖":
 
 ## SAP Design
 
-<!-- 占位 — MDS SAP 规则训练后填充 -->
+<!-- 训练时按 section-append 约定追加规则 -->

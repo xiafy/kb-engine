@@ -1,0 +1,66 @@
+# 训练分支映射表
+# 定义每个分支的 id（短名）、目录名、Git 前缀
+
+branches:
+  - id: pd
+    directory: protocol-design
+    git_prefix: train/pd
+    core_sop: protocol-design.md
+    status: active
+    section_name: Trial Design  # 在 domains/indications 中的主要写入 section
+
+  - id: sap
+    directory: sap-design
+    git_prefix: train/sap
+    core_sop: sap-design.md
+    status: seed
+    section_name: SAP Design
+
+  - id: stat
+    directory: stat-analysis
+    git_prefix: train/stat
+    core_sop: stat-analysis.md
+    status: planned
+    section_name: Stat Analysis
+
+  - id: cp
+    directory: clinical-pharm
+    git_prefix: train/cp
+    core_sop: clinical-pharm.md
+    status: planned
+    section_name: Clinical Pharmacology
+
+  - id: eff
+    directory: efficacy-assessment
+    git_prefix: train/eff
+    core_sop: efficacy-assessment.md
+    status: planned
+    section_name: Efficacy Assessment
+
+  - id: saf
+    directory: safety-assessment
+    git_prefix: train/saf
+    core_sop: safety-assessment.md
+    status: planned
+    section_name: Safety Assessment
+
+  - id: reg
+    directory: regulatory-strategy
+    git_prefix: train/reg
+    core_sop: regulatory-strategy.md
+    status: planned
+    section_name: Regulatory Strategy
+
+  - id: label
+    directory: labeling-review
+    git_prefix: train/label
+    core_sop: labeling-review.md
+    status: planned
+    section_name: Labeling Review
+
+  - id: pm
+    directory: post-marketing
+    git_prefix: train/pm
+    core_sop: post-marketing.md
+    status: planned
+    section_name: Post-Marketing

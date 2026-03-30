@@ -20,7 +20,7 @@ kb-engine/
 │   ├── sap-design/         ← SAP 训练分支
 │   └── {future}/           ← 从 _branch-template 创建
 │
-├── data                    ← symlink → d2v_cro_base/data（FDA Reviews + D2V 资料）
+├── data                    ← symlink → 本地 data 目录（FDA Reviews + D2V 资料，见下方 Setup）
 ├── ROADMAP.md              ← 9-SOP 训练路线图
 └── README.md               ← 本文件
 ```
@@ -55,3 +55,13 @@ gh pr create --base main && gh pr merge --squash --delete-branch
 |------|------|
 | [xiafy/d2v_cro_base](https://github.com/xiafy/d2v_cro_base) | 知识库 + 原始数据（KB entries, FDA Reviews） |
 | [xiafy/helix-memory](https://github.com/xiafy/helix-memory) | Helix Agent 记忆 + 设计文档 |
+
+## Setup
+
+```bash
+git clone https://github.com/xiafy/kb-engine.git
+cd kb-engine
+
+# 创建 data symlink（指向你本地的 d2v_cro_base/data 目录）
+ln -s /path/to/d2v_cro_base/data data
+```

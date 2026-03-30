@@ -22,6 +22,5 @@ IF 适应症 == "ANCA 血管炎":
 
 ## SAP Design
 
-<!-- 占位 — ANCA 血管炎 SAP 规则训练后填充 -->
-<!-- NI→Sup 联合检验参考 core/sap-design.md #46 -->
+<!-- 训练时按 section-append 约定追加规则 -->
 <!-- 📌 Tavneos CL010_168: NI(Wk26, margin -20%) → superiority(Wk52) -->

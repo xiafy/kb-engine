@@ -26,5 +26,4 @@ ER+/HER2- mBC 推荐分层因子: ESR1 状态 + 既往 CDK4/6i + 内脏转移(ye
 
 ## SAP Design
 
-<!-- 占位 — ER+/HER2- SAP 规则训练后填充 -->
-<!-- alpha 分配参考 core/sap-design.md #42 -->
+<!-- 训练时按 section-append 约定追加规则 -->

@@ -26,16 +26,16 @@ EFS 定义 = min(ITF, 复发, 全因死亡)。ITF 推荐：最后诱导疗程开
 
 ## SAP Design
 
-<!-- 占位 — 血液肿瘤 SAP 规则训练后填充 -->
+<!-- 训练时按 section-append 约定追加规则 -->
 
 ---
 
 ## Safety
 
-<!-- 占位 — 血液肿瘤安全性监测规则 -->
+<!-- 训练时按 section-append 约定追加规则 -->
 
 ---
 
 ## CRF Design
 
-<!-- 占位 — 血液肿瘤 CRF 设计规则（骨髓评估、缓解标准等） -->
+<!-- 训练时按 section-append 约定追加规则 -->
