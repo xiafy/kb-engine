@@ -1,8 +1,8 @@
 # program.md — 多分支闭环训练主程序
 
-> **版本**: v3.2 | **创建**: 2026-03-30 | **来源**: v1.0 重构为多分支架构
+> **版本**: v3.3 | **创建**: 2026-03-30 | **来源**: v1.0 重构为多分支架构
 > **原则**: Karpathy Autoresearch — 极简、自主、闭环
-> **变更**: v3.1 裁判分离 | v3.2 Git PR 模型 + section-append
+> **变更**: v3.1 裁判分离 | v3.2 Git PR 模型 | v3.3 路径对齐 + 裁判隔离强制 + 收敛判据 + rounds/
 
 ---
 
@@ -14,12 +14,12 @@
 
 | 文件 | 可读 | 可写 | 说明 |
 |------|------|------|------|
-| `training/program.md` | ✅ | ❌ | 本文件，执行指令 |
-| `training/evaluate.md` | ✅ | ❌ | 通用评分标准（branch 可 override） |
-| `training/branches/{branch}/config.yaml` | ✅ | ❌ | 分支配置（评分维度、答案提取、SOP 路径） |
-| `training/case-config.json` | ✅ | ❌ | 案例→答案路径+域映射 |
-| `training/questions/{id}-{drug}.md` | ✅ | ❌ | 题目 |
-| `training/results/{branch}/results.tsv` | ✅ | ✅ 追加 | 每轮评分记录 |
+| `training/_shared/program.md` | ✅ | ❌ | 本文件，执行指令 |
+| `training/_shared/evaluate.md` | ✅ | ❌ | 通用评分标准（branch 可 override） |
+| `training/{branch}/config.yaml` | ✅ | ❌ | 分支配置（评分维度、答案提取、SOP 路径） |
+| `training/_shared/case-config.json` | ✅ | ❌ | 案例→答案路径+域映射 |
+| `training/{branch}/questions/{id}-{drug}.md` | ✅ | ❌ | 题目（分支专属） |
+| `training/{branch}/results.tsv` | ✅ | ✅ 追加 | 每轮评分记录 |
 | `sop/core/{task}.md` | ✅ | ✅ | **可变** — 核心决策 SOP |
 | `sop/domains/{domain}.md` | ✅ | ✅ | **可变** — 疾病大类知识 |
 | `sop/indications/{indication}.md` | ✅ | ✅ | **可变** — 适应症特定知识 |
@@ -132,7 +132,7 @@ git push --tags
 ### Step 0a: 加载分支配置
 
 ```
-读取 training/branches/{branch}/config.yaml
+读取 training/{branch}/config.yaml
 提取：
   - sop.core: 核心 SOP 文件路径
   - answer_extraction.chapters: FDA Review 中的答案提取章节
@@ -144,7 +144,7 @@ git push --tags
 ### Step 0b: SOP 路径解析
 
 ```
-读取 training/case-config.json，找到当前案例。
+读取 training/_shared/case-config.json，找到当前案例。
 提取 domain, indication, regulatory 字段。
 
 构建 SOP 加载列表（按顺序）：
@@ -162,7 +162,7 @@ git push --tags
 ### Step 1: 读题
 
 ```
-读取 training/questions/{id}-{drug}.md 全文。
+读取 training/{branch}/questions/{id}-{drug}.md 全文。
 提取关键信息：
   - drug_name, MOA, formulation
   - proposed_indication, target_population, line_of_therapy
@@ -170,7 +170,7 @@ git push --tags
   - regulatory_pathway (从 frontmatter)
 
 如果分支 config 有 input_schema：
-  从 case-config.json 的对应字段提取输入参数（如 protocol_params）
+  从 training/_shared/case-config.json 的对应字段提取输入参数（如 protocol_params）
   这些参数作为"已知条件"提供给做题步骤
 ```
 
@@ -195,7 +195,7 @@ git push --tags
 ### Step 3: 对答案（读课本）
 
 ```
-根据 case-config.json 找到答案路径：
+根据 training/_shared/case-config.json 找到答案路径：
   data/fda-reviews/md/{path}/MultidisciplineR.md
 
 ⚠️ 错误处理：
@@ -225,8 +225,14 @@ git push --tags
 - 决定机制：多数票（≥2/3 一致采纳）；3 名裁判全不一致时取中值
 - 裁判不得看做题 Agent 的推理过程，仅看最终答案 vs FDA 实际
 
+**⚠️ 隔离强制要求**：
+- 每位裁判必须在**独立 subagent session** 中执行（`sessions_spawn`）
+- 传入裁判的输入**仅包含**：answer.md 最终答案 + FDA actual 文本 + evaluate.md
+- **禁止传入**：做题 Agent 的推理过程、SOP 文件、题目原文
+- scoring.md 中记录每位裁判的 session ID，用于审计追溯
+
 **评分流程**：
-1. 读取评分标准：先读 training/evaluate.md，再检查 branch config 是否有 override
+1. 读取评分标准：先读 training/_shared/evaluate.md，再检查 branch config 是否有 override
 2. 每位裁判独立对每个评分维度打分（match / partial / miss / skip）
 3. 汇总多数票结果
 
@@ -298,7 +304,19 @@ git push --tags
 
 ### Step 7: 记录结果
 
-向 `training/results/{branch}/results.tsv` 追加一行。
+#### 7a. 保存本轮详细记录
+
+将本轮完整产出保存到 `training/{branch}/rounds/round-{NN}/`：
+```
+rounds/round-{NN}/
+├── answer.md       ← 做题 Agent 的完整输出
+├── scoring.md      ← 裁判评分详情（3 裁判 × N 维度 + 多数票 + κ）
+└── analysis.md     ← 差异分析 + SOP 更新决策 + 本轮关键洞察
+```
+
+#### 7b. 追加汇总评分
+
+向 `training/{branch}/results.tsv` 追加一行。
 
 基线列（必有）：
 ```
@@ -310,11 +328,20 @@ round, case_id, branch, match_score, weighted_score, timestamp
 match_count, partial_count, miss_count, skip_count, total_items, new_rules_added, sop_rule_count, delta_codes, notes
 ```
 
-### Step 8: 循环检查
+### Step 8: 循环检查与收敛判断
 
 ```
-如果还有剩余案例 → 回到 Step 0b（Step 0a 只在首轮执行）
-如果所有案例完成 → 进入收尾
+收敛信号（任一触发 → 可提前结束）：
+  - 连续 3 轮 match_score ≥ 0.70 且 new_rules_added ≤ 1
+  - 连续 5 轮 new_rules_added = 0
+
+发散告警（任一触发 → 暂停训练，审核 SOP）：
+  - 5-round rolling average match_score 连续下降 3 个 batch
+  - 连续 3 轮 new_rules_added ≥ 4
+
+正常循环：
+  如果还有剩余案例且未触发收敛/发散 → 回到 Step 0b（Step 0a 只在首轮执行）
+  如果所有案例完成 或 触发收敛信号 → 进入收尾
 ```
 
 ---
@@ -369,5 +396,5 @@ match_count, partial_count, miss_count, skip_count, total_items, new_rules_added
 | match_score < 0.2 | 触发自检：确认答案文件正确 |
 | core/ SOP > 200 行 | 触发规则合并 |
 | case-config 无 domain/indication | 跳过对应 SOP 加载，仅加载 core/ |
-| config.yaml 缺失字段 | 使用默认值（evaluate.md 原始 10 维度） |
+| config.yaml 缺失字段 | 使用默认值（_shared/evaluate.md 原始 10 维度） |
 | 新分支首次运行 | Step 0a 验证 config 完整性；core/ SOP 如不存在则报错退出 |

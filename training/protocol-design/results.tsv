@@ -24,24 +24,24 @@
 #   - 监控指标: 5-round rolling average of match_score
 #   - 目标: 最终 5 轮平均 match_score ≥ 0.65, weighted_score ≥ 0.75
 #
-round	case_id	drug_name	pathway	match_score	weighted_score	match_count	partial_count	miss_count	skip_count	total_items	new_rules	sop_total	delta_codes	notes
-1	12	Sotyktu	regular	0.40	0.65	4	5	1	0	10	5	20	KNOW:4,STAT:1,ALT:1	missed 2-trial requirement; missed sPGA ≥2-grade; missed ss-PGA/PGA-F/PSSD secondaries; sample size miss (single trial vs 2 trials)
-2	15	Orgovyx	regular	0.70	0.85	7	3	0	0	10	2	22	REG:2,KNOW:1	NI as primary was wrong — FDA uses single-arm threshold ≥90%; missed baseline T ≥150 ng/dL
-3	05	Vyloy	regular	0.70	0.85	7	3	0	0	10	2	24	KNOW:3	missed TTCD as PRO secondary; gastric cancer stratification factors; 2-trial design
-4	14	Airsupra	regular	0.60	0.80	6	4	0	0	10	3	27	KNOW:4	DENALI FEV1 AUC0-6h not acute; enrolled moderate-to-severe not mild; combination rule factorial design
-5	13	Tavneos	regular	0.30	0.65	3	7	0	0	10	4	31	KNOW:5,STAT:1	active-controlled replacement design not add-on; BVAS=0 without GC threshold; secondaries all exploratory; many partial due to novel GC-sparing design
-6	10	Kimmtrak	regular	0.50	0.70	5	4	0	0	10	3	34	KNOW:3,ALT:1	rare tumor single stratification (LDH only); RAS co-primary unique to tebentafusp; IC control correct
-7	18	Voranigo	regular	0.60	0.80	6	4	0	0	10	2	36	KNOW:2,STAT:1,ALT:1	LGG stratification factors; surgery timing window; FACT-Br vs QLQ-C30; Gamma vs OBF spending
-8	16	Ogsiveo	regular	0.50	0.75	5	5	0	0	10	2	38	KNOW:2,STAT:1,ALT:1	clinical progression in PFS definition; GODDESS DT-specific PRO; no interim for small events; ovarian toxicity
-9	08	Truqap	regular	0.50	0.75	5	5	0	0	10	2	40	KNOW:2,STAT:1,ALT:1	investigator PFS (not BICR) in double-blind; liver mets stratification; alpha-recycling MTP
-10	17	Rytelo	regular	0.70	0.85	7	3	0	0	10	0	40	KNOW:1,ALT:2	best score yet; reinforces R-032 minimal stratification; MDS-specific design well captured
-11	19	Lumakras	accelerated	0.75	0.88	6	2	0	2	8	2	64	STAT:1,KNOW:1	first accelerated approval; single-arm design well captured; missed Bayesian futility and dual CDx
-12	11	Loqtorzi	regular	0.70	0.85	7	3	0	0	10	2	66	KNOW:2,STAT:1	NPC all-Asia trial; missed ECOG stratification and EBV monitoring; ORR in hierarchy
-13	04	Datroway	regular	0.40	0.70	4	6	0	0	10	2	68	KNOW:2,STAT:4	dual primary PFS+OS with alpha split not hierarchical; open-label needs BICR; CDK4/6i stratification; larger N
-14	07	Orserdu	regular	0.80	0.90	8	2	0	0	10	1	69	KNOW:1,ALT:1	best score; R-059 ESR1 rules worked well; missed visceral mets stratification; Hochberg vs graphical is ALT
-15	09	Komzifti	regular	0.88	0.94	7	1	0	2	8	1	70	KNOW:1	new best score; AML rules R-056~058 highly effective; local vs central testing minor miss
-16	20	Modeyso	accelerated	0.63	0.75	5	3	0	2	8	0	70	KNOW:1,ALT:2	pediatric rare tumor; RANO 2.0 vs generic RANO; US-only studies; pooled 5-study design
-17	06	Retevmo	accelerated	0.75	0.88	6	2	0	2	8	1	71	KNOW:1,ALT:1	multi-indication basket trial; multi-assay acceptance vs NGS-only; R-071 added
-18	02	Hernexeos	accelerated	0.88	0.94	7	1	0	2	8	0	71	ALT:1	back-to-back HER2m NSCLC; SOP highly effective; near-perfect
-19	03	Hyrnuo	accelerated	0.88	0.94	7	1	0	2	8	0	71	ALT:1	convergence confirmed; identical score to R18; Group D/E split perfectly predicted
-20	01	Inluriyo	regular	1.00	1.00	10	0	0	0	10	0	71	none	[verified-perfect] ultimate test; R-013+R-059+R-069+R-042 all applied; EMBER-3 design fully matched
+round	branch	case_id	drug_name	pathway	match_score	weighted_score	match_count	partial_count	miss_count	skip_count	total_items	new_rules	sop_total	delta_codes	notes	timestamp
+1	protocol-design	12	Sotyktu	regular	0.40	0.65	4	5	1	0	10	5	20	KNOW:4,STAT:1,ALT:1	missed 2-trial requirement; missed sPGA ≥2-grade; missed ss-PGA/PGA-F/PSSD secondaries; sample size miss (single trial vs 2 trials)	2026-03-29
+2	protocol-design	15	Orgovyx	regular	0.70	0.85	7	3	0	0	10	2	22	REG:2,KNOW:1	NI as primary was wrong — FDA uses single-arm threshold ≥90%; missed baseline T ≥150 ng/dL	2026-03-29
+3	protocol-design	05	Vyloy	regular	0.70	0.85	7	3	0	0	10	2	24	KNOW:3	missed TTCD as PRO secondary; gastric cancer stratification factors; 2-trial design	2026-03-29
+4	protocol-design	14	Airsupra	regular	0.60	0.80	6	4	0	0	10	3	27	KNOW:4	DENALI FEV1 AUC0-6h not acute; enrolled moderate-to-severe not mild; combination rule factorial design	2026-03-29
+5	protocol-design	13	Tavneos	regular	0.30	0.65	3	7	0	0	10	4	31	KNOW:5,STAT:1	active-controlled replacement design not add-on; BVAS=0 without GC threshold; secondaries all exploratory; many partial due to novel GC-sparing design	2026-03-29
+6	protocol-design	10	Kimmtrak	regular	0.50	0.70	5	4	0	0	10	3	34	KNOW:3,ALT:1	rare tumor single stratification (LDH only); RAS co-primary unique to tebentafusp; IC control correct	2026-03-29
+7	protocol-design	18	Voranigo	regular	0.60	0.80	6	4	0	0	10	2	36	KNOW:2,STAT:1,ALT:1	LGG stratification factors; surgery timing window; FACT-Br vs QLQ-C30; Gamma vs OBF spending	2026-03-29
+8	protocol-design	16	Ogsiveo	regular	0.50	0.75	5	5	0	0	10	2	38	KNOW:2,STAT:1,ALT:1	clinical progression in PFS definition; GODDESS DT-specific PRO; no interim for small events; ovarian toxicity	2026-03-29
+9	protocol-design	08	Truqap	regular	0.50	0.75	5	5	0	0	10	2	40	KNOW:2,STAT:1,ALT:1	investigator PFS (not BICR) in double-blind; liver mets stratification; alpha-recycling MTP	2026-03-29
+10	protocol-design	17	Rytelo	regular	0.70	0.85	7	3	0	0	10	0	40	KNOW:1,ALT:2	best score yet; reinforces R-032 minimal stratification; MDS-specific design well captured	2026-03-29
+11	protocol-design	19	Lumakras	accelerated	0.75	0.88	6	2	0	2	8	2	64	STAT:1,KNOW:1	first accelerated approval; single-arm design well captured; missed Bayesian futility and dual CDx	2026-03-29
+12	protocol-design	11	Loqtorzi	regular	0.70	0.85	7	3	0	0	10	2	66	KNOW:2,STAT:1	NPC all-Asia trial; missed ECOG stratification and EBV monitoring; ORR in hierarchy	2026-03-29
+13	protocol-design	04	Datroway	regular	0.40	0.70	4	6	0	0	10	2	68	KNOW:2,STAT:4	dual primary PFS+OS with alpha split not hierarchical; open-label needs BICR; CDK4/6i stratification; larger N	2026-03-29
+14	protocol-design	07	Orserdu	regular	0.80	0.90	8	2	0	0	10	1	69	KNOW:1,ALT:1	best score; R-059 ESR1 rules worked well; missed visceral mets stratification; Hochberg vs graphical is ALT	2026-03-29
+15	protocol-design	09	Komzifti	regular	0.88	0.94	7	1	0	2	8	1	70	KNOW:1	new best score; AML rules R-056~058 highly effective; local vs central testing minor miss	2026-03-29
+16	protocol-design	20	Modeyso	accelerated	0.63	0.75	5	3	0	2	8	0	70	KNOW:1,ALT:2	pediatric rare tumor; RANO 2.0 vs generic RANO; US-only studies; pooled 5-study design	2026-03-29
+17	protocol-design	06	Retevmo	accelerated	0.75	0.88	6	2	0	2	8	1	71	KNOW:1,ALT:1	multi-indication basket trial; multi-assay acceptance vs NGS-only; R-071 added	2026-03-29
+18	protocol-design	02	Hernexeos	accelerated	0.88	0.94	7	1	0	2	8	0	71	ALT:1	back-to-back HER2m NSCLC; SOP highly effective; near-perfect	2026-03-29
+19	protocol-design	03	Hyrnuo	accelerated	0.88	0.94	7	1	0	2	8	0	71	ALT:1	convergence confirmed; identical score to R18; Group D/E split perfectly predicted	2026-03-29
+20	protocol-design	01	Inluriyo	regular	1.00	1.00	10	0	0	0	10	0	71	none	[verified-perfect] ultimate test; R-013+R-059+R-069+R-042 all applied; EMBER-3 design fully matched	2026-03-29

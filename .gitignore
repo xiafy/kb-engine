@@ -3,3 +3,18 @@ data
 
 # OS files
 .DS_Store
+
+# Python
+*.pyc
+__pycache__/
+
+# Environment
+.env
+.env.local
+
+# Logs and temp
+*.log
+temp/
+
+# Raw training outputs (too large to track)
+training/*/rounds/*/raw-*
