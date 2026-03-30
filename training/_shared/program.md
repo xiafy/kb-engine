@@ -1,8 +1,8 @@
 # program.md — 多分支闭环训练主程序
 
-> **版本**: v4.0 | **创建**: 2026-03-30 | **来源**: v1.0 重构为多分支架构
+> **版本**: v4.1 | **创建**: 2026-03-30 | **来源**: v1.0 重构为多分支架构
 > **原则**: Karpathy Autoresearch — 极简、自主、闭环；**训练=模拟实战**
-> **变更**: v3.1 裁判分离 | v3.2 Git PR | v3.3 路径+隔离+收敛 | v3.4 L4 审核 | v3.5 3+3 做题+共识 | v3.6 规则溯源(Step 5c) | v4.0 开卷训练+L1/L2/L3粒度+SOP规则修复
+> **变更**: v3.1 裁判分离 | v3.2 Git PR | v3.3 路径+隔离+收敛 | v3.4 L4 审核 | v3.5 3+3 做题+共识 | v3.6 规则溯源(Step 5c) | v4.0 开卷训练+L1/L2/L3粒度+SOP规则修复 | v4.1 多角色做题+偏差记录+行为变异捕捉（B1R1复盘）
 
 ---
 
@@ -191,9 +191,9 @@ git push --tags
   这些参数作为"已知条件"提供给做题步骤
 ```
 
-### Step 2: 并行做题（3 Agent 开卷实战）
+### Step 2: 多角色协作做题（开卷实战）
 
-**模拟真实工作流：可使用所有可用资源，唯一限制是不能查看本题药物的 FDA Review。**
+**模拟真实 CRO 工作流：可使用所有可用资源，唯一限制是不能查看本题药物的 FDA Review。**
 
 可用资源：
 - SOP 全部文件（core/ + domains/ + indications/ + regulatory/）
@@ -202,10 +202,16 @@ git push --tags
 - 模板（shared/kb/methods/templates/）
 - 外部搜索（ClinicalTrials.gov、PubMed 等公开信息）
 
-**并行 3 个做题 Agent**（独立 subagent session，互不可见）：
-- 每个 Agent 获得相同输入：SOP 文件列表（Step 0b）+ 题目（Step 1）+ 可用资源路径
+#### Phase 1: 并行临床设计（3 Clinical Agent）
+
+**3 个 Clinical Agent**（独立 subagent session，互不可见）：
+- 每个 Agent 获得**相同输入**：SOP 文件列表（Step 0b）+ 题目（Step 1）+ 可用资源路径
 - 每个 Agent 模拟完整工作流：情报收集→方案设计→质量自审
-- 3 个 Agent 使用相同模型但独立 session（不同采样产生多样性）
+- 3 个 Agent 使用相同模型、相同 prompt，利用模型采样的**自然随机性**产生行为多样性
+- **职责范围**：Item 1-5 (设计/对照/终点) + Item 8-10 (分层/I&E/运营)
+- Item 6 (sample_size) 只做**文献估算占位**（如"预计 N≈600-700，精确计算由 Biostat 完成"）
+- Item 7 (stat_framework) 只做**框架描述**（如"hierarchical testing, dual-branch"），alpha 精确分配由 Biostat 完成
+- timeout: 300s
 
 输出格式（每个 Agent 各一份）：
 ```markdown
@@ -219,9 +225,24 @@ git push --tags
 ...
 ```
 
-### Step 2b: 共识合并
+#### Phase 2: Biostat Agent（1 个，串行）
 
-3 份答案提交给调度者（Helix），逐维度合并：
+**在 Phase 1 共识合并完成后执行**，输入为 consensus answer 中的设计框架。
+
+- **输入**：primary endpoint 类型、对照臂、比较结构（几组比较、比较方向）、randomization ratio
+- **任务**：
+  1. 用 `exec` 跑 Python (scipy) 或 R 精确计算样本量
+  2. 识别 controlling comparison（哪个比较需要最大 N）
+  3. 3-scenario sensitivity analysis（conservative/base/optimistic）
+  4. 精确 alpha 分配方案（co-primary IUT alpha、secondary branch alpha）
+  5. MTP 结构设计（hierarchical/graphical、spending function）
+- **输出**：Item 6 (sample_size) + Item 7 (stat_framework) 的精确版本
+- **模型**: sonnet + exec（prompt 中预置样本量计算模板代码，避免公式调试）
+- timeout: 180s
+
+#### Step 2b: 共识合并
+
+**Clinical 维度**（Item 1-5, 8-10）：3 份答案逐维度合并：
 
 ```
 对每个评分维度：
@@ -229,6 +250,8 @@ git push --tags
   IF 2/3 一致 → 采纳多数意见，标注 [consensus: 2/3, dissent: Agent X 认为...]
   IF 3/3 各不同 → 列出所有选项 + 各自理由，标注 [no-consensus]
 ```
+
+**Statistical 维度**（Item 6-7）：以 Biostat Agent 输出为准，Clinical 的占位估算仅作参考。
 
 **[no-consensus] 是早期 SOP 质量信号**：3 个 Agent 读同一 SOP 却做出不同答案 → SOP 规则有歧义或缺失，比裁判评分更早暴露问题。
 
@@ -245,6 +268,21 @@ git push --tags
 ```
 
 **裁判评分基于 consensus-answer.md，不是个体答案。**
+
+#### Step 2c: 行为变异分析
+
+共识合并时，Helix 同时记录 3 个 Clinical Agent 的行为差异（写入 analysis.md）：
+
+**1. SOP 理解一致性**：3 个 Agent 对同一条 SOP 规则的执行是否一致？
+  - 不一致 → SOP 措辞可能有歧义，记录具体分歧
+
+**2. SOP 违反/跳过**：是否有 Agent 忽略了 SOP 中明确要求的步骤？
+  - 记录哪条规则被跳过 + 对结果的影响
+
+**3. SOP 之外的额外行为**：Agent 做了 SOP 没要求的事
+  - 记录动作 + 是否产生了更好/更差的结果
+
+不做决策判断，只记录事实。复盘时由 Boss 决定哪些需要行动。
 
 ### Step 3: 对答案（读课本）
 
@@ -426,13 +464,14 @@ git push --tags
 将本轮完整产出保存到 `training/{branch}/rounds/round-{NN}/`：
 ```
 rounds/round-{NN}/
-├── answer-A.md          ← 做题 Agent A 输出
-├── answer-B.md          ← 做题 Agent B 输出
-├── answer-C.md          ← 做题 Agent C 输出
-├── consensus-answer.md  ← 共识合并结果（含分歧标注）
+├── answer-A.md          ← Clinical Agent A 输出（Item 1-5, 8-10）
+├── answer-B.md          ← Clinical Agent B 输出
+├── answer-C.md          ← Clinical Agent C 输出
+├── biostat.md           ← Biostat Agent 输出（Item 6-7 精确版）
+├── consensus-answer.md  ← 共识合并结果（Clinical 多数票 + Biostat 精确值）
 ├── fda-actual.md        ← FDA 实际方案
 ├── scoring.md           ← 3 裁判多数票评分（基于 consensus vs FDA）
-├── analysis.md          ← 差异归类 + 规则溯源 + SOP 更新审核 + 共识分歧分析
+├── analysis.md          ← 差异归类 + 规则溯源 + SOP 更新审核 + 偏差事件 + 行为变异
 └── grounding.md         ← Step 5c 溯源记录（查了哪些 Guidance、匹配结果）
 ```
 
@@ -520,3 +559,51 @@ match_count, partial_count, miss_count, skip_count, total_items, new_rules_added
 | case-config 无 domain/indication | 跳过对应 SOP 加载，仅加载 core/ |
 | config.yaml 缺失字段 | 使用默认值（_shared/evaluate.md 原始 10 维度） |
 | 新分支首次运行 | Step 0a 验证 config 完整性；core/ SOP 如不存在则报错退出 |
+
+---
+
+## R-FAIL: 偏差事件记录规则
+
+> v4.1 新增（B1R1 复盘）。执行阶段只记录事实，不做决策判断。架构/流程改进决策在 Batch 复盘中由 Boss 发起。
+
+### 执行阶段（每轮训练中）
+
+1. 每轮结束后，Helix 检查所有 Agent（做题/裁判/审核）的完成状态
+2. **SYS 偏差**（系统异常）：Agent 超时 / API 429 / crash / 网络错误
+   → L1 记录：类型 + 最终状态 + 一句话原因
+3. **DEV 偏差**（行为差异）：
+   - Agent 间 tool call 差异（如某 Agent 使用了 exec 跑 Python 而其他未使用）
+   - Agent 间答案分歧（no-consensus 或 minority dissent）
+   - Agent 跳过了 SOP 要求的步骤
+   - Agent 做了 SOP 未要求的额外行为
+   → L2 记录：读 session history，提取 tool call 序列，记录具体差异
+
+### 记录位置
+
+所有偏差写入 `rounds/round-{NN}/analysis.md` 的 `## Deviation Events` 部分：
+
+```markdown
+## Deviation Events
+
+### SYS Deviations
+- Agent B: timeout at 300s (was running scipy sample size calculation v3)
+- Agent B: 4x 429 rate limit on retry (concurrent API saturation)
+
+### Agent Behavior Variance
+
+#### SOP Consistency
+- [Item X]: Agent A/B/C 对 Rule Y 的执行一致/不一致
+  - 不一致描述：...
+
+#### SOP Deviations
+- Agent X 跳过了 Rule Y → 影响：...
+
+#### Extra-SOP Actions
+- Agent X 额外执行了 [动作] → 影响：...
+```
+
+### 复盘阶段（Batch 结束后）
+
+- Helix 汇总本 Batch 所有偏差事件
+- Boss 决定哪些需要深度分析
+- Boss 决定是否触发架构/流程调整
