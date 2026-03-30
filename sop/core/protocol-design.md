@@ -1,6 +1,6 @@
 # Protocol Design SOP — Core Decision Process
 
-> **Version**: v4.0 | **Source**: sop.md v2.2 split + KB SOP migration (2026-03-30) | **Rule Count**: 58
+> **Version**: v4.1 | **Source**: sop.md v2.2 split + KB SOP migration (2026-03-30) + Round 01 training | **Rule Count**: 59
 > **Loading**: Required. Use together with domains/{category}.md + indications/{indication}.md
 
 ---
@@ -133,6 +133,10 @@ Effect size must be derived from: (1) historical control arm data (≥3 trials, 
 IF number of hypothesis tests ≥3 → Prefer Graphical Approach (Bretz 2009 directed graph)
 IF hypothesis tests = 2 (e.g., PFS + OS) → Hierarchical testing
 → Alpha allocation details, spending function, NI testing strategy: `core/sap-design.md`
+
+### 5.3a Co-primary intersection-union alpha convention
+When co-primary endpoints use an intersection-union test (ALL must be significant for trial success), each individual co-primary is tested at the FULL significance level (e.g., α=0.05 two-sided) with no alpha splitting between them. Rationale: under IUT, FWER ≤ α is guaranteed because the probability of all individual nulls being falsely rejected simultaneously = α^k (Berger 1982). Alpha splitting (e.g., Bonferroni) applies only to SECONDARY endpoint testing branches, not to co-primaries under IUT. Note: this convention applies strictly when ALL co-primaries must succeed. If success requires only a subset (e.g., at least 1 of 2), standard multiplicity adjustment is required.
+[grounded: statistical theory (Berger 1982); confirmed in Sotyktu NDA §8.1.3 MTP — co-primaries at α=0.05 each, secondaries split α=0.025 per branch]
 
 ### 5.3 Co-primary endpoints each require 90% power
 Co-primary requires all endpoints to be significant; joint power = product of each endpoint's power. 80% × 80% = 64%; must be raised to ~90% to ensure joint power ≥80%.
