@@ -2,7 +2,7 @@
 
 > **创建**: 2026-03-30 | **Owner**: Helix-Core
 
-## 训练优先级（按工作流依赖链）
+## Training Priority（按工作流依赖链）
 
 ```
 Phase 1: ✅ protocol-design（已完成 v2.2 → v3.0 迁移）
@@ -41,10 +41,10 @@ protocol-design → sap-design → stat-analysis → efficacy/safety → labelin
 - 不需要新建题目（可选扩展到 360 案例）
 - 每个分支需在 config.yaml 定义自己的 answer_extraction.chapters
 
-## 新分支启动 Checklist
+## New Branch Launch Checklist
 
-1. [ ] 创建 `training/branches/{branch}/config.yaml`
-2. [ ] 创建 `training/branches/{branch}/README.md`
+1. [ ] 创建 `training/{branch}/config.yaml`
+2. [ ] 创建 `training/{branch}/README.md`
 3. [ ] 创建种子 `sop/core/{branch}.md`（从 kb/ + D2V SOP 吸收）
 4. [ ] 运行 3 个案例 baseline
 5. [ ] 启动 10 轮训练

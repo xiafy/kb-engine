@@ -6,7 +6,8 @@
     "path": "2025/NDA218881-inluriyo",
     "domain": "oncology-solid",
     "indication": "breast-er-her2neg",
-    "regulatory": null
+    "regulatory": null,
+    "data_quality": "high"
   },
   {
     "id": "02",
@@ -15,7 +16,8 @@
     "path": "2025/NDA219042-hernexeos",
     "domain": "oncology-solid",
     "indication": "nsclc",
-    "regulatory": null
+    "regulatory": "accelerated-approval",
+    "data_quality": "high"
   },
   {
     "id": "03",
@@ -24,7 +26,8 @@
     "path": "2025/NDA219972-hyrnuo",
     "domain": "oncology-solid",
     "indication": "nsclc",
-    "regulatory": null
+    "regulatory": "accelerated-approval",
+    "data_quality": "high"
   },
   {
     "id": "04",
@@ -33,7 +36,8 @@
     "path": "2025/BLA761394-datroway",
     "domain": "oncology-solid",
     "indication": "breast-er-her2neg",
-    "regulatory": null
+    "regulatory": null,
+    "data_quality": "high"
   },
   {
     "id": "05",
@@ -42,7 +46,8 @@
     "path": "2024/BLA761365-vyloy",
     "domain": "oncology-solid",
     "indication": "gastric-gejc",
-    "regulatory": null
+    "regulatory": null,
+    "data_quality": "high"
   },
   {
     "id": "06",
@@ -51,7 +56,8 @@
     "path": "2020/NDA213246-retevmo",
     "domain": "oncology-solid",
     "indication": "nsclc",
-    "regulatory": "accelerated-approval"
+    "regulatory": "accelerated-approval",
+    "data_quality": "high"
   },
   {
     "id": "07",
@@ -60,7 +66,8 @@
     "path": "2023/NDA217639-orserdu",
     "domain": "oncology-solid",
     "indication": "breast-er-her2neg",
-    "regulatory": null
+    "regulatory": null,
+    "data_quality": "high"
   },
   {
     "id": "08",
@@ -69,7 +76,8 @@
     "path": "2023/NDA218197-truqap",
     "domain": "oncology-solid",
     "indication": "breast-er-her2neg",
-    "regulatory": null
+    "regulatory": null,
+    "data_quality": "high"
   },
   {
     "id": "09",
@@ -78,7 +86,8 @@
     "path": "2025/NDA220305-komzifti",
     "domain": "oncology-heme",
     "indication": "aml",
-    "regulatory": null
+    "regulatory": null,
+    "data_quality": "high"
   },
   {
     "id": "10",
@@ -87,7 +96,8 @@
     "path": "2022/BLA761228-kimmtrak",
     "domain": "rare-disease",
     "indication": "uveal-melanoma",
-    "regulatory": null
+    "regulatory": null,
+    "data_quality": "high"
   },
   {
     "id": "11",
@@ -96,7 +106,8 @@
     "path": "2023/BLA761240-loqtorzi",
     "domain": "oncology-solid",
     "indication": "npc",
-    "regulatory": null
+    "regulatory": null,
+    "data_quality": "high"
   },
   {
     "id": "12",
@@ -105,7 +116,8 @@
     "path": "2022/NDA214958-sotyktu",
     "domain": "autoimmune",
     "indication": "psoriasis",
-    "regulatory": null
+    "regulatory": null,
+    "data_quality": "high"
   },
   {
     "id": "13",
@@ -114,7 +126,8 @@
     "path": "2021/NDA214487-tavneos",
     "domain": "autoimmune",
     "indication": "anca-vasculitis",
-    "regulatory": null
+    "regulatory": null,
+    "data_quality": "high"
   },
   {
     "id": "14",
@@ -123,7 +136,8 @@
     "path": "2023/NDA214070-airsupra",
     "domain": "respiratory",
     "indication": "asthma",
-    "regulatory": null
+    "regulatory": null,
+    "data_quality": "high"
   },
   {
     "id": "15",
@@ -132,7 +146,8 @@
     "path": "2020/NDA214621-orgovyx",
     "domain": "oncology-solid",
     "indication": "prostate-adt",
-    "regulatory": null
+    "regulatory": null,
+    "data_quality": "high"
   },
   {
     "id": "16",
@@ -141,7 +156,8 @@
     "path": "2023/NDA217677-ogsiveo",
     "domain": "rare-disease",
     "indication": "desmoid-tumor",
-    "regulatory": null
+    "regulatory": null,
+    "data_quality": "high"
   },
   {
     "id": "17",
@@ -150,7 +166,8 @@
     "path": "2024/NDA217779-rytelo",
     "domain": "oncology-heme",
     "indication": "mds",
-    "regulatory": null
+    "regulatory": null,
+    "data_quality": "high"
   },
   {
     "id": "18",
@@ -159,7 +176,8 @@
     "path": "2024/NDA218784-voranigo",
     "domain": "oncology-solid",
     "indication": "lgg",
-    "regulatory": null
+    "regulatory": null,
+    "data_quality": "high"
   },
   {
     "id": "19",
@@ -168,7 +186,8 @@
     "path": "2021/NDA214665-lumakras",
     "domain": "oncology-solid",
     "indication": "nsclc",
-    "regulatory": "accelerated-approval"
+    "regulatory": "accelerated-approval",
+    "data_quality": "high"
   },
   {
     "id": "20",
@@ -177,6 +196,7 @@
     "path": "2025/NDA219876-modeyso",
     "domain": "oncology-solid",
     "indication": "plgg",
-    "regulatory": "accelerated-approval"
+    "regulatory": "accelerated-approval",
+    "data_quality": "high"
   }
 ]

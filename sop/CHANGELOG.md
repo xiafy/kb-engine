@@ -1,6 +1,10 @@
 # SOP Changelog
 
-## 2026-03-30: Git PR 模型 + SOP 规范化
+> Note: PD training rounds 1-20 were completed before migration to this repo.
+> Historical SOP changes are reflected in the final rule state, not individual entries.
+> From Round 21 onwards, each training round will have a CHANGELOG entry.
+
+## 2026-03-30: Git PR model + SOP normalization
 
 ### training/program.md (v3.1 → v3.2)
 - 新增"Git 工作流（PR 模型）"章节：checkout → commit → PR → merge 完整操作

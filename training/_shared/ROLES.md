@@ -1,6 +1,6 @@
-# 训练角色规范（ROLES）
+# Training Roles Specification
 
-## 角色定义
+## Role Definitions
 
 | 角色 | 职责 | 执行者 | 隔离要求 |
 |------|------|--------|---------|
@@ -12,7 +12,7 @@
 
 ---
 
-## 做题者规范
+## Athlete (Answer Agent) Specification
 
 ### 输入（仅以下内容）
 - SOP 文件列表（core/ + domains/ + indications/ + regulatory/，由 Step 0b 确定）
@@ -35,7 +35,7 @@
 
 ---
 
-## 裁判规范
+## Judge Specification
 
 ### 输入（仅以下内容）
 - `consensus-answer.md`（共识合并后的答案，不是个体答案）
@@ -60,7 +60,7 @@
 
 ---
 
-## 共识合并规范（调度者执行）
+## Consensus Merge (Orchestrator)
 
 ### 输入
 - answer-A.md, answer-B.md, answer-C.md
@@ -80,7 +80,7 @@
 
 ---
 
-## L4 更新审核规范
+## L4 Update Audit Specification
 
 ### 输入
 - 准备追加的规则（完整文本）
@@ -99,9 +99,9 @@
 
 ---
 
-## 调度者（Helix）职责
+## Orchestrator (Helix) Responsibilities
 
-### 每轮训练
+### Per-Round
 1. 确定本轮案例（按 execution_order）
 2. 执行 Step 0a/0b（配置加载 + SOP 路径解析）
 3. Spawn 3 做题 Agent + 等待完成
@@ -115,13 +115,13 @@
 11. Git commit → PR → merge
 12. 记录结果 → results.tsv + rounds/
 
-### Batch 间
+### Between Batches
 - 输出收敛报告
 - 发起 SOP 清洗（如需要）
 - 向 Boss 汇报状态
 - Boss 确认后继续下一 Batch
 
-### 紧急停止
+### Emergency Stop
 - Boss 随时可发"暂停训练"
 - Helix 立即停止当前轮次，报告状态
 - 已 merge 的变更保留（可 git revert）

@@ -1,8 +1,8 @@
-# 选题流程（Question Design）
+# Question Design Process
 
 > 选题标准由训练目标决定，不硬编码。本文件定义统一流程。
 
-## 选题流程（每次启动新训练方向时执行）
+## Selection Process
 
 ### Step 1: 定义训练目标
 
@@ -61,7 +61,7 @@ training/_shared/case-config.json  ← 追加新案例元数据
 
 ---
 
-## 答案来源与质控
+## Answer Source and Quality Control
 
 ### 答案 = FDA 获批时的实际试验设计
 
@@ -79,7 +79,7 @@ training/_shared/case-config.json  ← 追加新案例元数据
 
 ---
 
-## 覆盖度管理
+## Coverage Management
 
 每 20 个案例为一个覆盖单元。长期目标覆盖矩阵：
 

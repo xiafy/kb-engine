@@ -8,7 +8,7 @@
 ```
 kb-engine/
 ├── sop/                    ← 可执行 SOP（所有训练分支共享，通过 main 同步）
-│   ├── core/               ← 全局决策 SOP（protocol-design 152行 + sap-design 145行）
+│   ├── core/               ← Global decision SOPs (protocol-design + sap-design)
 │   ├── domains/            ← 疾病大类知识（5 文件）
 │   ├── indications/        ← 适应症特定知识（14 文件）
 │   ├── regulatory/         ← 监管路径知识（3 文件）

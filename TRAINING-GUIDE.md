@@ -89,3 +89,20 @@ experiment/{description}       — Experiment
 | `training/_shared/ROLES.md` | Role specifications and isolation requirements |
 | `training/_shared/QUESTION-DESIGN.md` | How questions are selected |
 | `training/_shared/program.md` | Full orchestrated training program (reference only) |
+
+## Glossary
+
+| Term | Definition |
+|------|-----------|
+| **SOP** | Standard Operating Procedure — executable rules that guide protocol design decisions |
+| **Domain** | Disease category (e.g., oncology-solid, autoimmune, respiratory) |
+| **Indication** | Specific disease/condition (e.g., breast-er-her2neg, anca-vasculitis) |
+| **Regulatory pathway** | FDA approval route (regular, accelerated-approval, breakthrough) |
+| **Branch** | Training direction (e.g., protocol-design, sap-design) — each has its own SOP, questions, and results |
+| **Round** | One training iteration: answer one case → compare with FDA → score → analyze |
+| **match_score** | Strict match rate: how many dimensions exactly match FDA actual (0.0–1.0) |
+| **weighted_score** | Weighted score: match×1 + partial×0.5 (0.0–1.0) |
+| **KNOW/REG/STAT** | Difference types that indicate SOP gaps — trigger SOP updates |
+| **ALT** | Reasonable alternative — both AI and FDA answers are valid, no SOP update needed |
+| **CRO** | Contract Research Organization — company that manages clinical trials for pharmaceutical sponsors |
+| **FDA** | U.S. Food and Drug Administration — the regulatory authority whose approved protocols are the "answer key" |
