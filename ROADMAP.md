@@ -43,15 +43,29 @@ protocol-design → sap-design → stat-analysis → efficacy/safety → labelin
 
 ## New Branch Launch Checklist
 
-1. [ ] 基于 `training/_shared/framework.md` 编写 `training/{branch}/program.md`（**核心**——完整训练程序，非 fork）
-2. [ ] 创建 `training/{branch}/evaluate.md`（分支独立评分标准，维度可能完全不同）
-3. [ ] 创建 `training/{branch}/case-config.json`（从题库映射答案路径 + 域）
-4. [ ] 创建 `training/{branch}/config.yaml`
-5. [ ] 创建 `training/{branch}/README.md`
-6. [ ] 创建种子 `sop/core/{branch}.md`（从 kb/ + D2V SOP 吸收）
-7. [ ] 运行 3 个案例 baseline
-8. [ ] 启动 10 轮训练
-9. [ ] 训练后 SOP 清洗 + 版本标记
+### Phase 0: 训练方案设计（先于一切流程文档）
+
+1. [ ] **明确训练目标**：这个分支要让 Agent 具备什么能力？解决什么问题？
+2. [ ] **定义训练范围**：覆盖哪些决策维度？边界在哪？与已有分支的本质差异？
+3. [ ] **梳理需求**：需要什么数据源（FDA Review 哪些章节）、领域知识、工具？
+4. [ ] **设计评分体系**：维度定义 + 每维度的评分标准 + 判例（至少 3 个/维度）
+5. [ ] **产出训练方案文档** → `docs/{branch}-training-design.md`
+6. [ ] **Boss 确认**训练方案
+
+### Phase 1: 生成流程文档（基于训练方案）
+
+7. [ ] 基于 framework.md + 训练方案编写 `training/{branch}/program.md`
+8. [ ] 编写 `training/{branch}/evaluate.md`（从训练方案的评分体系细化）
+9. [ ] 创建 `training/{branch}/case-config.json`（从题库映射答案路径 + 域）
+10. [ ] 创建 `training/{branch}/config.yaml`
+11. [ ] 创建 `training/{branch}/README.md`
+12. [ ] 创建种子 `sop/core/{branch}.md`（从 kb/ + D2V SOP 吸收）
+
+### Phase 2: 验证 & 训练
+
+13. [ ] 运行 3 个案例 baseline
+14. [ ] 启动正式训练
+15. [ ] 训练后 SOP 清洗 + 版本标记
 
 ## D2V SOP 按需吸收映射
 
