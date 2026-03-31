@@ -48,3 +48,4 @@ round	branch	case_id	drug_name	pathway	match_score	weighted_score	match_count	pa
 # --- v4.0 Batch 1 (open-book, 3-agent consensus, 3-judge blind eval) ---
 B1R1	protocol-design	12	Sotyktu	regular	0.70	0.85	7	3	0	0	10	2	60	KNOW:2,ALT:1	v4.0 open-book rerun; 2/3 agents (B timeout); consensus 2/2; IUT alpha + sensitivity suite	2026-03-30
 B1R2	protocol-design	15	Orgovyx	regular	0.50	0.65	5	3	2	0	10	4	64	KNOW:4,ALT:1	v5.0 3-solver (kimi+minimax×2); FDA single-arm threshold missed; 4 rules added to prostate-adt.md	2026-03-31
+B1R3	protocol-design	05	Vyloy	regular	1.00	1.00	10	0	0	0	10	0	64	none	v5.0 2-solver (kimi+minimax, C timeout); first perfect score; SPOTLIGHT/GLOW benchmarks found via web_search	2026-03-31
