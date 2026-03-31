@@ -2,29 +2,59 @@
 # Protocol 设计 8 步决策流程
 
 branch: protocol-design
-version: 1.0
-status: migrated  # from docs/training-loop/ v2.2
+version: 2.0  # v5.0 架构：独立 program.md + evaluate.md + case-config.json
+status: active
+
+# 本分支文件（不再依赖 _shared/）
+files:
+  program: training/protocol-design/program.md
+  evaluate: training/protocol-design/evaluate.md
+  case_config: training/protocol-design/case-config.json
+  framework: training/_shared/framework.md  # 通用骨架（只读参考）
 
 sop:
   core: core/protocol-design.md
   depends_on: null
-  domains_mapping: case-config.json  # domain 字段 → sop/domains/{domain}.md
-  indications_mapping: case-config.json  # indication 字段 → sop/indications/{indication}.md
+  domains_mapping: case-config.json
+  indications_mapping: case-config.json
 
 answer_extraction:
   chapters:
     - "Clinical Review — Trial Design"
     - "Clinical Review — Inclusion/Exclusion"
     - "Clinical Review — Efficacy"
-    - "Clinical Review — Safety"           # QC D-2 补充
+    - "Clinical Review — Safety"
     - "Statistical Review — Study Design"
     - "Statistical Review — Sample Size"
 
 scoring:
-  # 使用 evaluate.md 默认 10 项评分维度（不 override）
-  dimensions: default
+  dimensions:
+    - design_type
+    - control_arm
+    - primary_endpoint
+    - endpoint_definition
+    - secondary_endpoints
+    - sample_size
+    - stat_framework
+    - stratification
+    - eligibility
+    - operational
   skip_items: null
   custom_rubric: null
+
+# Owner Agent 配置
+agents:
+  owner_count: 2
+  owner_timeout: 300
+  judge_count: 3
+
+# 差异分析类型
+difference_codes:
+  - { code: KNOW, label: "领域知识不足", sop_fixable: true }
+  - { code: REG,  label: "监管路径判断错误", sop_fixable: true }
+  - { code: STAT, label: "统计方法选择错误", sop_fixable: true }
+  - { code: ALT,  label: "合理但非 FDA 选择", sop_fixable: false }
+  - { code: INFO, label: "题目信息不足", sop_fixable: false }
 
 sop_write_targets:
   global: sop/core/protocol-design.md
@@ -32,13 +62,46 @@ sop_write_targets:
   indication: "sop/indications/{indication}.md ## Trial Design"
   regulatory: "sop/regulatory/{regulatory}.md"
 
-execution_order: default  # 使用 program.md 中的固定顺序
+# 收敛判据
+convergence:
+  match_threshold: 0.70
+  consecutive_rounds: 3
+  max_new_rules: 1
+  divergence_rolling_window: 5
+
+# 分批策略
+batch_strategy:
+  - { batch: 1, rounds: "1-5",   mode: "精做", review_after: true }
+  - { batch: 2, rounds: "6-10",  mode: "常规", review_after: false }
+  - { batch: 3, rounds: "11-15", mode: "加速", review_after: false }
+  - { batch: 4, rounds: "16-20", mode: "冲刺", review_after: true }
+
+execution_order:
+  - 12-sotyktu
+  - 15-orgovyx
+  - 05-vyloy
+  - 14-airsupra
+  - 13-tavneos
+  - 10-kimmtrak
+  - 18-voranigo
+  - 16-ogsiveo
+  - 08-truqap
+  - 17-rytelo
+  - 19-lumakras
+  - 11-loqtorzi
+  - 04-datroway
+  - 07-orserdu
+  - 09-komzifti
+  - 20-modeyso
+  - 06-retevmo
+  - 02-hernexeos
+  - 03-hyrnuo
+  - 01-inluriyo
 
 history:
   total_rounds: 20
-  current_match: 0.74  # 校准后（自评 0.83，盲评校准 0.74）
-  ood_match: 0.76  # 训练集外 5 案例
-  sop_rules_initial: 59  # v2.2 起始
-  sop_rules_final: 71    # 20 轮训练后实际值
+  current_round: 1  # B1R1 完成
+  current_match: 0.70
+  sop_rules_current: 61  # 59 迁移 + 2 B1R1
   migrated_from: docs/training-loop/
   migration_date: "2026-03-30"

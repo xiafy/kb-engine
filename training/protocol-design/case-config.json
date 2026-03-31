@@ -1,0 +1,202 @@
+[
+  {
+    "id": "01",
+    "drug": "Inluriyo",
+    "generic": "imlunestrant",
+    "path": "2025/NDA218881-inluriyo",
+    "domain": "oncology-solid",
+    "indication": "breast-er-her2neg",
+    "regulatory": null,
+    "data_quality": "high"
+  },
+  {
+    "id": "02",
+    "drug": "Hernexeos",
+    "generic": "fam-trastuzumab deruxtecan-nxki",
+    "path": "2025/NDA219042-hernexeos",
+    "domain": "oncology-solid",
+    "indication": "nsclc",
+    "regulatory": "accelerated-approval",
+    "data_quality": "high"
+  },
+  {
+    "id": "03",
+    "drug": "Hyrnuo",
+    "generic": "trastuzumab deruxtecan",
+    "path": "2025/NDA219972-hyrnuo",
+    "domain": "oncology-solid",
+    "indication": "nsclc",
+    "regulatory": "accelerated-approval",
+    "data_quality": "high"
+  },
+  {
+    "id": "04",
+    "drug": "Datroway",
+    "generic": "datopotamab deruxtecan-dlnk",
+    "path": "2025/BLA761394-datroway",
+    "domain": "oncology-solid",
+    "indication": "breast-er-her2neg",
+    "regulatory": null,
+    "data_quality": "high"
+  },
+  {
+    "id": "05",
+    "drug": "Vyloy",
+    "generic": "zolbetuximab-clzb",
+    "path": "2024/BLA761365-vyloy",
+    "domain": "oncology-solid",
+    "indication": "gastric-gejc",
+    "regulatory": null,
+    "data_quality": "high"
+  },
+  {
+    "id": "06",
+    "drug": "Retevmo",
+    "generic": "selpercatinib",
+    "path": "2020/NDA213246-retevmo",
+    "domain": "oncology-solid",
+    "indication": "nsclc",
+    "regulatory": "accelerated-approval",
+    "data_quality": "high"
+  },
+  {
+    "id": "07",
+    "drug": "Orserdu",
+    "generic": "elacestrant",
+    "path": "2023/NDA217639-orserdu",
+    "domain": "oncology-solid",
+    "indication": "breast-er-her2neg",
+    "regulatory": null,
+    "data_quality": "high"
+  },
+  {
+    "id": "08",
+    "drug": "Truqap",
+    "generic": "capivasertib",
+    "path": "2023/NDA218197-truqap",
+    "domain": "oncology-solid",
+    "indication": "breast-er-her2neg",
+    "regulatory": null,
+    "data_quality": "high"
+  },
+  {
+    "id": "09",
+    "drug": "Komzifti",
+    "generic": "revumenib",
+    "path": "2025/NDA220305-komzifti",
+    "domain": "oncology-heme",
+    "indication": "aml",
+    "regulatory": null,
+    "data_quality": "high"
+  },
+  {
+    "id": "10",
+    "drug": "Kimmtrak",
+    "generic": "tebentafusp-tebn",
+    "path": "2022/BLA761228-kimmtrak",
+    "domain": "rare-disease",
+    "indication": "uveal-melanoma",
+    "regulatory": null,
+    "data_quality": "high"
+  },
+  {
+    "id": "11",
+    "drug": "Loqtorzi",
+    "generic": "toripalimab-tpzi",
+    "path": "2023/BLA761240-loqtorzi",
+    "domain": "oncology-solid",
+    "indication": "npc",
+    "regulatory": null,
+    "data_quality": "high"
+  },
+  {
+    "id": "12",
+    "drug": "Sotyktu",
+    "generic": "deucravacitinib",
+    "path": "2022/NDA214958-sotyktu",
+    "domain": "autoimmune",
+    "indication": "psoriasis",
+    "regulatory": null,
+    "data_quality": "high"
+  },
+  {
+    "id": "13",
+    "drug": "Tavneos",
+    "generic": "avacopan",
+    "path": "2021/NDA214487-tavneos",
+    "domain": "autoimmune",
+    "indication": "anca-vasculitis",
+    "regulatory": null,
+    "data_quality": "high"
+  },
+  {
+    "id": "14",
+    "drug": "Airsupra",
+    "generic": "albuterol/budesonide",
+    "path": "2023/NDA214070-airsupra",
+    "domain": "respiratory",
+    "indication": "asthma",
+    "regulatory": null,
+    "data_quality": "high"
+  },
+  {
+    "id": "15",
+    "drug": "Orgovyx",
+    "generic": "relugolix",
+    "path": "2020/NDA214621-orgovyx",
+    "domain": "oncology-solid",
+    "indication": "prostate-adt",
+    "regulatory": null,
+    "data_quality": "high"
+  },
+  {
+    "id": "16",
+    "drug": "Ogsiveo",
+    "generic": "nirogacestat",
+    "path": "2023/NDA217677-ogsiveo",
+    "domain": "rare-disease",
+    "indication": "desmoid-tumor",
+    "regulatory": null,
+    "data_quality": "high"
+  },
+  {
+    "id": "17",
+    "drug": "Rytelo",
+    "generic": "imetelstat",
+    "path": "2024/NDA217779-rytelo",
+    "domain": "oncology-heme",
+    "indication": "mds",
+    "regulatory": null,
+    "data_quality": "high"
+  },
+  {
+    "id": "18",
+    "drug": "Voranigo",
+    "generic": "vorasidenib",
+    "path": "2024/NDA218784-voranigo",
+    "domain": "oncology-solid",
+    "indication": "lgg",
+    "regulatory": null,
+    "data_quality": "high"
+  },
+  {
+    "id": "19",
+    "drug": "Lumakras",
+    "generic": "sotorasib",
+    "path": "2021/NDA214665-lumakras",
+    "domain": "oncology-solid",
+    "indication": "nsclc",
+    "regulatory": "accelerated-approval",
+    "data_quality": "high"
+  },
+  {
+    "id": "20",
+    "drug": "Modeyso",
+    "generic": "tovorafenib",
+    "path": "2025/NDA219876-modeyso",
+    "domain": "oncology-solid",
+    "indication": "plgg",
+    "regulatory": "accelerated-approval",
+    "data_quality": "high"
+  }
+]
