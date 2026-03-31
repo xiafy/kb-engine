@@ -1,13 +1,21 @@
 # Branch: sap-design
-# SAP 统计设计决策流程
+# SAP Statistical Analysis Plan Design
 
 branch: sap-design
-version: 0.1
-status: seed  # 种子版，待训练
+version: 2.0  # v5.0 architecture: independent program.md + evaluate.md + case-config.json
+status: active
+
+# Branch files (self-contained, no _shared/ dependency)
+files:
+  program: training/sap-design/program.md
+  evaluate: training/sap-design/evaluate.md
+  case_config: training/sap-design/case-config.json
+  case_params: training/sap-design/case-params.json  # protocol parameters as fixed input
+  framework: training/_shared/framework.md  # universal skeleton (read-only reference)
 
 sop:
   core: core/sap-design.md
-  depends_on: core/protocol-design.md  # SAP 需要 Protocol 设计参数作为输入
+  depends_on: core/protocol-design.md  # SAP requires protocol design parameters as input
   domains_mapping: case-config.json
   indications_mapping: case-config.json
 
@@ -19,32 +27,35 @@ answer_extraction:
     - "Statistical Review — Sample Size"
     - "Statistical Review — Missing Data"
     - "Statistical Review — Subgroup Analysis"
-    - "Clinical Review — Efficacy"  # 分析集定义、敏感性分析
+    - "Clinical Review — Efficacy"
 
 scoring:
   dimensions:
-    - 主分析方法选择
-    - 多重性控制策略
-    - 期中分析设计
-    - 分析集定义
-    - 缺失数据处理策略
-    - 亚组分析预设
-    - 敏感性分析设计
-    - 样本量计算方法和假设
-    - Estimand 框架
+    - primary_analysis_method
+    - multiplicity_control
+    - interim_analysis
+    - analysis_sets
+    - missing_data
+    - subgroup_analysis
+    - sensitivity_analyses
+    - sample_size_method
+    - estimand_framework
   skip_items: null
-  custom_rubric: null  # 训练开始后根据需要添加
+  custom_rubric: null
 
-input_schema:
-  description: "SAP 做题需要 Protocol 参数作为固定输入"
-  source: case-params.json  # 分支专属文件，避免修改共享 case-config.json 导致冲突
-  fields:
-    - primary_endpoint
-    - secondary_endpoints
-    - comparator
-    - population
-    - design
-    - stratification_factors
+# Owner Agent configuration
+agents:
+  owner_count: 2
+  owner_timeout: 360  # longer than PD (300s) — exec calculations take time
+  judge_count: 3
+
+# Difference analysis types (SAP-specific)
+difference_codes:
+  - { code: METH,  label: "Statistical method wrong", sop_fixable: true }
+  - { code: ASSUM, label: "Assumption unreasonable", sop_fixable: true }
+  - { code: IMPL,  label: "Implementation detail missing", sop_fixable: true }
+  - { code: ALT,   label: "Reasonable but non-FDA choice", sop_fixable: false }
+  - { code: INFO,  label: "Protocol info insufficient", sop_fixable: false }
 
 sop_write_targets:
   global: sop/core/sap-design.md
@@ -52,13 +63,50 @@ sop_write_targets:
   indication: "sop/indications/{indication}.md ## SAP Design"
   regulatory: "sop/regulatory/{regulatory}.md"
 
-execution_order: default  # 使用 program.md 默认案例顺序
+# Convergence criteria
+convergence:
+  match_threshold: 0.65  # lower than PD (0.70) — SAP is harder
+  consecutive_rounds: 3
+  max_new_rules: 1
+  divergence_rolling_window: 5
+
+# Batch strategy (2 batches, not 4)
+batch_strategy:
+  - { batch: 1, rounds: "1-5",  mode: "intensive", review_after: true }
+  - { batch: 2, rounds: "6-10", mode: "standard",  review_after: true }
+
+# Execution order (by statistical complexity, not clinical domain)
+execution_order:
+  - 12-sotyktu
+  - 15-orgovyx
+  - 10-kimmtrak
+  - 05-vyloy
+  - 13-tavneos
+  - 18-voranigo
+  - 04-datroway
+  - 08-truqap
+  - 07-orserdu
+  - 01-inluriyo
+  - 19-lumakras
+  - 02-hernexeos
+  - 03-hyrnuo
+  - 06-retevmo
+  - 20-modeyso
+  - 11-loqtorzi
+  - 14-airsupra
+  - 16-ogsiveo
+  - 09-komzifti
+  - 17-rytelo
 
 history:
   total_rounds: 0
+  open_book_rounds_completed: 0
   current_match: null
+  sop_rules_current: 38  # seed SOP
   seed_sources:
-    - sop.md v2.2 Step 5 分流（7 条规则）
-    - kb/d2v-sop/BS/sop-bs-002（SAP 开发流程框架）
-    - kb/methods/sop/statistical-design-sop.md（统计方法决策逻辑）
+    - "sop.md v2.2 Step 5 split (7 rules)"
+    - "D2V SOP-BS-002 (SAP development process)"
+    - "kb/methods/sop/statistical-design-sop.md (statistical method decisions)"
+    - "KB migration 2026-03-30 (33 rules from Amanda/Walt)"
   creation_date: "2026-03-30"
+  training_design_date: "2026-03-31"

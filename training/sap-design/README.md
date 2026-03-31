@@ -1,46 +1,52 @@
 # Branch: SAP Design
 
-> **状态**: 🌱 种子版（待训练）
-> **训练轮次**: 0
-> **种子来源**: sop.md v2.2 Step 5 分流 + D2V SOP-BS-002 + kb/ 统计方法论
+> **Status**: ✅ Phase 1 complete (program.md + evaluate.md + case-config.json + config.yaml)
+> **Architecture**: v5.0 (independent program.md, per framework.md skeleton)
+> **Seed SOP**: sop/core/sap-design.md v1.0 (38 rules)
+> **Training Design**: docs/sap-design-training-design.md (Boss confirmed 2026-03-31)
 
-## 种子内容
+## Overview
 
-`sop/core/sap-design.md` 初始规则来自三个来源：
+SAP Design training teaches the Agent to produce FDA-level Statistical Analysis Plans.
+Given protocol parameters (endpoints, comparator, population, design, N, stratification),
+the Agent designs the HOW: analysis method, multiplicity control, interim analysis,
+missing data handling, sensitivity analyses, estimand framework.
 
-1. **sop.md v2.2 Step 5 分流**（7 条）：
-   - 3-arm RCT alpha 分配
-   - Dual PFS+OS Alpha Split 惯例 + 回收机制
-   - 期中分析 Lan-DeMets OBF
-   - NI→Superiority 联合检验
-   - NI 界值 M1/M2
-   - 外部对照 SAP 要求
+## Key Differences from Protocol Design
 
-2. **D2V SOP-BS-002**（流程框架）：
-   - SAP 开发时间线（Protocol + CRF 就绪后起草）
-   - 角色职责（Study Statistician 起草 → Manager/Clinical/Sponsor 审批）
+| Aspect | Protocol Design | SAP Design |
+|--------|----------------|------------|
+| Core skill | Clinical decisions | Statistical methodology |
+| Input | Drug info + indication | Protocol parameters (PD output) |
+| Core tool | web_search | **exec (Python/R)** |
+| Difference codes | KNOW/REG/STAT/ALT/INFO | **METH/ASSUM/IMPL/ALT/INFO** |
+| Convergence | match ≥ 0.70 | match ≥ 0.65 |
+| Owner timeout | 300s | 360s |
 
-3. **kb/ 统计方法论**（决策知识，引用不内联）：
-   - `kb/biostat/estimand-practical-guide.md`
-   - `kb/biostat/multiplicity-control.md`
-   - `kb/biostat/missing-data-nrc2010-deep.md`
-   - `kb/biostat/sample-size-methods.md`
-   - `kb/methods/sop/statistical-design-sop.md`
+## Scoring Dimensions (9)
 
-## 评分维度（9 项）
+1. Primary analysis method
+2. Multiplicity control
+3. Interim analysis
+4. Analysis sets
+5. Missing data handling
+6. Subgroup analysis
+7. Sensitivity analyses
+8. Sample size method
+9. Estimand framework
 
-1. 主分析方法选择
-2. 多重性控制策略
-3. 期中分析设计
-4. 分析集定义
-5. 缺失数据处理策略
-6. 亚组分析预设
-7. 敏感性分析设计
-8. 样本量计算方法和假设
-9. Estimand 框架（ICH E9(R1)）
+## Files
 
-## 下一步
+| File | Description |
+|------|-------------|
+| `program.md` | Complete SAP training program v1.0 |
+| `evaluate.md` | 9-dimension scoring rubric with judgment examples |
+| `case-config.json` | 20 cases with protocol_params_ref |
+| `case-params.json` | Protocol parameters for all 20 cases |
+| `config.yaml` | Branch config v2.0 (self-contained) |
 
-1. 增强 sop/core/sap-design.md：从 D2V SOP + kb/ 吸收种子知识
-2. 跑 baseline（3 案例，预期 match 0.30-0.50）
-3. 启动 10 轮训练
+## Next Steps
+
+1. [ ] Round 1 (12-sotyktu) — baseline
+2. [ ] Batch 1 (Rounds 1-5) — intensive
+3. [ ] Batch 2 (Rounds 6-10) — standard
