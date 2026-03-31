@@ -3,7 +3,7 @@
 > 可执行 SOP + 闭环训练系统
 > Karpathy Autoresearch 理念：做题 → 对答案 → 优化 SOP → 循环
 
-## 架构
+## 架构（v5.0）
 
 ```
 kb-engine/
@@ -15,27 +15,53 @@ kb-engine/
 │   └── templates/          ← 交付模板（PM Agent 用）
 │
 ├── training/               ← 闭环训练系统
-│   ├── _shared/            ← 跨分支共享（program.md, evaluate.md, case-config.json）
-│   ├── protocol-design/    ← PD 训练分支（questions/ + rounds/ + results.tsv）
-│   ├── sap-design/         ← SAP 训练分支
-│   └── {future}/           ← 从 _branch-template 创建
+│   ├── _shared/            ← 通用骨架 + 跨分支共享工具
+│   │   ├── framework.md    ← 通用流程骨架（Step 名 + I/O 契约 + 全局不变量）
+│   │   ├── LANGUAGE.md     ← 语言规范
+│   │   ├── QUESTION-DESIGN.md ← 选题规范
+│   │   └── SUPERSEDED.md   ← 旧版文件标记（program.md v4.1 / evaluate.md / ROLES.md）
+│   │
+│   ├── protocol-design/    ← PD 训练分支（完整自包含）
+│   │   ├── program.md      ← PD 训练程序 v5.0
+│   │   ├── evaluate.md     ← PD 评分标准（10 维度）
+│   │   ├── case-config.json← PD 案例配置
+│   │   ├── config.yaml     ← PD 分支配置
+│   │   ├── questions/      ← 21 套题目
+│   │   ├── results.tsv     ← 训练记录
+│   │   └── rounds/         ← 每轮产出
+│   │
+│   ├── sap-design/         ← SAP 训练分支（待创建 program.md）
+│   └── {future}/           ← 每个新分支独立编写 program.md + evaluate.md
 │
-├── data                    ← symlink → 本地 data 目录（FDA Reviews + D2V 资料，见下方 Setup）
+├── docs/                   ← 设计文档
+├── data                    ← symlink → 本地 data 目录（FDA Reviews + D2V 资料）
 ├── ROADMAP.md              ← 9-SOP 训练路线图
 └── README.md               ← 本文件
 ```
 
+## v5.0 架构核心
+
+1. **framework.md**（不变）：定义流程骨架（Step 0→8 的名称 + 输入/输出契约 + 6 条全局不变量）
+2. **每分支 program.md**（可变）：完整训练程序——评分维度、分析策略、优化策略、做题配置均由分支自主定义
+3. **Owner Agent 架构**：做题 Agent 读 SOP 自行决定编排方式，训练引擎不硬编码 CRO 角色
+
+**指导原则**（docs/guiding-principles.md）：
+- SOP 唯一消费者 = AI Agent
+- 训练引擎不掺杂业务逻辑
+- Sub-Agent 目的 = 优化上下文、减少幻觉
+- 训练引擎与业务逻辑分离
+
 ## Git 工作流（PR 模型）
 
-- 每轮训练 = 从 main checkout 短分支 → commit → PR → merge
+- 每轮训练 = 从 main checkout 短分支 → commit → PR → squash merge
 - main = 训练主线 + tag 标记稳定版
 - SOP 写入遵循 section-append 约定
 
 ```bash
 git checkout main && git pull
-git checkout -b train/pd-round-12
+git checkout -b train/pd-round-{NN}
 # 执行训练...
-git commit -m "pd-round-12: +2 rules, match 0.78"
+git commit -m "pd-round-{NN}: +{N} rules, match {score}"
 gh pr create --base main && gh pr merge --squash --delete-branch
 ```
 
@@ -43,10 +69,11 @@ gh pr create --base main && gh pr merge --squash --delete-branch
 
 | 文件 | 用途 |
 |------|------|
-| `training/_shared/program.md` | 训练主程序 v3.2 |
-| `training/_shared/evaluate.md` | 评分标准 v2.0（裁判×3 盲评） |
-| `training/{branch}/config.yaml` | 分支配置（评分维度、答案提取、SOP 路径） |
-| `sop/README.md` | PM Agent SOP 路由表 |
+| `training/_shared/framework.md` | 通用流程骨架 v1.0 |
+| `training/{branch}/program.md` | 分支完整训练程序（PD v5.0） |
+| `training/{branch}/evaluate.md` | 分支评分标准 |
+| `training/{branch}/config.yaml` | 分支配置 |
+| `docs/guiding-principles.md` | 4 条指导原则 |
 | `ROADMAP.md` | 9-SOP 训练优先级和时间线 |
 
 ## 相关仓库
@@ -61,7 +88,5 @@ gh pr create --base main && gh pr merge --squash --delete-branch
 ```bash
 git clone https://github.com/xiafy/kb-engine.git
 cd kb-engine
-
-# 创建 data symlink（指向你本地的 d2v_cro_base/data 目录）
 ln -s /path/to/d2v_cro_base/data data
 ```

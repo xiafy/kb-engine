@@ -1,7 +1,7 @@
 # kb-engine 执行计划
 
 > **版本**: v2.1 | **创建**: 2026-03-30 | **Owner**: Helix-Core
-> **状态**: ✅ Step 0-7 完成 | Batch 1 训练启动（B1R1 完成，match 0.70）| program.md v4.1
+> **状态**: ✅ Step 0-7 完成 | Batch 1 训练启动（B1R1 完成，match 0.70）| ⚠️ program.md v4.1 → **v5.0 架构重构完成**（见 `v5.0-redesign.md`）
 > **仓库**: `xiafy/kb-engine` | Tag: `pd-validation-pass`
 > **架构文档**: `kb-engine-architecture-v2.md`
 > **评审记录**: 4 轮 Opus（项目 B+ / 架构 B·B+·B+ / Step 6 方案 B），全部阻塞项已修复

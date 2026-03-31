@@ -5,7 +5,7 @@
 ## Training Priority（按工作流依赖链）
 
 ```
-Phase 1: ✅ protocol-design（已完成 v2.2 → v3.0 迁移）
+Phase 1: ✅ protocol-design（v5.0 架构：20 轮闭卷 + B1R1 开卷 match 0.70，独立 program.md）
 Phase 2: ▶️ sap-design → regulatory-strategy
 Phase 3:    efficacy-assessment + safety-assessment（并行）
 Phase 4:    clinical-pharm + stat-analysis（专项，相对独立）
@@ -16,7 +16,7 @@ Phase 5:    labeling-review + post-marketing（下游）
 
 | Phase | SOP | 状态 | 预估启动 | 依赖 | 预估训练轮次 |
 |-------|-----|------|---------|------|-------------|
-| 1 | protocol-design | ✅ 完成 | — | — | 20（已完成） |
+| 1 | protocol-design | ✅ v5.0 | — | — | 20 闭卷 + 1 开卷（进行中） |
 | 2a | sap-design | 🌱 种子就绪 | 即刻 | Phase 1 | 10-15 |
 | 2b | regulatory-strategy | ⬜ 待创建 | Phase 2a 完成后 | Phase 1 | 10-15 |
 | 3a | efficacy-assessment | ⬜ 待创建 | Phase 2 完成后 | Phase 1+2a | 10 |
@@ -43,12 +43,15 @@ protocol-design → sap-design → stat-analysis → efficacy/safety → labelin
 
 ## New Branch Launch Checklist
 
-1. [ ] 创建 `training/{branch}/config.yaml`
-2. [ ] 创建 `training/{branch}/README.md`
-3. [ ] 创建种子 `sop/core/{branch}.md`（从 kb/ + D2V SOP 吸收）
-4. [ ] 运行 3 个案例 baseline
-5. [ ] 启动 10 轮训练
-6. [ ] 训练后 SOP 清洗 + 版本标记
+1. [ ] 基于 `training/_shared/framework.md` 编写 `training/{branch}/program.md`（**核心**——完整训练程序，非 fork）
+2. [ ] 创建 `training/{branch}/evaluate.md`（分支独立评分标准，维度可能完全不同）
+3. [ ] 创建 `training/{branch}/case-config.json`（从题库映射答案路径 + 域）
+4. [ ] 创建 `training/{branch}/config.yaml`
+5. [ ] 创建 `training/{branch}/README.md`
+6. [ ] 创建种子 `sop/core/{branch}.md`（从 kb/ + D2V SOP 吸收）
+7. [ ] 运行 3 个案例 baseline
+8. [ ] 启动 10 轮训练
+9. [ ] 训练后 SOP 清洗 + 版本标记
 
 ## D2V SOP 按需吸收映射
 

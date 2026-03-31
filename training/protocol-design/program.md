@@ -181,7 +181,7 @@ Round 20: 01-inluriyo     (乳腺癌 ESR1m, RCT, 终极测试)
 对每个评分维度（10 个）：
   IF 2/2 一致 → 直接采纳 [consensus: 2/2]
   IF 2/2 不同 → 列出两个选项 + 各自理由 [divergence]
-    → Helix 基于 SOP 规则选择更合理的，标注 [helix-resolved]
+    → Orchestrator 基于 SOP 规则选择更合理的，标注 [orchestrator-resolved]
 ```
 
 **[divergence] 的价值**：
@@ -337,18 +337,30 @@ rounds/round-{NN}/
 └── grounding.md         ← 规则溯源记录
 ```
 
-**results.tsv 追加一行**：
+**results.tsv 追加一行**（17 列，与历史数据一致）：
 ```
-round, case_id, match_score, weighted_score, match_count, partial_count, miss_count, skip_count, new_rules_added, sop_rule_count, delta_codes, timestamp, notes
+round, branch, case_id, drug_name, pathway, match_score, weighted_score, match_count, partial_count, miss_count, skip_count, total_items, new_rules, sop_total, delta_codes, notes, timestamp
 ```
 
 **Git**：
 ```bash
+git checkout main && git pull
 git checkout -b train/pd-round-{NN}
 git add -A
 git commit -m "round-{NN}: +{N} rules, match {score}"
 gh pr create --base main --title "PD Round {NN}: +{N} rules, match {score}"
 gh pr merge --squash --delete-branch
+```
+
+**分支命名约定**：
+- `train/pd-round-{NN}` — Protocol Design 正式训练轮次
+- `experiment/{描述}` — 短期实验，失败可删
+
+**Tag 策略**（收敛时打标）：
+```bash
+git tag pd-batch{N}-stable     # Batch 收敛点
+git tag v{X.Y}-release         # 正式稳定版（PM Agent 用）
+git push --tags
 ```
 
 ### Step 8: 收敛判断
@@ -394,6 +406,9 @@ Agent 间行为差异 → L2 记录：读 session history，提取 tool call 序
 | match_score = 1.0 | 重新严格评分 |
 | match_score < 0.2 | 确认答案文件正确 |
 | case-config 无 domain/indication | 仅加载 core/ |
+| core/ SOP > 200 行 | 触发规则合并（合并重复、精简冗余） |
+| config.yaml 缺失字段 | 使用默认值（evaluate.md 原始 10 维度） |
+| 新分支首次运行 | Step 0 验证 config 完整性；core/ SOP 不存在则报错退出 |
 
 ---
 

@@ -100,7 +100,8 @@ execution_order:
 
 history:
   total_rounds: 20
-  current_round: 1  # B1R1 完成
+  closed_book_rounds: 20  # v2.2 闭卷训练完成
+  open_book_rounds_completed: 1  # B1R1 (v4.0 开卷) 完成
   current_match: 0.70
   sop_rules_current: 61  # 59 迁移 + 2 B1R1
   migrated_from: docs/training-loop/

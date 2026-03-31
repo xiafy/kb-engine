@@ -2,8 +2,14 @@
 
 > **版本**: v2.0 | **日期**: 2026-03-30 | **Owner**: Helix-Core
 > **来源**: Boss + Helix 讨论（Discord #sop-md 线程，10:51-11:54）
-> **状态**: ✅ Boss 确认
+> **状态**: ⚠️ **部分被 v5.0 架构替代** — training/ 目录结构已变更，见 `v5.0-redesign.md`
 > **前版**: kb-engine-execution-plan.md v1.1（架构部分被本文件替代）
+>
+> **v5.0 变更**（2026-03-31）：
+> - `_shared/program.md` + `_shared/evaluate.md` → 每分支独立维护（`_shared/SUPERSEDED.md`）
+> - 新增 `_shared/framework.md`（通用流程骨架）
+> - 每个分支有独立 `program.md` + `evaluate.md` + `case-config.json`
+> - Git 工作流、SOP 架构、核心设计决策 D1-D5 仍然有效
 
 ---
 
@@ -45,28 +51,23 @@ kb-engine/                          ← 独立 Git 仓库
 │   └── templates/                  ← 交付模板（PM Agent 用）
 │
 ├── training/                       ← 训练系统
-│   ├── _shared/                    ← 跨分支共享资源
-│   │   ├── program.md              ← 训练主程序 v3.2（通用流程 + Git 工作流）
-│   │   ├── evaluate.md             ← 通用评分标准 v2.0
-│   │   ├── case-config.json        ← 案例元数据索引（20 案例）
-│   │   └── _branch-template/       ← 新分支模板
-│   │       ├── config.yaml.tmpl    ← 配置模板
-│   │       ├── README.md.tmpl      ← 说明模板
-│   │       └── questions/          ← 空目录占位
+│   ├── _shared/                    ← 通用骨架 + 跨分支共享（v5.0 重构）
+│   │   ├── framework.md            ← 通用流程骨架（Step 名 + I/O 契约 + 不变量）
+│   │   ├── LANGUAGE.md             ← 语言规范
+│   │   ├── QUESTION-DESIGN.md      ← 选题规范
+│   │   ├── SUPERSEDED.md           ← 旧版文件标记
+│   │   ├── program.md              ← [SUPERSEDED] 保留供参考
+│   │   └── evaluate.md             ← [SUPERSEDED] 保留供参考
 │   │
-│   ├── protocol-design/            ← PD 训练分支
-│   │   ├── config.yaml             ← 分支配置（评分维度、答案提取、SOP 路径）
-│   │   ├── README.md               ← 分支说明 + 状态
-│   │   ├── questions/              ← PD 专属题目（20 套）
-│   │   │   ├── 01-inluriyo.md
-│   │   │   └── ...
+│   ├── protocol-design/            ← PD 训练分支（v5.0 完整自包含）
+│   │   ├── program.md              ← PD 训练程序 v5.0
+│   │   ├── evaluate.md             ← PD 评分标准（10 维度）
+│   │   ├── case-config.json        ← PD 案例配置
+│   │   ├── config.yaml             ← 分支配置 v2.0
+│   │   ├── questions/              ← PD 专属题目（21 套）
 │   │   ├── rounds/                 ← 每轮训练记录
-│   │   │   ├── round-01/
-│   │   │   │   ├── answer.md       ← 做题 Agent 输出
-│   │   │   │   ├── scoring.md      ← 裁判评分详情（3 裁判 × N 维度）
-│   │   │   │   └── analysis.md     ← 差异分析 + SOP 更新决策
-│   │   │   └── ...
-│   │   └── results.tsv             ← 汇总评分（round, match_score, ...）
+│   │   │   └── round-01/           ← B1R1: answer-A/B/C + consensus + scoring + analysis
+│   │   └── results.tsv             ← 汇总评分（17 列）
 │   │
 │   ├── sap-design/                 ← SAP 训练分支
 │   │   ├── config.yaml

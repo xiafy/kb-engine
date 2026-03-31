@@ -56,7 +56,7 @@ filters:
 
 ```
 training/{branch}/questions/{id}-{drug}.md
-training/_shared/case-config.json  ← 追加新案例元数据
+training/{branch}/case-config.json  ← 追加新案例元数据（每分支独立维护）
 ```
 
 ---
