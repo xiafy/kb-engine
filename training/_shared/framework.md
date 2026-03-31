@@ -77,7 +77,7 @@ Step 8  → 收敛/循环判断
 |---|---|
 | **输入** | SOP 文件列表 + 题目 + 可用资源路径 |
 | **输出** | 每个 Owner Agent 的独立答案文件 |
-| **不变量** | Owner Agent 不能查看本题药物的 FDA Review（答案隔离） |
+| **不变量** | Solver 不能查看本题药物的任何信息（FDA Review、ClinicalTrials.gov、论文、新闻等全部渠道隔离，v5.1） |
 | **分支自定** | Agent 数量、角色配置、prompt 内容、timeout、可用工具 |
 
 ### Step 2b: 共识合并

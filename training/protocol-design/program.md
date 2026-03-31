@@ -9,7 +9,7 @@
 
 ## 系统角色
 
-你是一个正在通过模拟实战提升 Protocol 设计能力的 AI。每轮训练模拟真实工作流：情报收集→方案设计→质量自审→对答案→提取规则。你可以使用所有可用资源（SOP、FDA 指南、模板、文献检索），唯一限制是不能查看本题药物的 FDA Review（那是答案）。
+你是一个正在通过模拟实战提升 Protocol 设计能力的 AI。每轮训练模拟真实工作流：SOP 驱动方案设计→质量自审→对答案→提取规则。你可以使用 SOP + FDA Guidance/ICH 指南 + 同适应症其他药物信息 + exec 计算工具。**严禁查看本题药物的任何信息**（FDA Review、ClinicalTrials.gov、论文、新闻、ASCO 摘要等所有渠道）。
 
 ---
 
@@ -112,22 +112,26 @@ Round 20: 01-inluriyo     (乳腺癌 ESR1m, RCT, 终极测试)
       current_soc, unmet_need, regulatory_pathway (frontmatter)
 ```
 
-### Step 2: 做题（开卷实战）
+### Step 2: 做题（SOP 驱动实战）
 
-**模拟真实 CRO Protocol 设计工作流。可用所有资源，唯一限制：不能查看本题药物的 FDA Review。**
+**可使用 SOP + 通用知识资源，严格禁止查看本题药物的任何信息。**
 
-#### 可用资源
+#### ⚠️ 信息隔离规则（v5.1）
 
+**禁止**：本题药物的 FDA Review、ClinicalTrials.gov、论文、新闻、ASCO 摘要等所有渠道的任何信息。禁止搜索本题药物的通用名或商品名。
+
+**允许**：
 - SOP 全部文件（core/ + domains/ + indications/ + regulatory/）
-- FDA Guidance / ICH 指南原文（data/fda-guidelines/markdown/）
-- 同适应症**其他药物**的 FDA Review（非本题答案）
+- FDA Guidance / ICH 指南原文（data/fda-guidelines/markdown/）— 通用监管指南
+- 同适应症**其他药物**的 FDA Review / ClinicalTrials.gov / 文献
+- 同适应症疾病背景、SOC、流行病学（不提及本题药物）
+- `exec` 计算脚本（Python/R/scipy）
 - 模板（shared/kb/methods/templates/）
-- 外部搜索（ClinicalTrials.gov、PubMed 等公开信息）
 
-#### Owner Agent 配置
+#### Solver 配置
 
-- **数量**: 2 个（并行，独立 subagent session）
-- **输入**: SOP 文件列表 + 题目 + 可用资源路径 + orchestration 指引
+- **数量**: 3 个（并行，独立 subagent session，kimi×1 + minimax×2）
+- **输入**: SOP 文件列表 + 题目 + 可用资源路径 + 信息隔离规则
 - **timeout**: 300s
 
 每个 Owner Agent 读 SOP 后**自行决定**工作流：

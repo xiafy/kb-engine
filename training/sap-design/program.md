@@ -146,33 +146,36 @@ Also extract from case-config.json:
              sample size calculation method + assumptions, estimand framework
 ```
 
-### Step 2: Design SAP (open-book)
+### Step 2: Design SAP (SOP-driven)
 
-**Simulate a real CRO statistical analysis plan development workflow. All resources available; the only restriction: do not view the FDA Review for this drug.**
+**Simulate a real CRO statistical analysis plan development workflow.**
 
-#### Available Resources
+#### ⚠️ Information Isolation Rule (v5.1)
 
+**FORBIDDEN**: Any information about the study drug — FDA Review, ClinicalTrials.gov registration, publications, news, ASCO abstracts, etc. Do NOT search the drug's generic or brand name.
+
+**ALLOWED**:
 - All SOP files (core/ + domains/ + indications/ + regulatory/)
 - FDA Guidance / ICH guidelines full text (data/fda-guidelines/markdown/)
   - Key references: ICH E9(R1) [estimand], ICH E9 [stat principles], FDA missing data guidance
 - Other drugs' FDA Reviews for the same indication (NOT this drug's review)
-- External search: ClinicalTrials.gov, PubMed, FDA.gov
-- **exec (Python/R): CORE TOOL** — use for sample size verification, spending function calculation, power analysis
+- Same-indication disease background, SOC data (without mentioning this drug)
+- **exec (Python/R): CORE TOOL** — sample size verification, spending function, power analysis
 
-#### Owner Agent Configuration
+#### Solver Configuration
 
-- **Count**: 2 (parallel, independent subagent sessions)
-- **Input**: SOP file list + protocol_params + available resources + orchestration guidance
+- **Count**: 3 (parallel, independent subagent sessions, kimi×1 + minimax×2)
+- **Input**: SOP file list + protocol_params + available resources + information isolation rules
 - **timeout**: 360s
 - **Core tool**: exec (scipy, statsmodels, gsDesign/rpact)
 
-Each Owner Agent reads the SOP and **independently decides** its workflow:
+Each Solver reads the SOP and **independently decides** its workflow:
 - Complete all 9 SAP dimensions
-- Use exec to verify sample size calculations (verify the given N against stated assumptions)
-- Use exec to compute exact alpha spending boundaries (gsDesign/rpact)
-- Use web_search/web_fetch to find control arm historical parameters when needed for sensitivity
+- Use exec to verify sample size calculations
+- Use exec to compute exact alpha spending boundaries
+- Use web_search/web_fetch ONLY for same-indication **other drugs** (historical parameters, SOC data)
 
-**program.md does NOT prescribe Owner Agent internal workflow** — that is what the SOP specifies, and what training validates.
+**program.md does NOT prescribe Solver internal workflow** — that is what the SOP specifies, and what training validates.
 
 #### Output Format (one per Owner Agent)
 

@@ -46,7 +46,7 @@ gh auth status                             # 需要 GitHub CLI
 
 1. 从指定分支的 `program.md` 获取完整执行指令
 2. 加载 SOP + 案例配置
-3. 用 SOP 指导，独立完成方案设计（**开卷**：可用所有资源，唯一限制是不能看本题 FDA Review）
+3. 用 SOP 指导，独立完成方案设计（**开卷但信息隔离**：可用 SOP + 通用指南 + 同适应症其他药物信息，**严禁查看本题药物的任何信息**——包括 FDA Review、ClinicalTrials.gov、论文、新闻等所有渠道）
 4. 完成后对比 FDA 实际审批方案
 5. 评分、分析差异、提取 SOP 规则
 
@@ -69,8 +69,9 @@ gh auth status                             # 需要 GitHub CLI
 
 ```
 rounds/round-{NN}/
-├── answer-A.md          ← Owner Agent A 输出
-├── answer-B.md          ← Owner Agent B 输出
+├── solver-A.md          ← Solver A 输出
+├── solver-B.md          ← Solver B 输出
+├── solver-C.md          ← Solver C 输出
 ├── consensus-answer.md  ← 共识合并结果
 ├── fda-actual.md        ← FDA 实际方案（从 Review 提取）
 ├── scoring.md           ← 裁判评分
@@ -82,9 +83,9 @@ rounds/round-{NN}/
 
 ## 关键规则
 
-1. **答案隔离**：完成设计前不能查看本题药物的 FDA Review
+1. **本题药物信息隔离（v5.1）**：严禁通过任何渠道查看本题药物信息——包括 FDA Review（答案）、ClinicalTrials.gov 注册信息、公开论文、新闻、ASCO 摘要等。允许查看同适应症**其他药物**的所有信息。原理：训练测试的是 SOP 预测能力，不是情报检索能力。
 2. **裁判隔离**：裁判在独立 session 中执行，不看做题推理过程
-3. **开卷做题**：可用 SOP + FDA Guidance + 外部搜索 + exec 工具，唯一限制是不看本题答案
+3. **开卷做题**：可用 SOP + FDA Guidance + 同适应症其他药物 + exec 工具
 4. **英文执行**：所有训练内部产出用英文（LANGUAGE.md 规范）
 5. **Section-Append**：SOP 只追加不修改已有行，避免 Git 冲突
 6. **审核门控**：SOP 更新前必须经独立 Agent 审核
