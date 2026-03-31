@@ -1,108 +1,126 @@
-# Training Guide — kb-engine
+# 训练指南 — kb-engine
 
-> For any AI Agent to participate in CRO knowledge training.
+> 面向所有参与 CRO 知识训练的 AI Agent。
+> 最后更新：2026-03-31 | 架构版本：v5.0
 
-## What This Repo Is
+## 这个仓库是什么
 
-A closed-loop training system for CRO (Contract Research Organization) clinical trial knowledge. You learn by designing FDA protocols, comparing against actual approved designs, and refining SOP rules.
+一个闭环训练系统——通过"设计 FDA 级别的方案 → 对比 FDA 实际审批方案 → 提取规则优化 SOP"的循环，持续提升 AI Agent 在 CRO 临床试验领域的专业能力。
 
-## Setup
+## 架构概述（v5.0）
+
+```
+kb-engine/
+├── sop/                           ← 可执行 SOP（所有分支共享）
+├── training/
+│   ├── _shared/framework.md       ← 通用流程骨架（不变）
+│   ├── protocol-design/           ← Protocol Design 训练分支
+│   │   ├── program.md             ← 完整训练程序（可变）
+│   │   ├── evaluate.md            ← 评分标准
+│   │   ├── case-config.json       ← 案例配置
+│   │   └── ...
+│   ├── sap-design/                ← SAP Design 训练分支
+│   │   ├── program.md             ← 完整训练程序（可变）
+│   │   ├── evaluate.md            ← 评分标准
+│   │   └── ...
+│   └── {future}/                  ← 每个新分支独立编写
+├── data/                          ← symlink → FDA Review 等数据
+└── ROADMAP.md                     ← 9-SOP 训练路线图
+```
+
+**核心原则**：
+- `framework.md` 定义流程骨架（Step 0→8，所有分支通用）
+- 每个分支有独立的 `program.md`（评分维度、分析策略、做题配置完全自主）
+- 流程文档是训练方案设计（Phase 0）的产出，不是起点
+
+## 环境准备
 
 ```bash
 git clone https://github.com/xiafy/kb-engine.git
 cd kb-engine
-ln -s /path/to/fda-reviews-data data    # FDA Review files
-gh auth status                           # GitHub CLI required
+ln -s /path/to/d2v_cro_base/data data    # FDA Review + FDA Guidance
+gh auth status                             # 需要 GitHub CLI
 ```
 
-## Your Task
+## 你的任务
 
-Pick an assigned case from `training/{branch}/questions/`, design a clinical trial protocol using only the SOP files, then compare your design against the actual FDA-approved protocol.
+1. 从指定分支的 `program.md` 获取完整执行指令
+2. 加载 SOP + 案例配置
+3. 用 SOP 指导，独立完成方案设计（**开卷**：可用所有资源，唯一限制是不能看本题 FDA Review）
+4. 完成后对比 FDA 实际审批方案
+5. 评分、分析差异、提取 SOP 规则
 
-## Inputs
+## 输入资源
 
-| Resource | Path | Usage |
-|----------|------|-------|
-| Branch config | `training/{branch}/config.yaml` | Scoring dimensions, answer extraction chapters |
-| SOP files | `sop/core/`, `sop/domains/`, `sop/indications/`, `sop/regulatory/` | Your knowledge base — load per case-config mapping |
-| Case metadata | `training/_shared/case-config.json` | Maps case → domain/indication/regulatory/answer path |
-| Question | `training/{branch}/questions/{id}-{drug}.md` | The case to solve |
-| Scoring rubric | `training/_shared/evaluate.md` | How to evaluate your answer vs FDA actual |
-| FDA Review | `data/fda-reviews/md/{path}/MultidisciplineR.md` | The answer — read ONLY after completing your design |
-| Language policy | `training/_shared/LANGUAGE.md` | All training content in English |
+| 资源 | 路径 | 说明 |
+|------|------|------|
+| 分支训练程序 | `training/{branch}/program.md` | **起点**——完整执行指令 |
+| 分支评分标准 | `training/{branch}/evaluate.md` | 评分维度 + 判例 + 校准规则 |
+| 分支配置 | `training/{branch}/config.yaml` | Agent 配置、差异代码、收敛标准 |
+| 案例配置 | `training/{branch}/case-config.json` | 案例→路径+域映射 |
+| SOP 文件 | `sop/core/` + `sop/domains/` + `sop/indications/` + `sop/regulatory/` | 知识库——按 case-config 映射加载 |
+| FDA/ICH 指南 | `data/fda-guidelines/markdown/` | 可在任何步骤使用 |
+| FDA Review | `data/fda-reviews/md/{path}/` | **答案**——完成设计后才读 |
+| 通用骨架 | `training/_shared/framework.md` | 流程参考（只读） |
 
-## Outputs
+## 输出文件
 
-Submit as a PR to `main` with the following files:
-
-```
-training/{branch}/rounds/round-{NN}/
-├── answer.md           — Your protocol design (closed-book, SOP-only)
-├── fda-actual.md       — Extracted FDA actual design
-├── scoring.md          — Your answer vs FDA actual, scored per evaluate.md
-└── analysis.md         — Difference classification + proposed SOP updates
-```
-
-Append one row to `training/{branch}/results.tsv`.
-
-## Rules
-
-1. **Closed-book**: Design your protocol using ONLY the loaded SOP files + question info. Do NOT read the FDA Review until after you finish your design.
-2. **English only**: All outputs in English (see LANGUAGE.md).
-3. **Do NOT modify SOP files directly**. Propose changes in `analysis.md` under "Proposed SOP Updates".
-4. **Do NOT merge your PR**. Submit it for review.
-5. **Score honestly** per `evaluate.md`. Match = matching FDA actual, not answer quality.
-
-## Difference Classification
-
-When your answer differs from FDA actual, classify each difference:
-
-| Code | Meaning | SOP Action |
-|------|---------|------------|
-| KNOW | You didn't know something | Propose SOP rule |
-| REG | Regulatory pathway error | Propose SOP rule |
-| STAT | Statistical method error | Propose SOP rule |
-| ALT | Both answers are reasonable | Record only — do NOT propose SOP change |
-| INFO | Question lacked needed info | Record only |
-
-## Quality Gate
-
-Your PR will be reviewed against these criteria:
-- All required output files present and complete
-- Scoring follows evaluate.md rules (with judgment table references)
-- Difference classifications are justified with FDA Review evidence
-- Proposed SOP updates cite specific FDA Review sections
-- No information leakage (answer.md written before reading FDA Review)
-
-## Branch Naming
+每轮训练产出保存到 `training/{branch}/rounds/round-{NN}/`：
 
 ```
-train/{branch}-round-{NN}     — Training round
-validation/{description}       — Validation run
-experiment/{description}       — Experiment
+rounds/round-{NN}/
+├── answer-A.md          ← Owner Agent A 输出
+├── answer-B.md          ← Owner Agent B 输出
+├── consensus-answer.md  ← 共识合并结果
+├── fda-actual.md        ← FDA 实际方案（从 Review 提取）
+├── scoring.md           ← 裁判评分
+├── analysis.md          ← 差异归类 + 偏差事件 + 行为变异
+└── grounding.md         ← 规则溯源记录
 ```
 
-## Reference Docs
+追加一行到 `training/{branch}/results.tsv`（17 列）。
 
-| Doc | Purpose |
-|-----|---------|
-| `training/_shared/ROLES.md` | Role specifications and isolation requirements |
-| `training/_shared/QUESTION-DESIGN.md` | How questions are selected |
-| `training/_shared/program.md` | Full orchestrated training program (reference only) |
+## 关键规则
 
-## Glossary
+1. **答案隔离**：完成设计前不能查看本题药物的 FDA Review
+2. **裁判隔离**：裁判在独立 session 中执行，不看做题推理过程
+3. **开卷做题**：可用 SOP + FDA Guidance + 外部搜索 + exec 工具，唯一限制是不看本题答案
+4. **英文执行**：所有训练内部产出用英文（LANGUAGE.md 规范）
+5. **Section-Append**：SOP 只追加不修改已有行，避免 Git 冲突
+6. **审核门控**：SOP 更新前必须经独立 Agent 审核
+7. **Git PR 模型**：每轮一个分支 `train/{branch}-round-{NN}`，squash merge 到 main
 
-| Term | Definition |
-|------|-----------|
-| **SOP** | Standard Operating Procedure — executable rules that guide protocol design decisions |
-| **Domain** | Disease category (e.g., oncology-solid, autoimmune, respiratory) |
-| **Indication** | Specific disease/condition (e.g., breast-er-her2neg, anca-vasculitis) |
-| **Regulatory pathway** | FDA approval route (regular, accelerated-approval, breakthrough) |
-| **Branch** | Training direction (e.g., protocol-design, sap-design) — each has its own SOP, questions, and results |
-| **Round** | One training iteration: answer one case → compare with FDA → score → analyze |
-| **match_score** | Strict match rate: how many dimensions exactly match FDA actual (0.0–1.0) |
-| **weighted_score** | Weighted score: match×1 + partial×0.5 (0.0–1.0) |
-| **KNOW/REG/STAT** | Difference types that indicate SOP gaps — trigger SOP updates |
-| **ALT** | Reasonable alternative — both AI and FDA answers are valid, no SOP update needed |
-| **CRO** | Contract Research Organization — company that manages clinical trials for pharmaceutical sponsors |
-| **FDA** | U.S. Food and Drug Administration — the regulatory authority whose approved protocols are the "answer key" |
+## 分支差异
+
+| 分支 | 评分维度 | 差异代码 | 核心工具 |
+|------|---------|---------|---------|
+| protocol-design | 10 项（设计/对照/终点/样本量...） | KNOW/REG/STAT/ALT/INFO | web_search |
+| sap-design | 9 项（分析方法/多重性/IA/缺失数据...） | METH/ASSUM/IMPL/ALT/INFO | exec (Python/R) |
+
+**每个分支的 program.md 是最终权威**——分支之间的差异全部定义在各自的 program.md 中。
+
+## 新分支创建流程
+
+```
+Phase 0: 训练方案设计（目标→范围→评分体系→Boss 确认）
+Phase 1: 生成流程文档（program.md / evaluate.md 是方案的产出）
+Phase 2: 验证 & 训练
+```
+
+详见 `ROADMAP.md` 的 New Branch Launch Checklist。
+
+## 术语表
+
+| 术语 | 定义 |
+|------|------|
+| **SOP** | 可执行的标准操作规程——指导方案设计决策的规则集 |
+| **Domain** | 疾病大类（如 oncology-solid, autoimmune, respiratory） |
+| **Indication** | 具体适应症（如 breast-er-her2neg, anca-vasculitis） |
+| **Branch** | 训练分支——每个分支有独立的 program.md / evaluate.md / 题库 / 结果 |
+| **Round** | 一轮训练：做一道题 → 对答案 → 评分 → 分析 → 更新 SOP |
+| **Owner Agent** | 做题 Agent——读 SOP 后自行决定工作流（可能 spawn sub-agent） |
+| **match_score** | 严格匹配率：多少维度完全匹配 FDA 实际方案（0.0–1.0） |
+| **weighted_score** | 加权得分：match×1 + partial×0.5（0.0–1.0） |
+| **framework.md** | 通用流程骨架（Step 名 + I/O 契约 + 不变量），所有分支共享 |
+| **CRO** | 合同研究组织——为药企管理临床试验的公司 |
+| **FDA** | 美国食品药品监督管理局——其审批方案是训练的"标准答案" |

@@ -1,8 +1,8 @@
 # program.md — 多分支闭环训练主程序
 
-> **版本**: v4.1 | **创建**: 2026-03-30 | **来源**: v1.0 重构为多分支架构
-> **原则**: Karpathy Autoresearch — 极简、自主、闭环；**训练=模拟实战**
-> **变更**: v3.1 裁判分离 | v3.2 Git PR | v3.3 路径+隔离+收敛 | v3.4 L4 审核 | v3.5 3+3 做题+共识 | v3.6 规则溯源(Step 5c) | v4.0 开卷训练+L1/L2/L3粒度+SOP规则修复 | v4.1 多角色做题+偏差记录+行为变异捕捉（B1R1复盘）
+> **版本**: v5.0 | **创建**: 2026-03-30 | **来源**: v1.0 重构为多分支架构
+> **原则**: Karpathy Autoresearch — 极简、自主、闭环；**训练=模拟实战**；**训练引擎不编码业务流程**
+> **变更**: v3.1 裁判分离 | v3.2 Git PR | v3.3 路径+隔离+收敛 | v3.4 L4 审核 | v3.5 3+3 做题+共识 | v3.6 规则溯源(Step 5c) | v4.0 开卷训练+L1/L2/L3粒度+SOP规则修复 | v4.1 多角色做题+偏差记录+行为变异捕捉（B1R1复盘） | v5.0 引擎去业务化：Solver 重命名+移除 Biostat 硬编码+异模型多样性+Orchestrator 仲裁
 
 ---
 
@@ -191,9 +191,9 @@ git push --tags
   这些参数作为"已知条件"提供给做题步骤
 ```
 
-### Step 2: 多角色协作做题（开卷实战）
+### Step 2: 并行做题（开卷实战）
 
-**模拟真实 CRO 工作流：可使用所有可用资源，唯一限制是不能查看本题药物的 FDA Review。**
+**可使用所有可用资源，唯一限制是不能查看本题药物的 FDA Review（那是答案）。**
 
 可用资源：
 - SOP 全部文件（core/ + domains/ + indications/ + regulatory/）
@@ -201,21 +201,27 @@ git push --tags
 - 同适应症**其他药物**的 FDA Review（非本题答案）
 - 模板（shared/kb/methods/templates/）
 - 外部搜索（ClinicalTrials.gov、PubMed 等公开信息）
+- `exec` 执行计算脚本（Python/R/scipy 等）
 
-#### Phase 1: 并行临床设计（3 Clinical Agent）
+#### 3 Solver 并行
 
-**3 个 Clinical Agent**（独立 subagent session，互不可见）：
-- 每个 Agent 获得**相同输入**：SOP 文件列表（Step 0b）+ 题目（Step 1）+ 可用资源路径
-- 每个 Agent 模拟完整工作流：情报收集→方案设计→质量自审
-- 3 个 Agent 使用相同模型、相同 prompt，利用模型采样的**自然随机性**产生行为多样性
-- **职责范围**：Item 1-5 (设计/对照/终点) + Item 8-10 (分层/I&E/运营)
-- Item 6 (sample_size) 只做**文献估算占位**（如"预计 N≈600-700，精确计算由 Biostat 完成"）
-- Item 7 (stat_framework) 只做**框架描述**（如"hierarchical testing, dual-branch"），alpha 精确分配由 Biostat 完成
+**3 个 Solver**（独立 subagent session，互不可见）：
+
+| Solver | 模型 | 说明 |
+|--------|------|------|
+| Solver A | `sonnet` | Anthropic Claude Sonnet |
+| Solver B | `minimax` | MiniMax-M2.7 |
+| Solver C | `minimax` | MiniMax-M2.7（第二实例） |
+
+- 每个 Solver 获得**相同输入**：SOP 文件列表（Step 0b）+ 题目（Step 1）+ 可用资源路径
+- 每个 Solver 读 SOP 后**自行决定**完整工作流：情报收集→方案设计→质量自审
+- SOP 中如果要求执行计算（如样本量、alpha 分配），Solver 自行用 `exec` 完成
+- **多样性来源**：异模型的知识差异和推理偏好（比同模型采样噪声更有意义）
 - timeout: 300s
 
-输出格式（每个 Agent 各一份）：
+输出格式（每个 Solver 各一份）：
 ```markdown
-## My Answer: {drug_name} [{branch}] — Agent {A/B/C}
+## My Answer: {drug_name} [{branch}] — Solver {A/B/C}
 
 ### 1. {dimension_1}
 [答案内容]
@@ -225,35 +231,28 @@ git push --tags
 ...
 ```
 
-#### Phase 2: Biostat Agent（1 个，串行）
-
-**在 Phase 1 共识合并完成后执行**，输入为 consensus answer 中的设计框架。
-
-- **输入**：primary endpoint 类型、对照臂、比较结构（几组比较、比较方向）、randomization ratio
-- **任务**：
-  1. 用 `exec` 跑 Python (scipy) 或 R 精确计算样本量
-  2. 识别 controlling comparison（哪个比较需要最大 N）
-  3. 3-scenario sensitivity analysis（conservative/base/optimistic）
-  4. 精确 alpha 分配方案（co-primary IUT alpha、secondary branch alpha）
-  5. MTP 结构设计（hierarchical/graphical、spending function）
-- **输出**：Item 6 (sample_size) + Item 7 (stat_framework) 的精确版本
-- **模型**: sonnet + exec（prompt 中预置样本量计算模板代码，避免公式调试）
-- timeout: 180s
+> **引擎不规定 Solver 的内部工作流。** Solver 是否拆分子步骤、是否调用计算脚本、是否检索文献，全部由 SOP 驱动。引擎只管收答案。
 
 #### Step 2b: 共识合并
 
-**Clinical 维度**（Item 1-5, 8-10）：3 份答案逐维度合并：
+3 份答案逐维度合并：
 
 ```
 对每个评分维度：
   IF 3/3 一致 → 直接采纳，标注 [consensus: 3/3]
-  IF 2/3 一致 → 采纳多数意见，标注 [consensus: 2/3, dissent: Agent X 认为...]
-  IF 3/3 各不同 → 列出所有选项 + 各自理由，标注 [no-consensus]
+  IF 2/3 一致 → 采纳多数意见，标注 [consensus: 2/3, dissent: Solver X 认为...]
+  IF 3/3 各不同（divergence）→ Orchestrator 仲裁（见下文）
 ```
 
-**Statistical 维度**（Item 6-7）：以 Biostat Agent 输出为准，Clinical 的占位估算仅作参考。
+**Orchestrator 仲裁**（divergence 时触发）：
+1. 列出 3 个 Solver 的答案 + 各自理由
+2. Orchestrator（Helix/sonnet）对照 SOP 规则判定：
+   - 某个更符合 SOP → 采纳该答案，标注 `[arbitrated: SOP-aligned, Solver X]`
+   - 多个都合理但不同 → 合并为综合方案，标注 `[arbitrated: merged]`
+   - 都不符合 SOP → Orchestrator 自行按 SOP 生成，标注 `[arbitrated: override]`
+3. 记录分歧原因到 analysis.md（SOP 歧义信号）
 
-**[no-consensus] 是早期 SOP 质量信号**：3 个 Agent 读同一 SOP 却做出不同答案 → SOP 规则有歧义或缺失，比裁判评分更早暴露问题。
+**divergence 是最强的 SOP 质量信号**：异模型的 Solver 读同一 SOP 做出完全不同的答案 → SOP 规则几乎必然有歧义或缺失。Orchestrator 仲裁时的理由本身就是 SOP 改进线索。
 
 输出：
 ```markdown
@@ -263,7 +262,10 @@ git push --tags
 [共识答案] [consensus: 3/3]
 
 ### 2. {dimension_2}
-[多数意见] [consensus: 2/3, dissent: Agent C 认为 xxx]
+[多数意见] [consensus: 2/3, dissent: Solver C 认为 xxx]
+
+### 3. {dimension_3}
+[仲裁结果] [arbitrated: SOP-aligned, Solver A]
 ...
 ```
 
@@ -271,16 +273,19 @@ git push --tags
 
 #### Step 2c: 行为变异分析
 
-共识合并时，Helix 同时记录 3 个 Clinical Agent 的行为差异（写入 analysis.md）：
+共识合并时，Orchestrator 同时记录 3 个 Solver 的行为差异（写入 analysis.md）：
 
-**1. SOP 理解一致性**：3 个 Agent 对同一条 SOP 规则的执行是否一致？
+**1. SOP 理解一致性**：3 个 Solver 对同一条 SOP 规则的执行是否一致？
   - 不一致 → SOP 措辞可能有歧义，记录具体分歧
 
-**2. SOP 违反/跳过**：是否有 Agent 忽略了 SOP 中明确要求的步骤？
+**2. SOP 违反/跳过**：是否有 Solver 忽略了 SOP 中明确要求的步骤？
   - 记录哪条规则被跳过 + 对结果的影响
 
-**3. SOP 之外的额外行为**：Agent 做了 SOP 没要求的事
+**3. SOP 之外的额外行为**：Solver 做了 SOP 没要求的事
   - 记录动作 + 是否产生了更好/更差的结果
+
+**4. 跨模型差异**：sonnet vs minimax 的系统性偏好差异
+  - 记录哪些维度上两种模型倾向不同
 
 不做决策判断，只记录事实。复盘时由 Boss 决定哪些需要行动。
 
@@ -309,18 +314,25 @@ git push --tags
 
 ### Step 4: 独立裁判评分
 
-⚠️ **做题 Agent 不得自评。** 评分必须由独立裁判 Agent 执行。
+⚠️ **Solver 不得自评。** 评分必须由独立 Judge Agent 执行。
 实证数据：自评通胀约 25%（自评 0.93 vs 盲评 0.74，20 轮训练验证）。
 
 **裁判配置**：
-- 裁判数量：≥3 名独立 Agent（盲评，互不可见评分）
+
+| Judge | 模型 | 说明 |
+|-------|------|------|
+| Judge 1 | `sonnet` | Anthropic Claude Sonnet |
+| Judge 2 | `minimax` | MiniMax-M2.7 |
+| Judge 3 | `minimax` | MiniMax-M2.7（第二实例） |
+
+- 3 名独立 Agent（盲评，互不可见评分）
 - 决定机制：多数票（≥2/3 一致采纳）；3 名裁判全不一致时取中值
-- 裁判不得看做题 Agent 的推理过程，仅看最终答案 vs FDA 实际
+- 裁判不得看 Solver 的推理过程，仅看最终答案 vs FDA 实际
 
 **⚠️ 隔离强制要求**：
 - 每位裁判必须在**独立 subagent session** 中执行（`sessions_spawn`）
-- 传入裁判的输入**仅包含**：answer.md 最终答案 + FDA actual 文本 + evaluate.md
-- **禁止传入**：做题 Agent 的推理过程、SOP 文件、题目原文
+- 传入裁判的输入**仅包含**：consensus-answer.md 最终答案 + FDA actual 文本 + evaluate.md
+- **禁止传入**：Solver 的推理过程、SOP 文件、题目原文
 - scoring.md 中记录每位裁判的 session ID，用于审计追溯
 
 **评分流程**：
@@ -408,7 +420,7 @@ git push --tags
    - 差异归类理由（KNOW/REG/STAT + 具体说明）
    - FDA Review 中的原始证据（支撑该规则的 FDA 原文摘录）
    - Step 5c 溯源结果（Guidance 引用 / 多案例列表 / 单案例标注）
-3. **禁止传入**：做题 Agent 的完整答案、裁判评分详情、SOP 当前内容
+3. **禁止传入**：Solver 的完整答案、裁判评分详情、SOP 当前内容
 4. 审核 Agent 对每条规则独立判定：
    - ✅ **同意追加**：规则准确、归类正确、措辞合规
    - ⚠️ **需修改**：方向正确但措辞需调整（附修改建议）
@@ -464,13 +476,12 @@ git push --tags
 将本轮完整产出保存到 `training/{branch}/rounds/round-{NN}/`：
 ```
 rounds/round-{NN}/
-├── answer-A.md          ← Clinical Agent A 输出（Item 1-5, 8-10）
-├── answer-B.md          ← Clinical Agent B 输出
-├── answer-C.md          ← Clinical Agent C 输出
-├── biostat.md           ← Biostat Agent 输出（Item 6-7 精确版）
-├── consensus-answer.md  ← 共识合并结果（Clinical 多数票 + Biostat 精确值）
+├── solver-A.md          ← Solver A 输出（sonnet）
+├── solver-B.md          ← Solver B 输出（minimax）
+├── solver-C.md          ← Solver C 输出（minimax）
+├── consensus-answer.md  ← 共识合并结果（多数票 + Orchestrator 仲裁）
 ├── fda-actual.md        ← FDA 实际方案
-├── scoring.md           ← 3 裁判多数票评分（基于 consensus vs FDA）
+├── scoring.md           ← 3 Judge 多数票评分（基于 consensus vs FDA）
 ├── analysis.md          ← 差异归类 + 规则溯源 + SOP 更新审核 + 偏差事件 + 行为变异
 └── grounding.md         ← Step 5c 溯源记录（查了哪些 Guidance、匹配结果）
 ```
@@ -568,14 +579,15 @@ match_count, partial_count, miss_count, skip_count, total_items, new_rules_added
 
 ### 执行阶段（每轮训练中）
 
-1. 每轮结束后，Helix 检查所有 Agent（做题/裁判/审核）的完成状态
+1. 每轮结束后，Orchestrator 检查所有 Agent（Solver/Judge/Reviewer）的完成状态
 2. **SYS 偏差**（系统异常）：Agent 超时 / API 429 / crash / 网络错误
    → L1 记录：类型 + 最终状态 + 一句话原因
 3. **DEV 偏差**（行为差异）：
-   - Agent 间 tool call 差异（如某 Agent 使用了 exec 跑 Python 而其他未使用）
-   - Agent 间答案分歧（no-consensus 或 minority dissent）
-   - Agent 跳过了 SOP 要求的步骤
-   - Agent 做了 SOP 未要求的额外行为
+   - Solver 间 tool call 差异（如某 Solver 使用了 exec 跑 Python 而其他未使用）
+   - Solver 间答案分歧（divergence 或 minority dissent）
+   - Solver 跳过了 SOP 要求的步骤
+   - Solver 做了 SOP 未要求的额外行为
+   - 跨模型系统性差异（sonnet vs minimax 的偏好模式）
    → L2 记录：读 session history，提取 tool call 序列，记录具体差异
 
 ### 记录位置
@@ -586,20 +598,23 @@ match_count, partial_count, miss_count, skip_count, total_items, new_rules_added
 ## Deviation Events
 
 ### SYS Deviations
-- Agent B: timeout at 300s (was running scipy sample size calculation v3)
-- Agent B: 4x 429 rate limit on retry (concurrent API saturation)
+- Solver B: timeout at 300s (minimax API latency spike)
+- Solver C: 4x 429 rate limit on retry (concurrent API saturation)
 
-### Agent Behavior Variance
+### Solver Behavior Variance
 
 #### SOP Consistency
-- [Item X]: Agent A/B/C 对 Rule Y 的执行一致/不一致
+- [Item X]: Solver A/B/C 对 Rule Y 的执行一致/不一致
   - 不一致描述：...
 
 #### SOP Deviations
-- Agent X 跳过了 Rule Y → 影响：...
+- Solver X 跳过了 Rule Y → 影响：...
 
 #### Extra-SOP Actions
-- Agent X 额外执行了 [动作] → 影响：...
+- Solver X 额外执行了 [动作] → 影响：...
+
+#### Cross-Model Patterns
+- sonnet 倾向 [模式 A]，minimax 倾向 [模式 B] → SOP 规则 [Y] 表述有歧义
 ```
 
 ### 复盘阶段（Batch 结束后）
