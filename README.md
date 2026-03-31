@@ -45,6 +45,17 @@ kb-engine/
 2. **每分支 program.md**（可变）：完整训练程序——评分维度、分析策略、优化策略、做题配置均由分支自主定义
 3. **Owner Agent 架构**：做题 Agent 读 SOP 自行决定编排方式，训练引擎不硬编码 CRO 角色
 
+## 新训练创建流程
+
+```
+Phase 0: 训练方案设计（目标→范围→需求→评分体系→Boss 确认）
+    ↓ 产出: docs/{branch}-training-design.md
+Phase 1: 生成流程文档（program.md / evaluate.md 是方案的产出，不是起点）
+Phase 2: 验证 & 训练
+```
+
+**program.md 等流程文档是训练方案设计的产出，不能跳过 Phase 0 直接编写。**
+
 **指导原则**（docs/guiding-principles.md）：
 - SOP 唯一消费者 = AI Agent
 - 训练引擎不掺杂业务逻辑
