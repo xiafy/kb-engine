@@ -1,8 +1,8 @@
 # program.md — 多分支闭环训练主程序
 
-> **版本**: v5.0 | **创建**: 2026-03-30 | **来源**: v1.0 重构为多分支架构
+> **版本**: v5.1 | **创建**: 2026-03-30 | **来源**: v1.0 重构为多分支架构
 > **原则**: Karpathy Autoresearch — 极简、自主、闭环；**训练=模拟实战**；**训练引擎不编码业务流程**
-> **变更**: v3.1 裁判分离 | v3.2 Git PR | v3.3 路径+隔离+收敛 | v3.4 L4 审核 | v3.5 3+3 做题+共识 | v3.6 规则溯源(Step 5c) | v4.0 开卷训练+L1/L2/L3粒度+SOP规则修复 | v4.1 多角色做题+偏差记录+行为变异捕捉（B1R1复盘） | v5.0 引擎去业务化：Solver 重命名+移除 Biostat 硬编码+异模型多样性+Orchestrator 仲裁
+> **变更**: v3.1 裁判分离 | v3.2 Git PR | v3.3 路径+隔离+收敛 | v3.4 L4 审核 | v3.5 3+3 做题+共识 | v3.6 规则溯源(Step 5c) | v4.0 开卷训练+L1/L2/L3粒度+SOP规则修复 | v4.1 多角色做题+偏差记由录+行为变异捕捉（B1R1复盘） | v5.0 引擎去业务化：Solver 重命名+移除 Biostat 硬编码+异模型多样性+Orchestrator 仲裁 | v5.1 信息隔离强化：禁止查看本题药物的所有公开信息（B1R3 满分根因分析）
 
 ---
 
@@ -193,15 +193,25 @@ git push --tags
 
 ### Step 2: 并行做题（开卷实战）
 
-**可使用所有可用资源，唯一限制是不能查看本题药物的 FDA Review（那是答案）。**
+**可使用 SOP + 通用知识资源，但严格禁止查看本题药物的任何信息。**
 
-可用资源：
+#### ⚠️ 信息隔离规则（v5.1 强化）
+
+**禁止查看的信息**（本题药物 = 题目中指定的药物）：
+1. 本题药物的 FDA Review（答案文件）
+2. 本题药物的 ClinicalTrials.gov 注册信息
+3. 本题药物的任何公开信息（论文、新闻、FDA 批准公告、ASCO 摘要等）
+4. 通过 web_search / web_fetch / browser 搜索本题药物名称（通用名或商品名）
+
+**允许的信息**：
 - SOP 全部文件（core/ + domains/ + indications/ + regulatory/）
-- FDA Guidance / ICH 指南原文（data/fda-guidelines/markdown/）
-- 同适应症**其他药物**的 FDA Review（非本题答案）
-- 模板（shared/kb/methods/templates/）
-- 外部搜索（ClinicalTrials.gov、PubMed 等公开信息）
+- FDA Guidance / ICH 指南原文（data/fda-guidelines/markdown/）— 通用监管指南，不含特定药物
+- 同适应症**其他药物**的 FDA Review / ClinicalTrials.gov / 文献
+- 同适应症的疾病背景、SOC、流行病学数据（不提及本题药物）
 - `exec` 执行计算脚本（Python/R/scipy 等）
+- 模板（shared/kb/methods/templates/）
+
+**原理**：训练的目标是测试 SOP 的预测能力，不是情报检索能力。如果 Solver 可以查到本题药物的公开试验设计，满分只说明检索有效，不能验证 SOP 是否足够。真实 CRO 场景中为新药设计 Protocol 时，该药物不存在公开先例——训练必须模拟这个条件。
 
 #### 3 Solver 并行
 
