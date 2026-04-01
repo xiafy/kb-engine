@@ -1,6 +1,6 @@
 # program.md — Protocol Design 训练程序
 
-> **版本**: v5.0 | **日期**: 2026-03-31 | **分支**: protocol-design
+> **版本**: v5.1.1 | **日期**: 2026-04-01 | **分支**: protocol-design
 > **骨架**: training/_shared/framework.md（通用流程）
 > **前身**: training/_shared/program.md v4.1（已 SUPERSEDED）
 > **原则**: docs/guiding-principles.md
@@ -141,10 +141,26 @@ Round 20: 01-inluriyo     (乳腺癌 ESR1m, RCT, 终极测试)
 
 **program.md 不规定 Owner Agent 内部如何编排**——这是 SOP 的内容，也是训练要验证的能力。
 
-#### 输出格式（每个 Owner Agent 各一份）
+#### ⚠️ Solver 输出必须落盘（v5.1.1）
+
+**每个 Solver 必须将最终答案写入文件**，不依赖 session 返回值传递：
+
+```
+路径: training/protocol-design/rounds/round-{NN}/solver-{A|B|C}.md
+```
+
+Orchestrator spawn Solver 时，必须在 task prompt 中包含：
+1. 输出文件的完整路径
+2. 明确指令："将你的最终答案写入 `{path}` 文件，使用下方格式"
+
+**Orchestrator 不得从 Solver 的 session 返回值中提取答案。** Step 2b 共识合并时，从文件读取各 Solver 答案。
+
+如果 Solver 超时或失败，对应文件不存在 → 共识合并时标注 `[solver-{X}: TIMEOUT]`，基于已有答案继续。
+
+#### 输出格式（每个 Solver 写入 solver-{A|B|C}.md）
 
 ```markdown
-## My Answer: {drug_name} [protocol-design] — Owner {A/B}
+## My Answer: {drug_name} [protocol-design] — Solver {A/B/C}
 
 ### 1. design_type
 [答案]
@@ -179,12 +195,15 @@ Round 20: 01-inluriyo     (乳腺癌 ESR1m, RCT, 终极测试)
 
 ### Step 2b: 共识合并
 
-2 份答案逐维度对比：
+**从文件读取**各 Solver 答案，逐维度对比：
 
 ```
+读取 rounds/round-{NN}/solver-A.md, solver-B.md, solver-C.md
+（不存在的文件 = 该 Solver 超时/失败，跳过）
+
 对每个评分维度（10 个）：
-  IF 2/2 一致 → 直接采纳 [consensus: 2/2]
-  IF 2/2 不同 → 列出两个选项 + 各自理由 [divergence]
+  IF 多数一致（≥2/3 或 2/2）→ 直接采纳 [consensus: N/M]
+  IF 全部不同 → 列出各选项 + 理由 [divergence]
     → Orchestrator 基于 SOP 规则选择更合理的，标注 [orchestrator-resolved]
 ```
 
@@ -332,13 +351,14 @@ weighted_score = (match * 1.0 + partial * 0.5) / (10 - skip_count)
 
 ```
 rounds/round-{NN}/
-├── answer-A.md          ← Owner Agent A 输出
-├── answer-B.md          ← Owner Agent B 输出
+├── solver-A.md          ← Solver A 答案（必须落盘）
+├── solver-B.md          ← Solver B 答案（超时则不存在）
+├── solver-C.md          ← Solver C 答案（超时则不存在）
 ├── consensus-answer.md  ← 共识合并结果
 ├── fda-actual.md        ← FDA 实际方案
 ├── scoring.md           ← 3 裁判多数票评分
 ├── analysis.md          ← 差异归类 + 偏差事件 + 行为变异
-└── grounding.md         ← 规则溯源记录
+└── grounding.md         ← 规则溯源记录（0 new rules 时不生成）
 ```
 
 **results.tsv 追加一行**（17 列，与历史数据一致）：

@@ -76,8 +76,8 @@ Step 8  → 收敛/循环判断
 | | 说明 |
 |---|---|
 | **输入** | SOP 文件列表 + 题目 + 可用资源路径 |
-| **输出** | 每个 Owner Agent 的独立答案文件 |
-| **不变量** | Solver 不能查看本题药物的任何信息（FDA Review、ClinicalTrials.gov、论文、新闻等全部渠道隔离，v5.1） |
+| **输出** | 每个 Solver 的独立答案文件（**必须写入磁盘** `rounds/round-{NN}/solver-{A|B|C}.md`，v5.1.1） |
+| **不变量** | ① Solver 不能查看本题药物的任何信息（全渠道隔离，v5.1）② Solver 输出必须落盘，不依赖 session 返回值（v5.1.1） |
 | **分支自定** | Agent 数量、角色配置、prompt 内容、timeout、可用工具 |
 
 ### Step 2b: 共识合并
