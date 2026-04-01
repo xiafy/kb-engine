@@ -131,22 +131,19 @@ P2 + P3 完成
 - `sop-paths.txt` 至少包含 core SOP
 - `fda-raw-sections.md` 存在
 
-### P1: 做题（3× Solver）
+### P1: 做题（3× Protocol Design Agent）
 
-保持不变：
-- `kimi ×1 + minimax ×2`
+- 3 个独立 Agent（kimi ×1 + minimax ×2），各自独立设计 Protocol
 - 严格信息隔离，不得查看本题药物 FDA Review
-- 输出必须落盘到 `solver-{A|B|C}.md`
+- 输出必须落盘到 `solver-{A|B|C}.md`（文件名保持 solver 前缀，兼容文件契约）
+- Prompt 模板：`scripts/prompts/p1-solver.md`
 
-**Solver 可用工具（v6.0.1）**：
+**Agent 可用工具**：
 - `read` — 读取 SOP 文件和题目（prompt 中已指定路径）
-- `exec` — Python/R 样本量计算
-- **DocSearch** — 检索 FDA/ICH 指南（替代 `ls`/`grep` 目录浏览）：
-  ```
-  python3 /Users/crohub/.openclaw/shared/docsearch/docsearch.py search -c fda-guidance "query" --context full -f text
-  python3 /Users/crohub/.openclaw/shared/docsearch/docsearch.py search -c ich-guidance "query" --context full -f text
-  ```
-- **禁止**：`ls`/`grep` 浏览 `data/fda-guidelines/` 目录（效率极低，用 DocSearch 替代）
+- **DocSearch** — 检索 FDA/ICH 指南（替代 `ls`/`grep` 目录浏览）
+- **sample_size_survival.py** — 生存分析样本量计算（Schoenfeld/Freedman）
+- **sample_size.py** — 比例差样本量计算
+- **禁止**：`ls`/`grep` 浏览 `data/fda-guidelines/` 目录；从零写样本量公式
 
 门禁：
 - 至少 2 个 Solver 成功落盘，否则整轮中止（`LOW_CONFIDENCE_ABORT`）
