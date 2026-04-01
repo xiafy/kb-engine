@@ -67,11 +67,24 @@ Use this exact format:
 [your answer]
 ```
 
+## Sample Size Calculator (survival endpoints)
+For OS/PFS sample size, use the pre-built calculator instead of writing Python from scratch:
+```bash
+python3 /Users/crohub/.openclaw/shared/skills/biostat/scripts/sample_size_survival.py \
+  --median-control <months> --hr <HR> --alpha 0.025 --power 0.85 \
+  --accrual-months 24 --followup-months 18 --ratio 1 --dropout 0.05 --sensitivity
+```
+For proportion endpoints (ORR), use:
+```bash
+python3 /Users/crohub/.openclaw/shared/skills/biostat/scripts/sample_size.py \
+  --p1 <control_rate> --p2 <treatment_rate> --alpha 0.05 --power 0.80
+```
+
 ## Workflow
 1. Read all SOP files first
 2. Read the question
 3. If needed, use DocSearch to find relevant FDA/ICH guidance
-4. Use `exec` for sample size calculations (use simple variable names, no hyphens)
+4. Use the sample size calculator for power analysis (do NOT write formulas from scratch)
 5. Write your final answer to the output file
 
 Be concise. Focus on the 10 dimensions. Flag Strategy Decision Points where appropriate.
