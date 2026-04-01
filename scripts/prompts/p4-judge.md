@@ -85,6 +85,14 @@ Write exactly this structure to `{{output_path}}`:
 - score: match | partial | miss | SKIP
 - rationale: [short text]
 - evidence_ref: [short text]
+
+## Totals
+- match: [count]
+- partial: [count]
+- miss: [count]
+- skip: [count]
+- match_score: [match / (10 - skip)]
+- weighted_score: [(match + partial * 0.5) / (10 - skip)]
 ```
 
-Write the file only. Do not return any extra prose.
+Read all 3 input files, then write the scoring file. Do not return any extra prose.
