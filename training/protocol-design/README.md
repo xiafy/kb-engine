@@ -1,7 +1,7 @@
 # Branch: Protocol Design
 
-> **状态**: ✅ 迁移完成（v2.2 → 三层拆分 v3.0）
-> **训练轮次**: 20（已完成）
+> **状态**: ✅ 历史训练完成；v6 文件驱动执行入口已就位
+> **训练轮次**: 20（历史轮次已完成）
 > **校准 Match**: 0.74 | **OOD**: 0.76
 
 ## 训练历史
@@ -19,6 +19,15 @@
 - `sop/domains/` — 5 个文件
 - `sop/indications/` — 11 个文件
 - `sop/regulatory/` — 3 个文件
+
+## v6 执行入口
+
+- `scripts/run-v6-round.sh prepare <round> [case_selector]` — 执行 P0，并渲染 P2-P5 prompt + run manifest
+- `scripts/run-v6-round.sh status <round>` — 检查 round 产物状态
+- `scripts/run-v6-round.sh finalize <round>` — 执行 P6 收尾
+- `docs/pipeline-v6-design.md` — v6 架构设计
+- `docs/pipeline-v6-file-contract.md` — 文件契约
+- `docs/implementation-plan-v6.md` — 实施计划
 
 ## 下一步
 

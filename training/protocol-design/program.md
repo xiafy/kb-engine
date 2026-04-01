@@ -1,6 +1,6 @@
 # program.md — Protocol Design 训练程序
 
-> **版本**: v5.1.1 | **日期**: 2026-04-01 | **分支**: protocol-design
+> **版本**: v6.0 | **日期**: 2026-04-01 | **分支**: protocol-design
 > **骨架**: training/_shared/framework.md（通用流程）
 > **前身**: training/_shared/program.md v4.1（已 SUPERSEDED）
 > **原则**: docs/guiding-principles.md
@@ -23,6 +23,15 @@
 | `training/protocol-design/case-config.json` | ✅ | ❌ | 案例→答案路径+域映射 |
 | `training/protocol-design/questions/{id}-{drug}.md` | ✅ | ❌ | 题目 |
 | `training/protocol-design/results.tsv` | ✅ | ✅ 追加 | 每轮评分记录 |
+| `training/protocol-design/rounds/round-{NN}/workspace/*` | ✅ | ✅ | P0 预处理产物 |
+| `scripts/p0-prepare.sh` | ✅ | ✅ 执行 | P0 预处理脚本 |
+| `scripts/validate-scoring.sh` | ✅ | ✅ 执行 | P4/P6 计分复核脚本 |
+| `scripts/p6-finalize.sh` | ✅ | ✅ 执行 | P6 收尾脚本 |
+| `scripts/prompts/p2-consensus.md` | ✅ | ❌ | P2 共识合并模板 |
+| `scripts/prompts/p3-fda-format.md` | ✅ | ❌ | P3 FDA 格式化模板 |
+| `scripts/prompts/p4-judge.md` | ✅ | ❌ | P4 Judge 模板 |
+| `scripts/prompts/p4-scoring-merge.md` | ✅ | ❌ | P4 Merge 模板 |
+| `scripts/prompts/p5-analysis.md` | ✅ | ❌ | P5 分析模板 |
 | `sop/core/protocol-design.md` | ✅ | ✅ | **可变** — 核心决策 SOP |
 | `sop/domains/{domain}.md` | ✅ | ✅ | **可变** — 疾病大类知识 |
 | `sop/indications/{indication}.md` | ✅ | ✅ | **可变** — 适应症特定知识 |
@@ -87,321 +96,179 @@ Round 20: 01-inluriyo     (乳腺癌 ESR1m, RCT, 终极测试)
 
 ## 每轮执行流程
 
-### Step 0: 加载配置
+v6.0 改为**文件驱动 phase 架构**，Helix 主 session 只负责调度，不再承载全量业务上下文。
 
-```
-读取 training/protocol-design/config.yaml
-读取 training/protocol-design/case-config.json，找到当前案例
-提取 domain, indication, regulatory 字段
-
-构建 SOP 加载列表：
-  1. sop/core/protocol-design.md          ← 必读
-  2. sop/domains/{domain}.md             ← 如果文件存在
-  3. sop/indications/{indication}.md     ← 如果文件存在
-  4. sop/regulatory/{regulatory}.md      ← 如果文件存在
-
-多 domain 情况：数组 → 按字母序加载所有匹配文件。
-```
-
-### Step 1: 读题
-
-```
-读取 training/protocol-design/questions/{id}-{drug}.md 全文
-提取：drug_name, MOA, formulation, proposed_indication,
-      target_population, line_of_therapy, disease_background,
-      current_soc, unmet_need, regulatory_pathway (frontmatter)
+```text
+P0 预处理（脚本）
+  → P1 Solver ×3
+  → P2 共识合并
+P0 预处理（脚本）
+  → P3 FDA 格式化
+P2 + P3 完成
+  → P4 Judge ×3
+  → P4 Scoring Merge
+  → validate-scoring.sh
+  → P5 差异分析 + SOP
+  → P6 收尾 + results.tsv + 收敛判断
 ```
 
-### Step 2: 做题（SOP 驱动实战）
+### P0: 预处理（脚本，零 LLM）
+
+执行：`scripts/p0-prepare.sh <round> [case_selector]`
+
+职责：
+- 解析 `case-config.json`
+- 复制题目到 `rounds/round-{NN}/workspace/question.md`
+- 生成 `workspace/sop-paths.txt`
+- 生成 `workspace/case-meta.json`
+- 优先通过 `docsearch` 提取 FDA Review 章节，失败时回退到 FDA markdown 原文
+- 生成 `workspace/fda-raw-sections.md`
+- 生成 `workspace/prepare-report.json`
+
+门禁：
+- `prepare-report.json.status != blocked`
+- `question.md` 非空
+- `sop-paths.txt` 至少包含 core SOP
+- `fda-raw-sections.md` 存在
+
+### P1: 做题（3× Solver）
+
+保持不变：
+- `kimi ×1 + minimax ×2`
+- 严格信息隔离，不得查看本题药物 FDA Review
+- 输出必须落盘到 `solver-{A|B|C}.md`
+
+门禁：
+- 至少 2 个 Solver 成功落盘，否则整轮中止（`LOW_CONFIDENCE_ABORT`）
+
+### P2: 共识合并（1× Sonnet）
+
+输入：
+- `solver-{A|B|C}.md`
+- `workspace/sop-paths.txt` 指向的 SOP
+- `scripts/prompts/p2-consensus.md`
+
+输出：
+- `consensus-answer.md`
+
+要求：
+- 固定 10 个维度
+- 每个维度都有 `decision / source / support / notes`
+- `source` 只能是 `consensus / divergence / orchestrator-resolved / UNRESOLVED`
+
+### P3: FDA 标准答案格式化（1× Sonnet）
+
+输入：
+- `workspace/fda-raw-sections.md`
+- `scripts/prompts/p3-fda-format.md`
+
+输出：
+- `fda-actual.md`
+
+要求：
+- 固定 10 个维度
+- 每个维度必须有 `answer / evidence / confidence`
+- 未明确提及的信息写 `NOT_STATED_IN_REVIEW`
+
+### P4: 评分（3× Judge + 1× Merge）
+
+Judge 输入：
+- `consensus-answer.md`
+- `fda-actual.md`
+- `evaluate.md`
+- `scripts/prompts/p4-judge.md`
+
+Judge 输出：
+- `judge-{A|B|C}.md`
+
+Scoring Merge 输入：
+- `judge-{A|B|C}.md`
+- `scripts/prompts/p4-scoring-merge.md`
+
+Scoring Merge 输出：
+- `scoring.md`
+
+门禁：
+- 至少 2 个 Judge 成功落盘
+- `scoring.md` 必须通过 `scripts/validate-scoring.sh`
+- 最终计分以脚本复核结果为准，不以 LLM 算术为准
+
+### P5: 差异分析 + SOP（默认 Opus）
+
+输入：
+- `consensus-answer.md`
+- `fda-actual.md`
+- `scoring.md`
+- `workspace/sop-paths.txt` 指向的 SOP
+- `scripts/prompts/p5-analysis.md`
+
+输出：
+- `analysis.md`
+- `grounding.md`（条件生成）
+- `sop-patch.md`（条件生成）
+- `review.md`（条件生成）
+
+规则：
+- 差异类型只能是 `KNOW / REG / STAT / ALT / INFO`
+- 只有 `KNOW / REG / STAT` 可进入 SOP patch
+- `analysis.md ## Summary` 必须包含 `new_rules_proposed / delta_codes / notes`
+- 默认使用 Opus；仅在“全 match”或已验证 pre-classifier 判定为 `ALT/INFO-only` 时允许降级
 
-**可使用 SOP + 通用知识资源，严格禁止查看本题药物的任何信息。**
+### P6: 收尾（脚本，零 LLM）
 
-#### ⚠️ 信息隔离规则（v5.1）
+执行：`scripts/p6-finalize.sh <round>`
 
-**禁止**：本题药物的 FDA Review、ClinicalTrials.gov、论文、新闻、ASCO 摘要等所有渠道的任何信息。禁止搜索本题药物的通用名或商品名。
+职责：
+- 校验必要文件存在
+- 调用 `validate-scoring.sh` 复核 `scoring.md`
+- 从 `analysis.md` 提取 `new_rules / delta_codes / notes`
+- 汇总 SOP `rule_count`
+- 追加 `results.tsv`
+- 生成 `finalize-report.json`
+- 执行收敛判断
+- Git 步骤由脚本显式控制；本地验证默认可跳过
 
-**允许**：
-- SOP 全部文件（core/ + domains/ + indications/ + regulatory/）
-- FDA Guidance / ICH 指南原文（data/fda-guidelines/markdown/）— 通用监管指南
-- 同适应症**其他药物**的 FDA Review / ClinicalTrials.gov / 文献
-- 同适应症疾病背景、SOC、流行病学（不提及本题药物）
-- `exec` 计算脚本（Python/R/scipy）
-- 模板（shared/kb/methods/templates/）
+### 文件契约
 
-#### Solver 配置
+v6 所有 phase 产物必须遵守：
+- `docs/pipeline-v6-file-contract.md`
+- 固定 10 维度名
+- 固定缺失值标记
+- 固定错误码约定
 
-- **数量**: 3 个（并行，独立 subagent session，kimi×1 + minimax×2）
-- **输入**: SOP 文件列表 + 题目 + 可用资源路径 + 信息隔离规则
-- **timeout**: 300s
+### v6 Round 目录结构
 
-每个 Owner Agent 读 SOP 后**自行决定**工作流：
-- 直接完成全部 10 维度设计
-- 或按 SOP 中的编排指引 spawn sub-agent（如 Biostat 做样本量精确计算）
-- 使用任何可用工具（web_search, exec, web_fetch, read）
-
-**program.md 不规定 Owner Agent 内部如何编排**——这是 SOP 的内容，也是训练要验证的能力。
-
-#### ⚠️ Solver 输出必须落盘（v5.1.1）
-
-**每个 Solver 必须将最终答案写入文件**，不依赖 session 返回值传递：
-
-```
-路径: training/protocol-design/rounds/round-{NN}/solver-{A|B|C}.md
-```
-
-Orchestrator spawn Solver 时，必须在 task prompt 中包含：
-1. 输出文件的完整路径
-2. 明确指令："将你的最终答案写入 `{path}` 文件，使用下方格式"
-
-**Orchestrator 不得从 Solver 的 session 返回值中提取答案。** Step 2b 共识合并时，从文件读取各 Solver 答案。
-
-如果 Solver 超时或失败，对应文件不存在 → 共识合并时标注 `[solver-{X}: TIMEOUT]`，基于已有答案继续。
-
-#### 输出格式（每个 Solver 写入 solver-{A|B|C}.md）
-
-```markdown
-## My Answer: {drug_name} [protocol-design] — Solver {A/B/C}
-
-### 1. design_type
-[答案]
-
-### 2. control_arm
-[答案]
-
-### 3. primary_endpoint
-[答案]
-
-### 4. endpoint_definition
-[答案]
-
-### 5. secondary_endpoints
-[答案]
-
-### 6. sample_size
-[答案]
-
-### 7. stat_framework
-[答案]
-
-### 8. stratification
-[答案]
-
-### 9. eligibility
-[答案]
-
-### 10. operational
-[答案]
-```
-
-### Step 2b: 共识合并
-
-**从文件读取**各 Solver 答案，逐维度对比：
-
-```
-读取 rounds/round-{NN}/solver-A.md, solver-B.md, solver-C.md
-（不存在的文件 = 该 Solver 超时/失败，跳过）
-
-对每个评分维度（10 个）：
-  IF 多数一致（≥2/3 或 2/2）→ 直接采纳 [consensus: N/M]
-  IF 全部不同 → 列出各选项 + 理由 [divergence]
-    → Orchestrator 基于 SOP 规则选择更合理的，标注 [orchestrator-resolved]
-```
-
-**[divergence] 的价值**：
-- 两个 Owner 对 SOP 理解不同 → SOP 措辞有歧义
-- 一个 spawn 了 sub-agent 另一个没有 → 编排指令不够明确
-- 这些都是 SOP 改进信号
-
-输出：`consensus-answer.md`
-
-### Step 2c: 行为变异记录
-
-Helix 在共识合并时记录：
-
-1. **SOP 理解一致性**：两个 Owner 对同一规则的执行是否一致
-2. **编排差异**：Owner A spawn 了哪些 sub-agent vs Owner B
-3. **工具使用差异**：一个用了 exec 另一个没有
-4. **SOP 违反/跳过**：是否有 Owner 忽略了 SOP 规则
-5. **SOP 之外的额外行为**：做了 SOP 没要求的事
-
-只记录事实，不做决策判断。写入 `analysis.md ## Agent Behavior Variance`。
-
-### Step 3: 提取标准答案
-
-```
-从 case-config.json 找到答案路径：
-  data/fda-reviews/md/{path}/MultidisciplineR.md
-
-⚠️ 错误处理：
-  - 文件不存在 → 记录 "ANSWER_NOT_FOUND"，跳至 Step 7
-  - 文件超过 200KB → 只读前 100KB + 搜索关键章节
-
-提取章节（config.yaml answer_extraction.chapters）：
-  - Clinical Review — Trial Design
-  - Clinical Review — Inclusion/Exclusion
-  - Clinical Review — Efficacy
-  - Clinical Review — Safety
-  - Statistical Review — Study Design
-  - Statistical Review — Sample Size
-
-格式化为 10 维度的 fda-actual.md
-```
-
-### Step 4: 裁判评分
-
-**⚠️ 做题 Agent 不得自评。** 自评通胀约 25%（实证数据）。
-
-**裁判配置**：
-- 数量：3 名独立 Agent（盲评，互不可见）
-- 决定机制：多数票（≥2/3 一致采纳）；3 名全不一致取中值
-- 每位裁判在**独立 subagent session** 中执行
-
-**裁判输入（仅以下内容，不得传入其他）**：
-- consensus-answer.md 最终答案
-- fda-actual.md
-- evaluate.md（本分支评分标准）
-
-**禁止传入**：做题推理过程、SOP 文件、题目原文
-
-**评分维度**（10 项，详见 evaluate.md）：
-
-| # | 维度 | 评判对象 |
-|---|------|---------|
-| 1 | design_type | 试验宏观设计架构 |
-| 2 | control_arm | 对照药物/方案 |
-| 3 | primary_endpoint | 主要终点类型 |
-| 4 | endpoint_definition | 终点定义精度 |
-| 5 | secondary_endpoints | 次要终点覆盖度 |
-| 6 | sample_size | 样本量量级 |
-| 7 | stat_framework | 统计分析框架 |
-| 8 | stratification | 分层因子 |
-| 9 | eligibility | 入排标准关键项 |
-| 10 | operational | 运营关键决策 |
-
-每项打分：match / partial / miss / skip
-
-```
-match_score = match_count / (10 - skip_count)
-weighted_score = (match * 1.0 + partial * 0.5) / (10 - skip_count)
-```
-
-**异常检查**：
-- match_score = 1.0 → 检查信息泄露或评分过松
-- match_score < 0.2 → 检查答案文件是否正确
-- 裁判间 κ < 0.5 → 重新校准评分标准
-
-### Step 5: 差异分析
-
-对所有 partial 和 miss 项，归类原因：
-
-| 差异类型 | 代码 | 说明 | SOP 可修复？ |
-|----------|------|------|-------------|
-| 领域知识不足 | `KNOW` | 不知道某适应症/疾病的标准做法 | ✅ 追加规则 |
-| 监管路径判断错误 | `REG` | 对 FDA 审批路径/要求判断失误 | ✅ 追加规则 |
-| 统计方法选择错误 | `STAT` | 终点/分析方法/样本量假设不合适 | ✅ 追加规则 |
-| 合理但非 FDA 选择 | `ALT` | 方案合理但 FDA 选了别的 | ⚠️ 记录；每 5 轮分析模式 |
-| 题目信息不足 | `INFO` | 题目未提供做出正确判断所需的信息 | ❌ 不更新 |
-
-### Step 5c: 规则溯源
-
-**仅对 KNOW / REG / STAT 类差异执行。**
-
-按优先级溯源：
-
-```
-1. FDA Guidance / ICH 指南（最高权威）
-   → 搜索 INDEX.md → 读原文 → 规则写为通用决策框架 → 写入 core/ 或 domains/
-   → 标注 [grounded: FDA-Guidance-{name}, Section {X}]
-
-2. 历史训练轮次（多案例交叉验证）
-   → ≥3 个案例同一模式 → 标注 [multi-case: case1, case2, case3]
-   → 写入 domains/
-
-3. 仅当前案例支撑（最低可信度）
-   → 标注 [single-case: FDA-Review-{drug}] + [low-confidence]
-   → 写入 indications/
-```
-
-### Step 5b: SOP 更新审核
-
-**触发条件**：存在 KNOW / REG / STAT 类差异。全部为 ALT / INFO → 跳过。
-
-1. Spawn 独立审核 Agent
-2. 传入：规则草案 + 溯源标注 + FDA 原文摘录
-3. 审核 Agent 判定：✅ 同意 / ⚠️ 需修改 / ❌ 拒绝
-4. 被拒绝的规则**不写入 SOP**，记录在 analysis.md `rejected_rules`
-
-### Step 6: SOP 写入
-
-**写入目标**（从 config.yaml）：
-- 全局规则 → `sop/core/protocol-design.md`
-- 疾病大类 → `sop/domains/{domain}.md ## Trial Design`
-- 适应症特定 → `sop/indications/{indication}.md ## Trial Design`
-- 监管路径 → `sop/regulatory/{regulatory}.md`
-
-**写入约定**：
-- Section-Append（追加到对应 section 末尾）
-- 只追加不修改已有行
-- 旧规则错了 → 追加修正 + `[supersedes: 旧规则摘要]`
-- 每次更新递增 frontmatter version
-
-### Step 7: 记录结果
-
-**本轮产出**保存到 `training/protocol-design/rounds/round-{NN}/`：
-
-```
+```text
 rounds/round-{NN}/
-├── solver-A.md          ← Solver A 答案（必须落盘）
-├── solver-B.md          ← Solver B 答案（超时则不存在）
-├── solver-C.md          ← Solver C 答案（超时则不存在）
-├── consensus-answer.md  ← 共识合并结果
-├── fda-actual.md        ← FDA 实际方案
-├── scoring.md           ← 3 裁判多数票评分
-├── analysis.md          ← 差异归类 + 偏差事件 + 行为变异
-└── grounding.md         ← 规则溯源记录（0 new rules 时不生成）
+├── workspace/
+│   ├── sop-paths.txt
+│   ├── case-meta.json
+│   ├── question.md
+│   ├── fda-raw-sections.md
+│   └── prepare-report.json
+├── solver-A.md
+├── solver-B.md
+├── solver-C.md
+├── consensus-answer.md
+├── fda-actual.md
+├── judge-A.md
+├── judge-B.md
+├── judge-C.md
+├── scoring.md
+├── analysis.md
+├── grounding.md
+├── sop-patch.md
+├── review.md
+└── finalize-report.json
 ```
 
-**results.tsv 追加一行**（17 列，与历史数据一致）：
-```
-round, branch, case_id, drug_name, pathway, match_score, weighted_score, match_count, partial_count, miss_count, skip_count, total_items, new_rules, sop_total, delta_codes, notes, timestamp
-```
+### v6 核心不变量
 
-**Git**：
-```bash
-git checkout main && git pull
-git checkout -b train/pd-round-{NN}
-git add -A
-git commit -m "round-{NN}: +{N} rules, match {score}"
-gh pr create --base main --title "PD Round {NN}: +{N} rules, match {score}"
-gh pr merge --squash --delete-branch
-```
-
-**分支命名约定**：
-- `train/pd-round-{NN}` — Protocol Design 正式训练轮次
-- `experiment/{描述}` — 短期实验，失败可删
-
-**Tag 策略**（收敛时打标）：
-```bash
-git tag pd-batch{N}-stable     # Batch 收敛点
-git tag v{X.Y}-release         # 正式稳定版（PM Agent 用）
-git push --tags
-```
-
-### Step 8: 收敛判断
-
-```
-收敛信号（任一触发 → 可提前结束）：
-  - 连续 3 轮 match_score ≥ 0.70 且 new_rules_added ≤ 1
-  - 连续 5 轮 new_rules_added = 0
-
-发散告警（任一触发 → 暂停训练，等待人工审核）：
-  - 5-round rolling average match_score 连续下降 3 个 batch
-  - 连续 3 轮 new_rules_added ≥ 4
-
-正常循环 → 回到 Step 0
-```
-
----
+1. Solver 不能查看本题药物 FDA Review
+2. Solver/Judge 输出必须落盘，不依赖 session 返回值
+3. Judge 只能读 `consensus-answer.md + fda-actual.md + evaluate.md`
+4. `scoring.md` 必须经脚本复核后才可进入 P5/P6
+5. 任何 schema 校验失败都必须中止，不允许带病继续
 
 ## R-FAIL: 偏差事件记录
 

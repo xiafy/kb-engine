@@ -1,0 +1,11 @@
+{
+  "status": "ok",
+  "case_id": "kimmtrak",
+  "round": "round-10",
+  "docsearch_hit": false,
+  "fallback_used": true,
+  "errors": [],
+  "warnings": [
+    "DOCSEARCH_FALLBACK_USED"
+  ]
+}

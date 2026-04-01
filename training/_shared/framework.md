@@ -1,6 +1,6 @@
 # framework.md — 闭环训练通用骨架
 
-> **版本**: v1.0 | **日期**: 2026-03-31
+> **版本**: v2.0 | **日期**: 2026-04-01
 > **性质**: 所有训练分支共享的流程骨架。只定义步骤名称、输入/输出契约和不变量。
 > **每个分支的 program.md 实现这些步骤的具体逻辑。**
 
@@ -35,142 +35,102 @@ Phase 2: 验证 & 训练
 
 ## 训练执行流程骨架
 
+v6 推荐采用**文件驱动 phase 架构**：
+
+```text
+P0 预处理（脚本）
+P1 Solver ×N（独立 session）
+P2 共识合并
+P3 标准答案格式化
+P4 Judge ×N + Scoring Merge
+P5 差异分析 + 规则溯源 + SOP patch
+P6 收尾 + results.tsv + 收敛判断
 ```
-Step 0  → 加载配置
-Step 1  → 读题
-Step 2  → 做题（spawn Owner Agent）
-Step 2b → 共识合并
-Step 2c → 行为变异记录
-Step 3  → 提取标准答案
-Step 4  → 裁判评分
-Step 5  → 差异分析
-Step 5c → 规则溯源
-Step 5b → SOP 更新审核
-Step 6  → SOP 写入
-Step 7  → 记录结果 + Git
-Step 8  → 收敛/循环判断
-```
+
+其中：
+- 脚本 phase 负责配置解析、文件校验、计分复核、结果落盘、收敛判断
+- LLM phase 只处理需要推理的结构化任务
+- session 返回值不得作为跨 phase 的唯一数据通道
 
 ---
 
 ## 每步输入/输出契约
 
-### Step 0: 加载配置
+### P0: 预处理
 
 | | 说明 |
 |---|---|
-| **输入** | 分支 config.yaml + case-config.json |
-| **输出** | 已解析的配置对象（SOP 路径列表、评分维度、答案提取章节等） |
-| **不变量** | 配置加载失败 → 终止，不继续 |
+| **输入** | `config.yaml` + `case-config.json` + 题目文件 + FDA Review 来源 |
+| **输出** | `workspace/`（`sop-paths.txt`, `case-meta.json`, `question.md`, `fda-raw-sections.md`, `prepare-report.json`） |
+| **不变量** | `prepare-report.json.status = blocked` → 终止 |
+| **分支自定** | 章节提取关键词、fallback 策略、workspace 字段 |
 
-### Step 1: 读题
-
-| | 说明 |
-|---|---|
-| **输入** | 题目文件路径（从 config 解析） |
-| **输出** | 结构化题目信息（药物信息、适应症、监管路径等） |
-| **不变量** | 题目文件不存在 → 终止 |
-
-### Step 2: 做题
+### P1: 做题
 
 | | 说明 |
 |---|---|
-| **输入** | SOP 文件列表 + 题目 + 可用资源路径 |
-| **输出** | 每个 Solver 的独立答案文件（**必须写入磁盘** `rounds/round-{NN}/solver-{A|B|C}.md`，v5.1.1） |
-| **不变量** | ① Solver 不能查看本题药物的任何信息（全渠道隔离，v5.1）② Solver 输出必须落盘，不依赖 session 返回值（v5.1.1） |
-| **分支自定** | Agent 数量、角色配置、prompt 内容、timeout、可用工具 |
+| **输入** | SOP 文件列表 + 题目 + 信息隔离规则 |
+| **输出** | `solver-{A|B|C}.md` |
+| **不变量** | ① 不得查看本题药物 FDA Review ② 输出必须落盘 ③ <2 个 solver 成功则中止 |
+| **分支自定** | Solver 数量、模型组合、timeout、可用工具 |
 
-### Step 2b: 共识合并
-
-| | 说明 |
-|---|---|
-| **输入** | 所有 Owner Agent 的答案 |
-| **输出** | `consensus-answer.md`（含共识标注） |
-| **不变量** | 裁判评分基于 consensus answer，不是个体答案 |
-| **分支自定** | 合并规则（多数票 / 对比仲裁 / 其他）、角色维度拆分 |
-
-### Step 2c: 行为变异记录
+### P2: 共识合并
 
 | | 说明 |
 |---|---|
-| **输入** | 所有 Owner Agent 的 session history |
-| **输出** | `analysis.md ## Agent Behavior Variance` |
-| **不变量** | 只记录事实，不做决策判断 |
-| **分支自定** | 关注哪些行为维度 |
+| **输入** | `solver-*.md` + 必要 SOP |
+| **输出** | `consensus-answer.md` |
+| **不变量** | 固定维度名；每维度必须有 `decision/source/support` |
+| **分支自定** | 合并规则、仲裁策略、source 标记 |
 
-### Step 3: 提取标准答案
-
-| | 说明 |
-|---|---|
-| **输入** | FDA Review 文件路径 + 答案提取章节列表 |
-| **输出** | `fda-actual.md`（结构化标准答案） |
-| **不变量** | 答案文件不存在 → 记录 ANSWER_NOT_FOUND，跳过 Step 4-6 |
-| **分支自定** | 提取哪些章节、如何结构化 |
-
-### Step 4: 裁判评分
+### P3: 标准答案格式化
 
 | | 说明 |
 |---|---|
-| **输入** | consensus-answer.md + fda-actual.md + 评分标准 |
-| **输出** | `scoring.md`（逐维度评分 + match/weighted score） |
-| **不变量** | 裁判必须在独立 session 中执行；裁判不得看做题推理过程；≥3 裁判多数票 |
-| **分支自定** | 评分维度、评分标准、判例库、特殊处理规则 |
+| **输入** | `fda-raw-sections.md` |
+| **输出** | `fda-actual.md` |
+| **不变量** | 固定维度名；每维度必须有 `answer/evidence/confidence` |
+| **分支自定** | 提取章节、证据粒度、`NOT_STATED_IN_REVIEW` 规则 |
 
-### Step 5: 差异分析
-
-| | 说明 |
-|---|---|
-| **输入** | scoring.md 中的 partial/miss 项 |
-| **输出** | `analysis.md ## Difference Analysis`（差异归类） |
-| **不变量** | 每个 partial/miss 必须归类 |
-| **分支自定** | 差异类型代码（Protocol: KNOW/REG/STAT/ALT/INFO；SAP 可能完全不同） |
-
-### Step 5c: 规则溯源
+### P4: 裁判评分 + Merge
 
 | | 说明 |
 |---|---|
-| **输入** | 准备写入 SOP 的规则草案 |
-| **输出** | `grounding.md`（溯源结果 + 可信度标注） |
-| **不变量** | 溯源优先级：FDA Guidance/ICH > 多案例交叉 > 单案例 |
-| **分支自定** | 溯源搜索范围、可信度阈值 |
+| **输入** | `consensus-answer.md` + `fda-actual.md` + `evaluate.md` |
+| **输出** | `judge-*.md` + `scoring.md` |
+| **不变量** | 裁判独立 session；不得看做题推理；`scoring.md` 必须脚本复核 |
+| **分支自定** | 裁判数量、投票规则、特殊维度处理 |
 
-### Step 5b: SOP 更新审核
-
-| | 说明 |
-|---|---|
-| **输入** | 规则草案 + 溯源结果 + FDA 原始证据 |
-| **输出** | 审核结果（同意 / 需修改 / 拒绝） |
-| **不变量** | 独立 Agent 审核；被拒绝的规则不写入 SOP |
-| **分支自定** | 审核 Agent 的 prompt、审核标准 |
-
-### Step 6: SOP 写入
+### P5: 差异分析 + SOP
 
 | | 说明 |
 |---|---|
-| **输入** | 通过审核的规则 + 写入目标路径 |
-| **输出** | SOP 文件更新（section-append） |
-| **不变量** | 只追加不修改已有行；版本号递增 |
-| **分支自定** | 写入目标（core/domains/indications/regulatory）、section 映射 |
+| **输入** | `consensus-answer.md` + `fda-actual.md` + `scoring.md` + SOP |
+| **输出** | `analysis.md` + `grounding.md` + `sop-patch.md` + `review.md` |
+| **不变量** | 仅 `KNOW/REG/STAT` 可进入 SOP patch；`analysis.md` 必须区分事实与推断 |
+| **分支自定** | 差异类型集合、规则审核标准、写入目标 |
 
-### Step 7: 记录结果 + Git
-
-| | 说明 |
-|---|---|
-| **输入** | 本轮所有产出文件 |
-| **输出** | `rounds/round-{NN}/` 完整记录 + results.tsv 追加行 + Git commit |
-| **不变量** | Git 分支命名 `train/{branch}-round-{NN}`；squash merge 到 main |
-| **分支自定** | results.tsv 的列定义、round 目录的文件结构 |
-
-### Step 8: 收敛/循环判断
+### P6: 收尾 + Git
 
 | | 说明 |
 |---|---|
-| **输入** | results.tsv 历史数据 |
-| **输出** | 继续 / 收敛 / 发散告警 |
-| **不变量** | 发散告警 → 暂停训练，等待人工审核 |
-| **分支自定** | 收敛阈值、发散判据、Batch 策略 |
+| **输入** | 本轮 phase 产物 + `results.tsv` |
+| **输出** | `results.tsv` 追加行 + `finalize-report.json` + 可选 Git/PR 结果 |
+| **不变量** | 文件校验失败 → 不追加结果；收敛判断基于脚本计算结果 |
+| **分支自定** | TSV 列定义、收敛阈值、Git 是否默认启用 |
 
 ---
+
+## 文件契约
+
+所有分支在 v6 架构下都应明确：
+- 标准维度枚举
+- 缺失值标记
+- phase 输出 schema
+- 错误码
+- 校验顺序
+
+推荐把这些内容写成独立文档，并由脚本和 prompt 共同遵守。
 
 ## 全局不变量（所有分支必须遵守）
 

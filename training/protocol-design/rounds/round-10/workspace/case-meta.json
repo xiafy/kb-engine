@@ -1,0 +1,15 @@
+{
+  "round": "round-10",
+  "case_id": "kimmtrak",
+  "drug_name": "Kimmtrak",
+  "generic_name": "tebentafusp-tebn",
+  "pathway": "protocol-design",
+  "nda_bla_id": "BLA761228",
+  "regulatory_pathway": "BLA, Priority Review, Regular Approval",
+  "fda_review_path": "/Users/crohub/.openclaw/shared/data/fda-reviews/md/2022/BLA761228-kimmtrak/MultidisciplineR.md",
+  "question_path": "/Users/crohub/.openclaw/kb-engine/training/protocol-design/questions/10-kimmtrak.md",
+  "domain": "rare-disease",
+  "indication": "uveal-melanoma",
+  "regulatory": "",
+  "data_quality": "high"
+}
