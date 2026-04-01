@@ -133,7 +133,7 @@ P2 + P3 完成
 
 ### P1: 做题（3× Protocol Design Agent）
 
-- 3 个独立 Agent（kimi ×1 + minimax ×2），各自独立设计 Protocol
+- 3 个独立 Agent（kimi ×1 + minimax ×1 + sonnet ×1），各自独立设计 Protocol
 - 严格信息隔离，不得查看本题药物 FDA Review
 - 输出必须落盘到 `solver-{A|B|C}.md`（文件名保持 solver 前缀，兼容文件契约）
 - Prompt 模板：`scripts/prompts/p1-solver.md`
@@ -179,7 +179,7 @@ P2 + P3 完成
 
 ### P4: 评分（3× Judge + 1× Merge）
 
-**模型**：kimi ×1 + minimax ×2（或 Sonnet ×1 降级方案）
+**模型**：kimi ×1 + minimax ×1 + sonnet ×1
 
 ⚠️ **Prompt 格式要求（v6.0.1 实验发现）**：Judge prompt 中 10 个评分维度必须**全部显式列出**，不得使用 `...` 省略号。kimi/minimax 遇到省略号可能进入格式生成循环导致无输出。已验证：显式完整 prompt 下 kimi/minimax 均 ~1.5min 完成，评分与 Sonnet 高度一致。
 
