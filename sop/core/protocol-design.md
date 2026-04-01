@@ -1,6 +1,6 @@
 # Protocol Design SOP — Core Decision Process
 
-> **Version**: v4.1 | **Source**: sop.md v2.2 split + KB SOP migration (2026-03-30) + Round 01 training | **Rule Count**: 59
+> **Version**: v4.2 | **Source**: v4.1 + Batch 2 审核 (2026-04-01) | **Rule Count**: 64
 > **Loading**: Required. Use together with domains/{category}.md + indications/{indication}.md
 
 ---
@@ -74,6 +74,10 @@ STEP 1: Does a proven therapy exist that prevents death or irreversible morbidit
 IF non-oncology with established SOC → Active control may lead to NI design (NI margin must be pre-specified); consider ethics.
 → Indication-specific controls: `indications/{indication}.md`
 
+### 3.1a IC option count and evidence requirement [Batch 2 审核]
+IC pre-specified list should contain 2-3 options (per §3.1). Each option must have **indication-specific evidence base** (not just drug class plausibility). Do not include drugs from the same mechanism class as duplicates (e.g., pembrolizumab + nivolumab = redundant PD-1). Do not include combination regimens unless combination has published data in the target indication.
+[grounded: single-case — Kimmtrak BLA761228, FDA accepted 3-option IC (dacarbazine/ipi/pembro)]
+
 ### 3.2 FDC combination products require 2 types of trials
 ICS/SABA and similar FDC reliever/controller products require: (1) A large event-driven PRN trial (FDC vs. individual components), primary endpoint: time to first severe exacerbation; (2) A factorial fixed-dose trial (FDC vs. each individual component vs. placebo), satisfying the combination rule (21 CFR 300.50a).
 → FDC stratification strategy: `domains/respiratory.md`
@@ -107,6 +111,17 @@ Non-oncology endpoints are generally not OS/PFS/ORR. The relevant FDA Guidance m
 Default: Investigator PFS primary + BICR secondary. Switch to BICR primary IF: (1) FDA Meeting requires; (2) CRL cited inv bias; (3) Open-label + highly subjective endpoint; (4) Placebo control. Either way, the other method must be pre-specified. BICR adds $500K-$2M + 3-5 day PD delay.
 [source: kb/methods/sop/protocol-ie-endpoint-optimization-sop.md §3.0]
 
+### 4.7a BICR precedence over double-blind INV exemption [Batch 2 审核]
+IF PFS definition includes **clinical progression** (not purely radiographic) → BICR primary required, even in double-blind designs. Clinical progression requires blinded adjudication committee confirmation.
+IF **CNS tumor** (glioma, brain mets as primary site) → BICR primary required due to pseudoprogression and imaging complexity, even in double-blind designs.
+IF **placebo-controlled** + PFS as primary → BICR primary recommended (§4.7 condition 4 takes precedence over double-blind INV exemption).
+⚠️ Priority rule: §4.7a conditions override the double-blind INV exemption in §4.1. When conditions conflict, BICR wins.
+[grounded: multi-case — Ogsiveo NDA217677 (BICR + clinical progression), Voranigo NDA218784 (BICR + CNS)]
+
+### 4.1a Bispecific BICR scope clarification [Batch 2 审核]
+The §4.1 bispecific antibody BICR mandate applies when PFS is the **primary** endpoint. When PFS is a key **secondary** endpoint under an OS-primary design, investigator-assessed PFS is acceptable as the primary PFS analysis method (BICR as sensitivity). Rationale: assessor bias risk to the trial's primary conclusion is mitigated when OS is primary.
+[grounded: single-case — Kimmtrak BLA761228, FDA accepted INV-PFS as key secondary under OS-primary]
+
 ### 4.8 Oncology endpoint selection: PFS(inv)→fastest Phase 3; PFS(BICR)→traditional; OS→gold standard but slow; ORR→accelerated/single-arm; pCR→neoadjuvant; iDFS/EFS→adjuvant.
 [source: kb/methods/sop/protocol-ie-endpoint-optimization-sop.md §3.1]
 
@@ -127,6 +142,10 @@ PRO should preferably be included in hierarchical testing in the form of "Time t
 
 ### 5.1 Sample size based on clinically meaningful difference
 Effect size must be derived from: (1) historical control arm data (≥3 trials, population-weighted); (2) experimental arm evidence (Phase 2/class effect); (3) 3-scenario sensitivity (optimistic/base/conservative). Never pick an HR from a "typical range" without proper derivation. Typical parameters: alpha=0.025 one-sided, power=80-90%. → Detailed estimation framework: `core/sap-design.md` (CA/HR/SS sections).
+
+### 5.1a Control arm median PFS/OS data source annotation [Batch 2 审核]
+Control arm median PFS/OS used for sample size must annotate data source type: **[RCT]** (from randomized trial control arm), **[observational]** (from registries, retrospective cohorts), **[meta-analysis]**. Observational cohort PFS is often 2-3× longer than RCT PFS due to lead-time bias, less frequent scheduled imaging, and different enrollment criteria. **Do not use observational mPFS directly as RCT control arm assumption** — apply a correction factor or use RCT-sourced data.
+[grounded: multi-case — Voranigo NDA218784 (LGG observational mPFS ~48mo vs trial ~18mo), Ogsiveo NDA217677 (DeFi control mPFS ~15mo from prior RCT)]
 
 ### 5.2 Multiplicity correction strategy (framework)
 

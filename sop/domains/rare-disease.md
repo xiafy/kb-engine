@@ -1,7 +1,7 @@
 ---
-version: 1.0
-source: sop.md v2.2 split
-rule_count: 3
+version: 1.1
+source: v1.0 + Batch 2 审核 (2026-04-01)
+rule_count: 4
 ---
 
 # Rare Disease General Rules — Rare Disease
@@ -30,6 +30,12 @@ IF rare cancer (<5/million incidence):
 
 - IF rare disease target events ≤50-60: → May omit interim analysis; single final analysis conserves alpha
 - IF rare disease RCT: → Secondary endpoints may all be exploratory; multiplicity focused on co-primary
+
+---
+
+### Rare Disease ECOG Eligibility [Batch 2 审核]
+IF rare disease + chronic oral targeted therapy (non-cytotoxic) → ECOG ≤2 is acceptable (not restricted to 0-1). Rationale: rare disease enrollment feasibility; non-cytotoxic oral drugs have manageable toxicity profiles for ECOG 2 patients.
+[grounded: single-case — Ogsiveo NDA217677, DeFi enrolled ECOG ≤2]
 
 ---
 
