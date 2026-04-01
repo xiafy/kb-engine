@@ -2,10 +2,8 @@
   "status": "ok",
   "case_id": "kimmtrak",
   "round": "round-10",
-  "docsearch_hit": false,
-  "fallback_used": true,
+  "docsearch_hit": true,
+  "fallback_used": false,
   "errors": [],
-  "warnings": [
-    "DOCSEARCH_FALLBACK_USED"
-  ]
+  "warnings": []
 }

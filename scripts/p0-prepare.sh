@@ -192,9 +192,11 @@ FDA_RAW_FILE="${WORKSPACE_DIR}/fda-raw-sections.md"
 TMP_SECTIONS=$(mktemp)
 trap 'rm -f "$TMP_SECTIONS"' EXIT
 
+DOCSEARCH="python3 ${SHARED_ROOT}/shared/docsearch/docsearch.py"
+
 docsearch_hit=false
 fallback_used=false
-if command -v docsearch >/dev/null 2>&1 && [[ -n "$APP_NUMBER" ]]; then
+if $DOCSEARCH info >/dev/null 2>&1 && [[ -n "$APP_NUMBER" ]]; then
   queries=(
     "trial design"
     "control arm"
@@ -204,7 +206,7 @@ if command -v docsearch >/dev/null 2>&1 && [[ -n "$APP_NUMBER" ]]; then
     "statistical analysis"
   )
   for query in "${queries[@]}"; do
-    if output=$(docsearch section "$APP_NUMBER" "$query" 2>/dev/null) && [[ -n "${output// }" ]]; then
+    if output=$($DOCSEARCH section "$APP_NUMBER" "$query" --context full -f text 2>/dev/null) && [[ -n "${output// }" ]]; then
       {
         printf '## Section: %s\n' "$query"
         printf '%s\n\n' "$output"
