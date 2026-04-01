@@ -52,3 +52,4 @@ B1R3	protocol-design	05	Vyloy	regular	1.00	1.00	10	0	0	0	10	0	64	none	v5.0 2-sol
 B1R3v2	protocol-design	05	Vyloy	regular	0.70	0.85	7	3	0	0	10	0	64	ALT:3	v5.1 info-isolated rerun; no new rules; partial on control_arm/secondaries/dosing	2026-04-01
 B1R4	protocol-design	14	Airsupra	regular	0.80	0.90	8	2	0	0	10	0	64	ALT:2	v5.1 isolated; SOP §3.2 2-trial + respiratory strat factors; partial on T2 5th arm + SCS secondary	2026-04-01
 B1R5	protocol-design	13	Tavneos	regular	0.80	0.90	8	2	0	0	10	0	64	INFO:1,ALT:1	v5.1; SOP anca-vasculitis drove NI→sup stepdown+BVAS+DD perfectly; dosing TID vs BID is INFO (question error)	2026-04-01
+B1R6-v6	protocol-design	10	Kimmtrak	regular	0.50	0.75	5	5	0	0	10	2	66	KNOW:2,ALT:1,INFO:2	v6 pipeline experiment; 2/3 solvers; sonnet judge; opus analysis	2026-04-01
