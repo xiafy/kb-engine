@@ -1,6 +1,6 @@
 # program.md — Protocol Design 训练程序
 
-> **版本**: v6.0 | **日期**: 2026-04-01 | **分支**: protocol-design
+> **版本**: v6.0.1 | **日期**: 2026-04-01 | **分支**: protocol-design
 > **骨架**: training/_shared/framework.md（通用流程）
 > **前身**: training/_shared/program.md v4.1（已 SUPERSEDED）
 > **原则**: docs/guiding-principles.md
@@ -137,6 +137,16 @@ P2 + P3 完成
 - `kimi ×1 + minimax ×2`
 - 严格信息隔离，不得查看本题药物 FDA Review
 - 输出必须落盘到 `solver-{A|B|C}.md`
+
+**Solver 可用工具（v6.0.1）**：
+- `read` — 读取 SOP 文件和题目（prompt 中已指定路径）
+- `exec` — Python/R 样本量计算
+- **DocSearch** — 检索 FDA/ICH 指南（替代 `ls`/`grep` 目录浏览）：
+  ```
+  python3 /Users/crohub/.openclaw/shared/docsearch/docsearch.py search -c fda-guidance "query" --context full -f text
+  python3 /Users/crohub/.openclaw/shared/docsearch/docsearch.py search -c ich-guidance "query" --context full -f text
+  ```
+- **禁止**：`ls`/`grep` 浏览 `data/fda-guidelines/` 目录（效率极低，用 DocSearch 替代）
 
 门禁：
 - 至少 2 个 Solver 成功落盘，否则整轮中止（`LOW_CONFIDENCE_ABORT`）
