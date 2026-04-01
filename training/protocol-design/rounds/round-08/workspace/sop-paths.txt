@@ -1,0 +1,3 @@
+/Users/crohub/.openclaw/kb-engine/sop/core/protocol-design.md
+/Users/crohub/.openclaw/kb-engine/sop/domains/rare-disease.md
+/Users/crohub/.openclaw/kb-engine/sop/indications/desmoid-tumor.md

@@ -1,0 +1,15 @@
+{
+  "round": "round-08",
+  "case_id": "ogsiveo",
+  "drug_name": "Ogsiveo",
+  "generic_name": "nirogacestat",
+  "pathway": "protocol-design",
+  "nda_bla_id": "NDA217677",
+  "regulatory_pathway": "NDA 505(b)(1) New Molecular Entity, Priority Review, Regular Approval",
+  "fda_review_path": "/Users/crohub/.openclaw/shared/data/fda-reviews/md/2023/NDA217677-ogsiveo/MultidisciplineR.md",
+  "question_path": "/Users/crohub/.openclaw/kb-engine/training/protocol-design/questions/16-ogsiveo.md",
+  "domain": "rare-disease",
+  "indication": "desmoid-tumor",
+  "regulatory": "",
+  "data_quality": "high"
+}
