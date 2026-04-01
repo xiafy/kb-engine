@@ -1,0 +1,15 @@
+{
+  "round": "round-07",
+  "case_id": "voranigo",
+  "drug_name": "Voranigo",
+  "generic_name": "vorasidenib",
+  "pathway": "protocol-design",
+  "nda_bla_id": "NDA218784",
+  "regulatory_pathway": "NDA, Priority Review, Regular Approval, Project ORBIS",
+  "fda_review_path": "/Users/crohub/.openclaw/shared/data/fda-reviews/md/2024/NDA218784-voranigo/MultidisciplineR.md",
+  "question_path": "/Users/crohub/.openclaw/kb-engine/training/protocol-design/questions/18-voranigo.md",
+  "domain": "oncology-solid",
+  "indication": "lgg",
+  "regulatory": "",
+  "data_quality": "high"
+}
