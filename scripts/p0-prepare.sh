@@ -87,8 +87,15 @@ if [[ ! -f "$CASE_CONFIG" ]]; then
   exit 1
 fi
 
-jq_filter='.[] | select(.id == $round or .id == $selector or ((.drug // "") | ascii_downcase) == ($selector | ascii_downcase) or ((.generic // "") | ascii_downcase) == ($selector | ascii_downcase) or (((.path // "") | ascii_downcase) | contains(($selector | ascii_downcase)))) | .'
-selector_for_jq="${case_selector:-$ROUND_ID}"
+# When case_selector is provided, match by selector ONLY (ignore round number).
+# When no selector, fall back to matching by round number as case id.
+if [[ -n "$case_selector" ]]; then
+  jq_filter='.[] | select(.id == $selector or ((.drug // "") | ascii_downcase) == ($selector | ascii_downcase) or ((.generic // "") | ascii_downcase) == ($selector | ascii_downcase) or (((.path // "") | ascii_downcase) | contains(($selector | ascii_downcase)))) | .'
+  selector_for_jq="$case_selector"
+else
+  jq_filter='.[] | select(.id == $round) | .'
+  selector_for_jq="$ROUND_ID"
+fi
 case_json=$(jq -c --arg round "$ROUND_ID" --arg selector "$selector_for_jq" "$jq_filter" "$CASE_CONFIG" | head -n 1)
 
 if [[ -z "$case_json" ]]; then
@@ -108,7 +115,8 @@ INDICATION=$(jq -r '.indication // empty' <<<"$case_json")
 REGULATORY=$(jq -r '.regulatory // empty' <<<"$case_json")
 DATA_QUALITY=$(jq -r '.data_quality // empty' <<<"$case_json")
 
-question_file=$(find "$QUESTIONS_DIR" -maxdepth 1 -type f -name "${ROUND_ID}-*.md" | head -n 1)
+CASE_CONFIG_ID=$(jq -r '.id' <<<"$case_json")
+question_file=$(find "$QUESTIONS_DIR" -maxdepth 1 -type f -name "${CASE_CONFIG_ID}-*.md" | head -n 1)
 if [[ -z "$question_file" ]]; then
   err=$(json_array "QUESTION_NOT_FOUND")
   warn='[]'
